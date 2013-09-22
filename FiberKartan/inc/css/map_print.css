@@ -1,0 +1,14 @@
+﻿html,body,#mapForm { height: 100%; margin: 0px; padding: 0px }
+
+#mapForm a 
+{
+    text-decoration: none;
+}
+
+.palette {
+	display: none;
+}
+
+.mapPopup {
+    display: none;
+}

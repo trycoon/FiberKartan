@@ -1,0 +1,48 @@
+﻿html  
+{
+    font: medium/1.200 "Times New Roman",serif;
+}
+body 
+{
+    color: #000000;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 960px;
+    padding-bottom: 2em;
+    word-spacing: 0.1em;
+}
+h1 {
+    margin: 20px auto 50px auto;
+    width: 347px;
+}
+h2 {
+   cursor: pointer; 
+}   
+a {
+    text-decoration: none;
+}
+a:link {
+    border-bottom: 1px dotted;
+    color: FireBrick;
+}
+a:visited {
+    border-bottom: 1px dotted;
+    color: RosyBrown;
+}
+a:link:hover, a:visited:hover {
+    border-bottom: 1px solid;
+}
+img {
+    float: right;
+    margin: 4px 4px 4px 20px;
+}
+.clear {
+    clear: both;
+}
+#markers img {
+    float: none;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    padding-right: 10px;    
+}

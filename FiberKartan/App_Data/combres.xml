@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  This file contains basic settings needed for most web apps.
+  For full Combres settings (with explanation), refer to the sample definition file: combres_full_with_annotation.xml
+  Also, refer to Combres' documentation: http://combres.codeplex.com/documentation
+
+  Förklaring:
+  http://www.codeproject.com/Articles/69484/Combres-2-0-A-Library-for-ASP-NET-Website-Optimiza  
+-->
+<combres xmlns='urn:combres'>
+  <filters>
+    <filter type="Combres.Filters.FixUrlsInCssFilter, Combres" />
+  </filters>
+  <resourceSets url="~/combres.axd"
+                defaultDuration="30"
+                defaultVersion="auto"
+                defaultDebugEnabled="auto"
+                defaultIgnorePipelineWhenDebug="true"
+                localChangeMonitorInterval="30"
+                remoteChangeMonitorInterval="60"
+                >
+    <resourceSet name="commonCss" type="css">
+      <resource path="~/inc/css/base.css" />
+      <resource path="~/inc/css/jquery-ui.css" />
+      <resource path="~/inc/css/map.css" />
+    </resourceSet>
+    <resourceSet name="adminCss" type="css">
+      <resource reference="commonCss"/>
+      <resource path="~/inc/css/jquery.contextMenu.css" />
+    </resourceSet>
+    <resourceSet name="userCss" type="css">
+      <resource reference="commonCss"/>
+    </resourceSet>
+    <resourceSet name="commonJs" type="js">
+      <resource path="~/inc/js/jquery.min.js" />
+      <resource path="~/inc/js/jquery-ui.min.js" />
+      <resource path="~/inc/js/jquery.ui.touch-punch.min.js" />
+      <resource path="~/inc/js/base.js" />
+    </resourceSet>
+    <resourceSet name="adminJs" type="js">
+      <resource reference="commonJs"/>
+      <resource path="~/inc/js/jquery.contextMenu.js" />            
+      <resource path="~/inc/js/mapAdmin.js" />
+      <resource path="~/inc/js/markerwithlabel.js" />
+      <resource path="~/inc/js/jquery.fileupload.js" />
+      <resource path="~/inc/js/jquery.iframe-transport.js" />
+      <resource path="~/inc/js/jquery.cookie.js" />
+    </resourceSet>
+    <resourceSet name="userJs" type="js">
+      <resource reference="commonJs"/>
+      <resource path="~/inc/js/map.js" />
+    </resourceSet>
+    <resourceSet name="regionJs" type="js">
+      <resource reference="commonJs"/>
+      <resource path="~/inc/js/totalMap.js" />
+    </resourceSet>
+    <resourceSet name="incidentReportJs" type="js">
+      <resource reference="commonJs"/>
+      <resource path="~/inc/js/incidentReportMap.js" />
+    </resourceSet>
+  </resourceSets>
+</combres>

@@ -1,0 +1,62 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="AdminMasterPage.Master.cs" Inherits="FiberKartan.Admin.AdminMasterPage" %>
+
+<!DOCTYPE html>
+<html lang="sv">
+    <head runat="server">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width">
+        <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman">
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+        <link rel="Stylesheet" type="text/css" href="/inc/css/jquery-ui.css?ver=1.0" />
+        <link rel="Stylesheet" type="text/css" href="/inc/css/base.css?ver=1.7" media="screen" />
+        <link rel="Stylesheet" type="text/css" href="/inc/css/admin.css?ver=2.0" media="screen" />
+        <script src="/inc/js/modernizr-2.6.2.min.js"></script>
+        <script src="/inc/js/jquery.min.js?ver=1.0"></script>
+        <script src="/inc/js/jquery-ui.min.js?ver=1.0"></script>
+        <asp:ContentPlaceHolder ID="head" runat="server">
+        </asp:ContentPlaceHolder>
+    </head>
+    <body class="dark">
+        <form id="form" runat="server">
+            <div class="header">
+                <h1 class="left"><asp:Literal ID="PageTitle" runat="server"></asp:Literal></h1>
+                <div id="loggedInBox">
+                    <div>Senast inloggad&nbsp;<span class="marginLeft5px"><asp:Literal ID="lastLoggedOn" runat="server"></asp:Literal></span></div>
+                    <div>Inloggad&nbsp;som&nbsp;<strong><asp:HyperLink ID="loggedOnName" runat="server"></asp:HyperLink></strong><span class="marginLeft10px"><asp:LinkButton ID="logoutButton" runat="server" Text="Logga ut" OnClick="logoutButton_Click" /></span></div>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <div class="main_content">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder" runat="server">
+                </asp:ContentPlaceHolder>
+            </div>
+            <div class="footer clear">
+                <a href="manual/index.htm">Manual&nbsp;/&nbsp;Hjälp</a> <a href="../TotalMap.aspx">Visa&nbsp;regionskarta</a>
+            </div>
+        </form>        
+        <script src="/inc/js/jquery.ui.touch-punch.min.js?ver=1.0"></script>
+        <script src="/inc/js/base.js?ver=1.4"></script>
+        <script>
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-33911019-1']);
+            _gaq.push(['_setDomainName', 'fiberkartan.se']);
+            _gaq.push(['_gat._anonymizeIp']);
+            _gaq.push(['_trackPageview']);
+
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+
+            // Startar ping-funktion.
+            setInterval(function () {
+                $.get("../REST/FKService.svc/Ping").fail(function () {
+                    //TODO: Visa nått här för användaren, att tjänsten är nere. 
+                });
+            }, 10000);
+        </script>
+        <asp:ContentPlaceHolder ID="footer" runat="server">
+        </asp:ContentPlaceHolder>
+    </body>
+</html>

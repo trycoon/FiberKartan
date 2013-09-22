@@ -1,0 +1,329 @@
+﻿html,body,#mapForm { height: 100%; margin: 0px; padding: 0px }
+html { font: 12px/14px Arial,Helvetica,sans-serif; }
+body { margin: 0; font-size: 1em; line-height: 1.4; }
+
+img  
+{
+    border: 0;
+    -ms-interpolation-mode: bicubic;
+    vertical-align: middle; 
+}
+svg:not(:root) 
+{
+     overflow: hidden;
+}
+textarea  
+{
+    overflow: auto;
+    vertical-align: top;
+    resize: vertical;
+}
+.chromeframe 
+{
+    margin: 0.2em 0;
+    background: #ccc;
+    color: black;
+    padding: 0.2em 0;
+    }
+input 
+{
+    vertical-align: middle;
+}
+input[disabled] + label {
+    color: #aaa !important;
+}
+
+#mapForm a 
+{
+    text-decoration: none;
+}
+
+#mapForm #resetMapButton div {
+    background-image: url("images/ui-icons_222222_256x240.png");
+    background-position: 0 -112px;
+    height: 16px;
+    width: 16px;
+}
+
+#mapForm #snapshotButton div {
+    background-image: url("images/ui-icons_222222_256x240.png");
+    background-position: -80px -96px;
+    height: 16px;
+    width: 16px;
+}
+.sprite-FiberBox{ background-position: 0 0; width: 32px; height: 32px; } 
+.sprite-FiberNode{ background-position: 0 -42px; width: 32px; height: 32px; } 
+.sprite-Fornlamning{ background-position: 0 -84px; width: 32px; height: 32px; } 
+.sprite-HouseNo{ background-position: 0 -126px; width: 32px; height: 32px; } 
+.sprite-HouseNotContacted{ background-position: 0 -210px; width: 32px; height: 32px; } 
+.sprite-HouseNotDecided{ background-position: 0 -252px; width: 32px; height: 32px; } 
+.sprite-HouseYes{ background-position: 0 -294px; width: 32px; height: 32px; } 
+.sprite-Observe{ background-position: 0 -336px; width: 32px; height: 32px; } 
+.sprite-RoadCrossing_Existing{ background-position: 0 -378px; width: 32px; height: 32px; } 
+.sprite-RoadCrossing_ToBeMade{ background-position: 0 -420px; width: 32px; height: 32px; } 
+.sprite-UnknownSymbol{ background-position: 0 -462px; width: 32px; height: 32px; } 
+.sprite-man-shadow{ background-position: 0 -504px; width: 49px; height: 32px; } 
+.sprite-man{ background-position: 0 -546px; width: 32px; height: 32px; }
+.sprite-Note{ background-position: 0 -588px; width: 32px; height: 32px; }
+       
+.palette {
+    width: 280px;
+    padding: 10px;
+    position: absolute;    
+    top: 10%;
+    left: 100px;
+    border: 1px solid;
+    background-color: #fff;
+    font: 12px/14px Arial,Helvetica,sans-serif;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -moz-box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=7, Direction=135, Color='#000000')";
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+.palette .subOption {
+    display: none;
+    margin-left: 20px;
+}
+.palette .subOption {
+    display: none;
+    margin-left: 20px;
+}
+.palette .subSubOption {
+    display: none;
+    margin-left: 40px;
+}
+.markerLabel {
+     color: red;
+     background-color: white;
+     font-family: "Lucida Grande", "Arial", sans-serif;
+     font-size: 10px;
+     font-weight: normal;
+     text-align: center;
+     min-width: 15px;     
+     border: 1px solid black;
+     -moz-border-radius: 10px;
+     -webkit-border-radius: 10px;
+     border-radius: 10px;
+     white-space: nowrap;
+     cursor: pointer;
+}
+.fiberboxLabel 
+{
+    color: black;
+    font-weight: bold;
+    cursor: default;
+}
+.blackMask 
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000 url("images/ui-bg_flat_50_000000_40x100.png") repeat-x scroll 50% 50%;
+	zoom: 1;
+	z-index: 9000;
+	filter: alpha(opacity=90);
+	opacity: 0.9;
+}
+.tempBindingFiberbox {
+    position: absolute;
+    height: 32px;
+    width: 32px;
+    z-index: 9010;
+    cursor: pointer;
+}
+form 
+{
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+
+.viewSettingsBox 
+{
+    margin: 5px 0 5px 0;
+}
+#myCurrentPosition
+{
+    display: none;
+}
+#propertyBoundaries
+{
+    display: none;
+}
+
+.contextMenuPlaceholder 
+{
+    display: none;
+}
+
+#print_map {
+    margin: 10px 10px 0 0;
+    width: 60px;
+}
+
+.mapPopup {
+    font: 14px Arial,Helvetica,sans-serif;
+}
+
+.paletteInfoIcon {
+    height: 16px;
+    width: 16px;
+    float: right;
+    cursor: pointer;
+    margin-top: 15px;
+}
+#mapInfoIcon {
+    background:transparent url(../img/info_icon.gif);
+}
+
+.tooltip {
+	display:none;
+	background:transparent url(../img/black_arrow.png);
+	font-size:11px;
+	height:70px;
+	width:160px;
+	padding:25px;
+	color:#fff;	
+}
+
+.paletteheader {
+    background-color: #008;
+    color: #fff;
+    font-weight: bold;
+    padding: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    cursor: move;
+}
+.paletteheader.admin {
+    background-color: #800;
+}
+.movepalette {
+    float: right;
+}
+#togglePanels h3 
+{
+    border: 1px solid #e5e5e5;
+    background-color: #eee;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    display: block;
+    padding: 5px 10px;
+    margin: 5px 0;
+}
+#connectionStatisticsPanel 
+{
+    margin-bottom: 10px;
+}
+#totalDigLengthStatisticsPanel 
+{
+    margin-bottom: 10px;
+}
+
+#markerTypes 
+{
+    overflow: visible;
+}
+#markerTypes img
+{
+    margin-bottom: 5px;
+    cursor: move;
+    height: 32px;
+    width: 32px;
+}
+#searchBox 
+{
+    margin: 10px 10px 5px 10px;
+    width: 160px;
+}
+#clearSearchBox 
+{
+    width: 60px;
+}
+.palette_footer
+{
+    margin-top: 10px;
+}
+
+#edit
+{
+    font: 12px/14px Arial,Helvetica,sans-serif;
+}
+#edit textarea
+{
+    resize: none;
+}
+#edit #name
+{
+    width: 100%
+}
+#edit .oneLine
+{
+    margin-left: 5px;
+    width: 30px !important;
+}
+#edit #deleteButton
+{
+    float: right;
+}
+#edit #markerTypes img
+{
+    cursor: pointer;
+    padding: 2px;
+}
+#edit #markerTypes img.selected
+{
+    background-color: #ddd;
+    border: 1px solid;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -moz-box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=6, Direction=135, Color='#000000')";
+}
+#edit .reverseGeocode 
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: red;
+}
+#edit .clickable
+{
+    color: #58f;
+    cursor: pointer;
+}
+
+.fileupload-button {
+    position: relative;
+    overflow: hidden;
+    width: 55px;
+    margin: auto;
+}
+.fileupload-button input[type="file"] {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    -moz-transform: translate(-300px, 0px) scale(4);
+    border-color: transparent;
+    border-image: none;
+    border-style: solid;
+    border-width: 0 0 100px 200px;
+    cursor: pointer;
+    direction: ltr;
+    margin: 0;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+ 

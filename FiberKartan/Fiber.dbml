@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="FiberDB" Class="FiberDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=SERVER2012\SQL2008;Initial Catalog=FiberDB;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="FiberDBConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.ImportErrors" Member="ImportErrors">
+    <Type Name="ImportError">
+      <Column Name="UserId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MapTypeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MergeVersion" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="KML" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="ErrorMessage" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="StackTrace" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Line" Member="Lines">
+    <Type Name="Line">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="MapTypeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MapVer" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="LineColor" Type="System.String" DbType="VarChar(8) NOT NULL" CanBeNull="false" />
+      <Column Name="Width" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Coordinates" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Uid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Map_Line" Member="Map" ThisKey="MapTypeId,MapVer" OtherKey="MapTypeId,Ver" Type="Map" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Map" Member="Maps">
+    <Type Name="Map">
+      <Column Name="MapTypeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Ver" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SourceKML" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="KML_Hash" Type="System.String" DbType="NVarChar(60) NOT NULL" CanBeNull="false" />
+      <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Views" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PreviousVer" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Map_Line" Member="Lines" ThisKey="MapTypeId,Ver" OtherKey="MapTypeId,MapVer" Type="Line" />
+      <Association Name="Map_Marker" Member="Markers" ThisKey="MapTypeId,Ver" OtherKey="MapTypeId,MapVer" Type="Marker" />
+      <Association Name="Map_Region" Member="Regions" ThisKey="MapTypeId,Ver" OtherKey="MapTypeId,MapVer" Type="Region" />
+      <Association Name="User_Map" Member="User" ThisKey="CreatorId" OtherKey="Id" Type="User" IsForeignKey="true" />
+      <Association Name="MapType_Map" Member="MapType" ThisKey="MapTypeId" OtherKey="Id" Type="MapType" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MapAccessInvitation" Member="MapAccessInvitations">
+    <Type Name="MapAccessInvitation">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="MapTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AccessRight" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="InvitationCode" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="InvitationSent" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="InvitationSentBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="User_MapAccessInvitation" Member="User" ThisKey="InvitationSentBy" OtherKey="Id" Type="User" IsForeignKey="true" />
+      <Association Name="MapType_MapAccessInvitation" Member="MapType" ThisKey="MapTypeId" OtherKey="Id" Type="MapType" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MapTypeAccessRight" Member="MapTypeAccessRights">
+    <Type Name="MapTypeAccessRight">
+      <Column Name="UserId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MapTypeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AccessRight" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="EmailSubscribeChanges" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="User_MapTypeAccessRight" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
+      <Association Name="MapType_MapTypeAccessRight" Member="MapType" ThisKey="MapTypeId" OtherKey="Id" Type="MapType" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Marker" Member="Markers">
+    <Type Name="Marker">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="MapTypeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MapVer" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MarkerTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Latitude" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Longitude" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Settings" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OptionalInfo" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Uid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Map_Marker" Member="Map" ThisKey="MapTypeId,MapVer" OtherKey="MapTypeId,Ver" Type="Map" IsForeignKey="true" />
+      <Association Name="MarkerType_Marker" Member="MarkerType" ThisKey="MarkerTypeId" OtherKey="Id" Type="MarkerType" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MarkerType" Member="MarkerTypes">
+    <Type Name="MarkerType">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="SourceIcon" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="DestIcon" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="MarkerType_Marker" Member="Markers" ThisKey="Id" OtherKey="MarkerTypeId" Type="Marker" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Municipality" Member="Municipalities">
+    <Type Name="Municipality">
+      <Column Name="Code" Type="System.String" DbType="VarChar(10) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Referencesystem" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CenterLatitude" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CenterLongitude" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="Municipality_MapType" Member="MapTypes" ThisKey="Code" OtherKey="MunicipalityCode" Type="MapType" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Region" Member="Regions">
+    <Type Name="Region">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="MapTypeId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MapVer" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="FillColor" Type="System.String" DbType="VarChar(8) NOT NULL" CanBeNull="false" />
+      <Column Name="LineColor" Type="System.String" DbType="VarChar(8) NOT NULL" CanBeNull="false" />
+      <Column Name="Coordinates" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Uid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Map_Region" Member="Map" ThisKey="MapTypeId,MapVer" OtherKey="MapTypeId,Ver" Type="Map" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[User]" Member="Users">
+    <Type Name="User">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Username" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Password" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastLoggedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastActivity" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsAdmin" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="User_Map" Member="Maps" ThisKey="Id" OtherKey="CreatorId" Type="Map" />
+      <Association Name="User_MapAccessInvitation" Member="MapAccessInvitations" ThisKey="Id" OtherKey="InvitationSentBy" Type="MapAccessInvitation" />
+      <Association Name="User_MapTypeAccessRight" Member="MapTypeAccessRights" ThisKey="Id" OtherKey="UserId" Type="MapTypeAccessRight" />
+      <Association Name="User_MapFile" Member="MapFiles" ThisKey="Id" OtherKey="CreatorId" Type="MapFile" />
+      <Association Name="User_MapType" Member="MapTypes" ThisKey="Id" OtherKey="CreatorId" Type="MapType" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MapFiles" Member="MapFiles">
+    <Type Name="MapFile">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MapTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreatorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="MapData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Association Name="User_MapFile" Member="User" ThisKey="CreatorId" OtherKey="Id" Type="User" IsForeignKey="true" />
+      <Association Name="MapType_MapFile" Member="MapType" ThisKey="MapTypeId" OtherKey="Id" Type="MapType" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MapType" Member="MapTypes">
+    <Type Name="MapType">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CreatorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="MapUrl" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="WelcomeMessage" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ViewSettings" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MunicipalityCode" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="ServiceCompanyId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="MapType_Map" Member="Maps" ThisKey="Id" OtherKey="MapTypeId" Type="Map" />
+      <Association Name="MapType_MapAccessInvitation" Member="MapAccessInvitations" ThisKey="Id" OtherKey="MapTypeId" Type="MapAccessInvitation" />
+      <Association Name="MapType_MapTypeAccessRight" Member="MapTypeAccessRights" ThisKey="Id" OtherKey="MapTypeId" Type="MapTypeAccessRight" />
+      <Association Name="MapType_MapFile" Member="MapFiles" ThisKey="Id" OtherKey="MapTypeId" Type="MapFile" />
+      <Association Name="Municipality_MapType" Member="Municipality" ThisKey="MunicipalityCode" OtherKey="Code" Type="Municipality" IsForeignKey="true" />
+      <Association Name="User_MapType" Member="User" ThisKey="CreatorId" OtherKey="Id" Type="User" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="ServiceCompany_MapType" Member="ServiceCompany" ThisKey="ServiceCompanyId" OtherKey="Id" Type="ServiceCompany" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ServiceCompany" Member="ServiceCompanies">
+    <Type Name="ServiceCompany">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Address" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
+      <Column Name="ServiceEmail" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ContactPersonName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="ContactPersonEmail" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ContactPersonPhone" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" />
+      <Association Name="ServiceCompany_MapType" Member="MapTypes" ThisKey="Id" OtherKey="ServiceCompanyId" Type="MapType" />
+    </Type>
+  </Table>
+  <Function Name="dbo.DeleteMapType" Method="DeleteMapType">
+    <Parameter Name="mapTypeId" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.GetRegionMaps" Method="GetRegionMaps">
+    <Parameter Name="code" Type="System.String" DbType="VarChar(10)" />
+    <ElementType Name="GetRegionMapsResult">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ViewSettings" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Ver" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+</Database>

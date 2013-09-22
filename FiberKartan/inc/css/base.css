@@ -1,0 +1,193 @@
+.whiteText
+{
+    color: #fff;
+}
+.blackText
+{
+    color: #000;
+}
+.redText
+{
+    color: #f00;
+}
+.hidden
+{
+    display: none;
+}
+.marginLeft5px 
+{
+    margin-left: 5px;
+}
+.marginLeft10px 
+{
+    margin-left: 10px;
+}
+.marginTop10px 
+{
+    margin-top: 10px;
+}
+.block 
+{
+    display: block;
+}
+.inline
+{
+    display: inline-block;
+}
+.left 
+{
+    float: left;
+}
+.right 
+{
+    float: right;
+}
+.center 
+{
+    margin-left: auto; margin-right: auto;
+    text-align: center;
+}
+.clear
+{
+    clear: both;
+}
+.button, input[type="button"], input[type="submit"] {
+  font: normal 12px/14px arial, sans-serif;
+  display: inline-block;
+  width: auto;
+  min-width: 30px;
+  padding: 6px 7px 5px 7px;
+  margin: 3px 3px 3px 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  text-decoration: none;
+  text-align: center;
+  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  border: 1px solid #333;
+  border-top-color: #444;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  background-color: #676767;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.25)), color-stop(100%, rgba(0, 0, 0, 0.25)));
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%);
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%);
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%);
+  background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%);
+  background-image: linear-gradient(top, rgba(255, 255, 255, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.button.big, input[type="button"].big, input[type="submit"].big {
+  min-width: 124px;
+  font-size: 14px;
+  line-height: 22px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+.button.green, input[type="button"].green, input[type="submit"].green {
+  background-color: #4ba700;
+}
+.button.red, input[type="button"].red,
+.button.cancel, input[type="button"].cancel,
+input[type="submit"].red {
+  background-color: #cb0000;
+}
+.button.black, input[type="button"].black,
+.button.nextstep, input[type="button"].nextstep {
+  background-color: #3c3c3c;
+}
+.button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+.button.big:hover,
+input[type="button"].big:hover,
+input[type="submit"].big:hover {
+  color: #ffffff;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.4)), color-stop(100%, rgba(255, 255, 255, 0.1)));
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background-image: linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+  cursor: pointer;
+}
+.button:active,
+input[type="button"]:active,
+input[type="submit"]:active,
+.button.active,
+input[type="button"].active,
+input[type="submit"].active {
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(0, 0, 0, 0)), color-stop(100%, rgba(0, 0, 0, 0.4)));
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
+  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
+  background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
+  background-image: linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
+}
+.button.disabled,
+input[type="button"].disabled,
+input[type="submit"].disabled,
+.button:disabled,
+input[type="button"]:disabled,
+input[type="submit"]:disabled,
+.button.big.disabled,
+input[type="button"].big.disabled,
+input[type="submit"].big.disabled {
+  color: #ababab;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+  border: 1px solid #d5d5d5;
+  background-color: #e2e2e2;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.4)), color-stop(100%, rgba(255, 255, 255, 0)));
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  cursor: default;
+}
+.loaderMask {
+	position: absolute;
+	z-index:9999;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #333;
+	color: #fff;
+	filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+}
+.loader {
+    width: 150px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -75px;
+    display: none;
+    border: 1px solid #5c9ccc;
+    padding: 2px;
+    background-color: #5c9ccc;
+    color: #fff;
+    filter:alpha(opacity=90);
+    -moz-opacity:0.9;
+    -khtml-opacity: 0.9;
+    opacity: 0.9;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -moz-box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=7, Direction=135, Color='#000000')";
+    text-align: center;
+    z-index: 10000;
+    background: url("/inc/img/ajax-loader.gif") #5c9ccc no-repeat;   
+    background-position: 50% 90%; 
+    min-height: 50px;
+}

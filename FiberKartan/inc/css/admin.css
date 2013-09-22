@@ -1,0 +1,232 @@
+﻿* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html {
+    font: 12px/14px Arial,Helvetica,sans-serif;
+    text-decoration: none;    
+}
+h1 
+{
+    color: #FFF;
+    line-height: 1em;
+    font-size: 18px;
+}
+textarea
+{
+    min-height: 200px;
+    max-height: 200px;
+    width: 100%;
+    resize: none;
+}
+a
+{
+    text-decoration: none;
+    color: #58f;
+}
+label   
+{
+    color: #fff;           
+    font-size: 14px;
+    font-weight: 200;
+    line-height: 1.4em;    
+    outline: 0 none;
+    padding: 3px;
+    width: 100%; 
+}
+.dark
+{
+    background: #555 url('../img/background-dark.png') repeat;
+    background-color: #555;    
+}
+.header
+{
+    max-width: 800px;
+}
+.main_content
+{
+    max-width: 800px;
+}
+.footer 
+{
+    max-width: 800px;
+}
+.footer *
+{
+    float: right;
+    padding: 10px;
+}
+.footer a
+{
+    margin-left: 10px;
+}
+#loggedInBox
+{
+    float: right;
+    color: White;
+    margin: 12px 0 12px 0;
+}
+
+#loginForm h1
+{
+    color: #555555;
+    font-size: 18px;
+    text-align: center;
+}
+#loginForm label
+{
+    color: #000
+}
+
+#loginForm input[type="password"], #loginForm input[type="email"], .inputField   
+{
+    color: #0086D9;
+    font-size: 24px;
+    font-weight: 200;
+    line-height: 1;    
+    outline: 0 none;
+    padding: 3px;
+    width: 100%;
+}
+#loginForm 
+{
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #E5E5E5;
+    -moz-box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=7, Direction=135, Color='#000000')";
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    font-weight: normal;
+    padding: 18px 24px 26px 24px;
+    margin-left: -160px;
+    position: fixed;
+    width: 320px;
+    top: 20%;
+    left: 50%;    
+}
+#newUserBox 
+{
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #E5E5E5;
+    -moz-box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=7, Direction=135, Color='#000000')";
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    font-weight: normal;
+    padding: 18px 24px 26px 24px;
+    margin-left: -210px;
+    position: fixed;
+    width: 420px;
+    top: 20%;
+    left: 50%;    
+}
+
+#editMapForm {
+    color: White;
+}
+
+#editMapForm input[type="text"]
+{
+    width: 100%;
+}
+
+#exportForm input
+{
+    vertical-align: middle;
+}
+#exportForm label
+{
+    color: #000
+}
+
+#maps h1
+{
+    float: left;
+}
+#maps .directMapUrl  {
+    float: left;
+    margin: 7px 0 0 7px;
+}
+.gvPagerCss span
+{
+    background-color: #DEE1E7;
+    font-weight: bold;
+    padding: 5px;
+    border: 1px #333 solid;
+}  
+.gvPagerCss td
+{
+    padding-left: 5px;   
+    padding-right: 5px;  
+}
+
+#shareMap #newAccessRight 
+{
+    color: White;
+    margin-top: 20px;
+}
+#shareMap #newAccessRight #NewMapAccessEmail
+{
+    width: 200px;
+}
+
+#mapsImport {    
+    color: White;
+}
+#mapsImport h1
+{
+    float: left;
+}
+#mapsImport fieldset {
+    margin-bottom: 20px;
+}
+#mapsImport .fileUpload 
+{
+    padding: 10px;
+    
+}
+#mapsImport .dropZone
+{
+    border: 1px dashed grey;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+.fileupload-button {
+    position: relative;
+    overflow: hidden;
+    width: 55px;
+    margin: auto;
+}
+.fileupload-button input[type="file"] {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    -moz-transform: translate(-300px, 0px) scale(4);
+    border-color: transparent;
+    border-image: none;
+    border-style: solid;
+    border-width: 0 0 100px 200px;
+    cursor: pointer;
+    direction: ltr;
+    margin: 0;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+#mapsImport #markerTypes img 
+{
+    height: 32px;
+    width: 32px;
+}
+#mapsImport .importButton {
+    margin: 10px auto 20px auto;
+    display: block;
+}

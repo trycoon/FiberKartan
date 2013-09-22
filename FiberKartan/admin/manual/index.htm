@@ -1,0 +1,541 @@
+﻿<!DOCTYPE html>
+<html lang="sv-SE">
+    <head>
+        <title>FiberKartan - Manual</title>
+        <meta name="viewport" content="width=device-width" />
+        <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" />
+	    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+        <link rel="Stylesheet" type="text/css" href="manual.css?ver=1.0" media="screen" />
+        <link rel="stylesheet" type="text/css" href="/inc/js/fancybox/jquery.fancybox.css" media="screen" />
+    </head>
+    <body>
+        <h1>Manual för FiberKartan</h1>
+
+        <h2>Ansvar</h2>
+        <section id="disclaimer">
+            Liquidbytes samt alla utvecklare av FiberKartan avsäger sig allt ansvar för eventuella fel samt ekonomiska och fysiska skador som därtill kan uppstå vid nyttjande av produkten.
+            <strong>All användning sker på egen risk!</strong>
+        </section>
+
+        <h2>Bakgrund</h2>
+        <section id="background">
+            <p>
+            Då jag som projektledare för <a href="http://horsnebarafiber.se">Hörsne-Bara fiber</a> började projekteringen för ett fibernät i våra socknar våren 2011 upptäckte jag snabbt behovet av ett verktyg där man enkelt kunde skapa kartor över områden med fastigheter.
+            Eftersom vi är en liten förening, som inte sysslar med sådana här projekt professionellt, så var det inte ekonomiskt försvarbart att köpa in ett professionellt CAD/GIS-program för projektering av fibernätet. Istället så valde jag att använda mig av Googles karttjänster, <a href="http://maps.google.com">Google Maps</a> och <a href="http://www.google.com/earth/index.html">Google Earth</a>, som båda är gratis och har sina starka och svaga sidor.
+            Just de svagare sidorna blev orsaken till varför jag tog fram FiberKartan, som bygger på Google Maps men som försöker erbjuda ett utseende och arbetssätt som är mer anpassat för fiberprojektering och utan de irriterande brister som Google Maps har (t.ex. kan man bara visa cirka hundra markörer per "sida").
+            Google Earth har inga problem att visa många markörer samtidigt och fungerar mycket bra vid långsam eller obefintlig Internetuppkoppling, men på grund av att det är ett program som måste installeras på datorn så blir det svårt att granska kartor på t.ex. jobbet, Internetcaféer, och hos entreprenörer.
+            </p>
+            <p>
+            FiberKartan har utvecklats allt eftersom behov av viss funktionallitet har behövts i projektet, t.ex. så behövde jag i början av projektet kunna placera markörer som symboliserade vilka fastigheter som var intresserade av fiber på en karta, medan det i anbudsfasen av projektet blev viktigt med versionshantering och att kunna mäta schaktsträckan.
+            Om ni hittar något fel eller har något förslag till förbättring så får ni gärna höra av er till <a href="mailto:trycoon@gmail.com">mig</a>.
+            Jag kommer att titta på ert förslag men jag kan inte lova att det blir implementerat (min fritid är väldigt begränsad).
+            </p>
+            <p>
+                Om någon skulle be mig lista fördelarna med FiberKartan i jämförelse med några av alternativen så skulle den nog se ut så här:
+            </p>
+            <ul>
+                <li>Markörer anpassade för fiberprojekt - Markörerna har ett utseende och en beskrivande text som gör dom lätta att känna igen.</li>
+                <li>Kartorna är versionshanterade - Så det går alltid att gå tillbaka och titta på en tidigare version.</li>
+                <li>Tillgänglig för flera personer - Flera personer kan granska och arbeta med kartan samtidigt (jmf. med papperskartor där bara en person har tillgång till kartan).</li>
+                <li>Tillgänglig överallt (där det finns tillgång till Internet) - Eftersom FiberKartan är en hemsida så behöver man inte installera något program (jmf. Google Earth) på datorn för att arbeta med kartorna, vilket gör att du kan nå dom från jobbet, Internetkafféer, osv.</li>
+                <li>Automatisk uträkning av sträckan - Man slipper klicka på varje linje och sitta med en miniräknare för att summera den totala grävsträckan(jmf. Google Maps/Google Earth). FiberKartan gör det automatiskt.</li>
+                <li>Bra exporteringsmöjligheter - Man kan exportera en given kartversion till en KML-fil (som kan importeras i Google Maps/Earth och andra GIS-program), man kan exportera markörerna till ett excellark som förutom markörens namn även innehåller dess GPS-position.</li>
+                <li>GRATIS - Som fiberförening så har vi nog med utgifter, detta enkla verktyg kostar inget och fungerar kanske tillräckligt bra till fiberprojektering för att ni skall slippa köpa in ett dyrt professionellt program.</li>
+            </ul>            
+        </section>
+
+        <h2>Systemkrav</h2>
+        <section id="sys_specs">
+            FiberKartan har utvecklats och testats främst för de allra senaste webbläsarna (med HTML5 och CSS3 stöd). Så för bästa stabilitet, upplevelse och prestanda så rekommenderar jag att ni kör de senaste versionerna av <a href="https://www.google.com/chrome/index.html?hl=sv#eula">Chrome</a> eller <a href="http://www.mozilla.org/sv-SE/firefox/fx/">Firefox</a>. FiberKartan bör fungera med den senaste versionen av <a href="http://www.apple.com/se/safari/download/">Safari</a>, men den testas bara av sporadiskt när jag får tid!
+        </section>
+
+        <h2>Förslag till arbetsflöde</h2>
+        <section id="workflow">
+            <p>
+            Ni väljer själva hur och vilka delar av detta verktyg som ni vill använda, men här följer ett förslag på hur man skulle kunna lägga upp projeket för att få ut maximalt av FiberKartan.
+            </p>
+            <p>
+            Börja med att skaffa en lista över alla fastigheter som finns inom ert tänkta upptagningsområde, kommunen eller Lantmäteriet har bl.a. dessa uppgifter.
+            Sätt er ner hela projektgruppen/styrelsen och <a href="#create_map">skapa en ny karta</a> i FiberKartan, namnge kartan efter er förening, t.ex. "Väskinde fiberförening" eller "Hörsne-Bara fiber" och välj sedan vilken kommun ni tillhör.
+            Öppna kartan i <a href="#draw_map">redigeringsläge</a> och dra ut markörer som representerar fastigheter som inte blivit kontaktade (gul med frågetecken) till varje fastighet som finns på er lista, klicka på varje markör och fyll i fastighetens fastighetsbeteckning (t.ex. "Hörsne Mattsarve 1:12") enligt listan.
+            Det är bra om ni är många som deltar vid detta moment för det kräver en hel del lokalkännedom för att veta vart alla bor och vilka hus som är bostadshusen, m.m. När ni lagt till markörer på alla fastigheter så ser ni till att Spara kartan (röda knappen i paletten)!
+            Allt jobb ni lägger ner på att mata in adresser på markörer och ser till att alla fastigheter får en markör kommer ni att tjäna in framöver.
+            </p>
+            <p>
+            Nu börjar det tunga arbetet med att kontakta alla fastighetsägare för att se vilka som är intresserade av fiber eller ej. När ni får svar från fastighetsägare så går ni in på kartan och söker upp deras fastighet genom att skriva deras fastighetsbeteckning i sökrutan, detta moment går riktigt smidigt om man varit duktig och lagt upp alla fastigheter med rätt beteckning som vi gjorde i punkten ovan.
+            När ni hittat fastigheten så redigerar ni markören och ändrar markörtyp efter fastighetsägarens val, antingen vill de ha fiber eller också vill de inte, ibland behöver de mer betänketid och då väljer ni markörtypen som liknar en vågskål. När ni uppdaterat kartan med "dagens skörd" av fastigheter så Sparar ni kartan.
+            Statistiken i paletten uppdateras varje gång ni sparar kartan och ni kommer att märka hur anslutningsgraden stiger och stiger.
+            </p>
+            <p>
+            Om ni inte redan har kontaktat en nätoperatör (som TeliaSonera, Bredbandsbolaget, m.fl.) så kan det vara dags att göra det nu. I samråd med dessa kan ni diskutera fram till var man lämpligast placerar er Nod (central knutpunkt i ert nät), i en bygdegård eller i en befintlig telefonstation verkar vara populära val. Ibland kan man behöva ha flera noder i ett fibernätverk, beroende på nätets geografiska storlek.
+            Dra ut markören för fibernod på kartan till alla platser där ni kommer att placera era noder.
+            </p>
+            <p>
+            När ni kontaktat 70-80% av alla fastighetsägare så börjar det bli dags att fundera på vart fiberslangarna skall förläggas för att nå alla fastigheter som är intresserade av att få fiber, <a href="#draw_map">rita linjer</a> där ni tycker att det vore lämpligt att slangarna förläggs.
+            När ni har gjort ett första utkast av ledningsdragningen så kan ni välja att lägga upp en länk till kartan på er hemsida så att socken/by-borna kan få följa ert arbete. Vi har bara positiva erfarenheter av att göra detta, så länge man kommunicerar att det bara är ett utkast.
+            Många markägare kommer att höra av sig till er med alternativa dragningar av kabeln för att gå runt hinder eller platser som de anser är känsliga, och ni slipper brottas med en massa rykten genom att ni är transparenta.
+            Ni kan få fram länken som ni skall lägga upp på er hemsida genom att trycka på "Länk", längst ute till vänster på er karta i <a href="#list_maps">listan över tillgängliga kartor</a>.
+            Sammankalla markägarna till arbetsmöten där ni tillsammans diskuterar möjliga vägar och uppdatera kartans linjer löpande, ni bör även gå ut och gå sträckorna med markägarna för att se hur allt ser ut på plats.
+            </p>
+            <p>
+            Kartan börjar nu ta form, ni har kontaktat större delen av fastighetsägarna, ni har ritatat ut en möjlig fiberdragning och haft en första avstämning med markägarna, och ni har placerat ut vart ni tror att ni skall ha era noder.
+            Det är nu dags att begära in offerter från gräventreprenörer och fiberentreprenörer(svetsar och blåser fiber, bistår med material), förutom dokumentet som utgör offertförfrågan så brukar dom vilja ha en karta över den tänkta dragningen och kanske även en lista över de fastigheter som skall ha fiber.
+            Gå till <a href="#list_map_versions">listan över kartans alla versioner</a> och klicka på "Länk" längst till vänster på den senaste versionen av kartan, denna länk skickar ni med i offerförfrågan till entreprenörerna.
+            Länken tar dom till den publika vyn för er karta, där kan de se den tänkta dragningen, sträckans längd, fastigheterna och noderna. Eftersom länken går till en specifik version av kartan så kan ni i projektgruppen under tiden uppdatera kartan och spara nya versionen utan att det påverkar offererings underlaget.
+            Om de vill ha en lista över fastigheterna så kan ni få fram den genom att trycka på <a href="#export_map">"Exportera"-knappen</a> och välja att exportera den senaste versionen av kartan till en Excel-fil, denna innehåller en lista på alla fastighetsbeteckningar och fastigheternas GPS-position.
+            </p>
+            <p>
+            När ni valt era entreprenörer så är det bra om ni ger dom tillgång till er karta så att de hela tiden kan följa er projektering och kan ladda ner den information som de behöver, för att ge dom tillgång till kartan så väljer ni att <a href="#share_map">Dela kartan</a> med dom.
+            Se till att dom minst har behörighet att "Exportera kartinformation" så att de kan ladda ner kartan till KML- och Excelfiler om de så behöver.
+            Fiberentreprenörerna kommer i samråd med er att bestämma vart kopplingsskåp och kopplingsbrunnar för fiber skall placeras, dessa kan ni lägga till själva till kartan (orange KS-markör) eller också ger ni entreprenören skrivrättigheter till kartan så att dom kan göra det själva.
+            Vilka fastigheter som skall anslutas till vilket kopplingsskåp kan man ange genom att <a href="#draw_map">"binda"</a> fastigheten till skåpet.
+            </p>
+            <p>
+            Ett par veckor innan grävstart så kommer ni fortfarande förmodligen att justera linjer enligt markägares önskemål och några fastigheter som ångrat sig i sista minuten och vill vara med kommer att dyka upp.
+            Det är viktigt nu att alla förändringar som görs synkas med grävare och fiberentreprenören, för att säkerställa att dom inte missar någon förändring av kartan så kan de <a href="#subscribe_map_changes">prenumerera</a> på förändringar av kartan. På så sätt får dom e-post skickade till sig varje gång en förändring av kartan görs.
+            </p>
+            <p>
+            När dammet har lagt sig och fibernätverket är klart så kan man behålla kartan i dokumentationssyfte, man kan justera linjer och kopplingsskåps markörer efter hur de egentligen hamnade så att kommunen, markägare, Trafikverket, m.fl. kan se vart kablarna ligger.
+            Nätet skall såklart även dokumenteras på <a href="http://ledningskollen.se" target="_blank">Ledningskollen</a>.
+            </p>
+        </section>
+
+        <br />
+        <hr>
+
+        <h2>Publik, Administrativ och Regional vy</h2>
+        <section id="sections">
+            <p>
+                Varje karta som <a href="#create_map">skapas</a> kan presenteras visuelt genom olika vyer. De olika vyerna laddar upp olika mängd information från kartan och presenterar den för besökaren, detta är en de viktigaste grundfunktionerna i systemet.
+            </p>
+            <p>
+                <strong>Publika vyn</strong> &mdash; Denna vy är förmodligen den som ni kommer länka till från er hemsida, den visar fiberförläggningen och markörer som symboliserar kopplingsskåp, vägundergångar, fastigheter som önskar fiber, m.m.
+                Informationen i denna vy kan vara av intresse för fastighetsägare, markägare, entreprenörer, trafikverket, m.fl. Man behöver inte vara inloggad för att nå denna vy, har man bara länken till vyn så kan man granska kartan.
+                All information på kartan är inte synlig i denna vy, den har medvetet förenklats så att lekmän och personer som inte är insatta i vårt arbete lättare skall kunna tolka den.
+            </p>
+            <p>
+                <strong>Administrativa vyn</strong> &mdash; Till skillnad från den publika vyn så kräver denna att man är inloggad och har rättigheter att administrera kartan. Rättigheter till att administrera kartan kan man antingen få genom att vara den användare som skapade kartan eller genom att en behörig användare har givit dig behörighet att administrera kartan.
+                I den denna vy har man tillgång till mer information än i den publika vyn, som t.ex. flera olika statusar på fastigeter, kommentarer på markörerna, och flera markörtyper. Om man har rättighet att ändra på kartan så finns även möjlighet att lägga till, ändra och ta bort information ifrån kartan och spara denna till en ny version.
+                Den administrativa vyn är tänkt att bara användas av projektgruppen/styrelsen för fiberföreningen och av de möjligtvis utsedda entreprenörer. För att administrera en eller flera kartor så måste ni logga in på följande adress <a href="http://fiberkartan.se/admin">http://fiberkartan.se/admin</a>.
+            </p>
+            <p>
+                <strong>Regionala vyn</strong> &mdash; Denna är kanske mindre viktig än de två övre vyerna, men den erbjuder en bra överblick över fiberutbyggnaden i regionen.
+                På denna vy presenteras den publika kartan för alla fiberföreningar i regionen som valt att tillåta att deras publika karta visas i denna regionala vy.
+                För att inte vyn skall bli alltför plottrig så visas bara den allra nödvändigaste informationen, som t.ex. fastigheter som har/vill ha fiber och själva fibersträckningen.
+                Vyn tillåter besökaren att i realtid se hur fiberutbyggnaden i regionen växer fram och öppnar även upp för sammarbeten mellan de olika föreningarna då man lättare kan se var det ena fibernätverket slutar och nästa tar vid.
+                Denna vy kräver ingen inloggning och kan med fördel länkas till från en hemsida, möjliga intressenter är Länsstyrelsen, Kommuner, Post och Telestyrelsen, m.fl.
+            </p>
+            <p>
+                Den regionala vyn kan man nå genom länken i sidfoten inne på de administrativa sidorna eller via följande adress, <a href="http://fiberkartan.se/region">http://fiberkartan.se/region</a>. Som standard visas samtliga kartor, för de som valt att deras karta får visas i denna vy, på en Sverige-karta.
+                Om man bara är intresserad av att se kartor inom ens kommun så kan man ange kommunkoden som en extra parameter på länken för att göra en filtrering.
+                För att bara se kartor som tillhör Gotlands kommun så skulle länken kunna se ut så här: <a href="http://fiberkartan.se/region/0980">http://fiberkartan.se/region/0980</a>. Koden för just din kommun kan du hitta <a href="http://sv.wikipedia.org/wiki/Lista_%C3%B6ver_Sveriges_kommuner">här!</a>
+            </p>
+            <p>
+                Använd följande HTML kod om du vill länka till den regionala vyn från er hemsida: &lt;a href="http://fiberkartan.se/region" target="_blank"&gt;Karta&lt;/a&gt;.
+            </p>
+        </section>
+        <div class="clear" ></div>
+
+        <h2>Lista över tillgängliga kartor</h2>
+        <section id="list_maps">
+            <p>
+                <a class="image" href="img/MapList.jpg" target="_blank" title="Lista på tillgängliga kartor"><img src="img/tn_MapList.jpg" alt="" /></a>
+                Den första sidan man kommer till då man loggat in är sidan över dina tillgängliga kartor. Listan innehåller alla kartor som du skapat och alla kartor som andra har givit dig rättigheter till att administrera. Första gången du loggar in kommer förmodligen listan att vara tom, varpå <a href="#create_map">skapa en ny karta</a> förmodligen blir din första åtgärd.
+                Uppe till höger på sidan visas när du senast loggade in, vilken person som du är inloggad som, och en länk för att logga ut dig ur systemet. Listans kolumner kan sorteras i stigande och fallande ordning genom att man klickar på rubriken för den kolumn som man vill sortera listan efter.
+                Namnet på kartan och namnet på personen som skapade kartan visas i listan, knappen <a href="#list_map_versions">"Visa versioner"</a> tar dig till en sida med en lista över alla versioner av kartan som har skapats. Det finns en knapp för att <a href="#import_map">Importera</a> en karta från en fil. För att redigera grundinställningarna för kartan, de uppgifter du angav när du först skapade kartan, tryck på "Redigera"-knappen.
+                För varje karta finns även möjlighet att <a href="#subscribe_map_changes">prenumerera på ändringar</a> och <a href="#share_map">att dela kartan med andra</a>.
+            </p>
+            <p>
+                <a class="image" href="img/DirectLinkMap.jpg" target="_blank" title="Direktlänk till den senaste versionen av en specifik karta"><img src="img/tn_DirectLinkMap.jpg" alt="" /></a>
+                För varje karta i listan så finns det en Länk längst till vänster som om man klickar på visar upp en ruta med en direktlänk till den valda kartan. Länken leder till den publika vyn för den senaste versionen av kartan och är alltså den länk som ni skall använda om ni ifrån er hemsida vill länka till denna karta.
+                Markera texten, kopiera den, och klistra in den på er hemsida för att skapa en länk till kartan.
+            </p>
+        </section>
+        <div class="clear" ></div>
+
+        <h2>Prenumerera på ändringar av en karta</h2>
+        <section id="subscribe_map_changes">
+            <p>
+                <a class="image" href="img/MapList.jpg" target="_blank" title="Lista på tillgängliga kartor"><img src="img/tn_MapList.jpg" alt="" /></a>
+                I <a href="#list_maps">listan över tillgängliga kartor</a> finns en symbol av ett kuvert längst till vänster på varje rad. Genom att klicka på symbolen så att den skiftar läge som kan man välja att prenumerera på ändringar av vald karta, respektive avsluta en befintlig prenumeration.
+                Om någon gör en förändring av en karta som du prenumererar på så kommer du automatiskt att få ett e-postmeddelande skickat till dig så fort en ny verson av denna karta skapas.
+                E-postmeddelandet innehåller information om vem som gjorde ändringen, när den gjordes, en länk till den nya versionen av kartan, samt en grov redogörelse av vilka förändrigar som gjorts.
+            </p>
+        </section>
+        <div class="clear" ></div>
+
+        <h2>Dela karta med andra</h2>
+        <section id="share_map">
+            <p>
+                <a class="image" href="img/ShareMap.jpg" target="_blank"><img src="img/tn_ShareMap.jpg" alt="" /></a>
+                I <a href="#list_maps">listan över tillgängliga kartor</a> finns en länk längst till höger på varje rad, som ger dig möjlighet att dela kartan med andra personer. Länken finns bara tillgänglig om du själv har rättighet att dela denna karta med andra.
+                Följer man länken så kommer man till en sida som listar alla, förutom dig själv, som har tillgång till kartan. Varje person presenteras med dess namn, beskrivning och personens behörighetsgrad till kartan.
+                Det finns knappar för att spara ändringar och för att ta bort en persons behörighet. Längst ner på sidan finns möjligheten att lägga till behörighet för ytterligare personer.
+            </p>
+            <p>
+                För att lägga till behörighet till kartan för en ny person så fyller man i personens e-postadress, den önskade behörigheten personen skall få, och klickar sedan på "Skicka inbjudan".
+                Om personen redan finns med i systemet så kommer denna att tilldelas tillträde till kartan med det samma, om inte så kommer personen att få ett e-postmeddelande som innehåller en unik länk till en registreringssida.
+                När personen klickat på länken så kommer dom till en sida där de ombeds att fylla i lite personuppgifter, därefter så kommer de loggas in och få tillgång till kartan.
+            </p>
+            <h3>Behörighetsnivåer</h3>
+            <p>
+                Varje nästföljande behörighetsnivå inkluderar ovanstående behörigheter, en person med den sista behörigheten i listan har alltså även ALLA ovanstående behörigheter! Följande behörighetsnivåer finns:
+            </p>
+            <ol>
+                <li>Granska kartversioner &mdash; Personen kan granska en karta i alla dess versioner.</li>
+                <li>Exportera kartinformation &mdash; Personen kan exportera informationen från en eller flera kartversioner, till t.ex. en KML- eller Excelfil.</li>
+                <li>Ändra på karta &mdash; Personen kan lägga till, ändra, ta bort information från en karta, samt spara och skapa nya versioner av en karta.</li>
+                <li>Fullständiga rättigheter &mdash; Personen har möjlighet att dela kartan med andra, och kan även radera kartan.</li>
+            </ol>
+
+        </section>
+        <div class="clear" ></div>
+
+        <h2>Skapa kartor</h2>
+        <section id="create_map">
+            <p>
+                <a class="image" href="img/NewMap.jpg" target="_blank" title="Skapande av ny karta"><img src="img/tn_NewMap.jpg" alt="" /></a>
+                För att skapa en ny karta, tryck på knappen "Ny karta" på sidan över tillgängliga kartor (förstasidan). Du kommer nu till en sida där du får ange kartans grundegenskaper, dessa kan alltid ändras i efterhand genom att trycka på knappen "Redigara" för vald karta i listan över tillgängliga kartor.
+                Det enda som är obligatoriskt att fylla i är namnet för den nya kartan samt vilken kommun kartan tillhör. Se till att välja något kort och förklarande namn på kartan, som t.ex. "Vallstena fiberförening".
+            </p>
+            <p>
+                Därefter kan man, om man vill, ange ett välkomstmeddelande för kartan. Välkomstmeddelandet kommer att visas i ett fönster för alla som besöker den publika vyn, detta kan användas för att upplysa besökarna om något.
+                T.ex. <i>"Denna karta är bara ett utkast, den utritade fibersträckningen är bara ett exempel på hur kabeln kan dras fram och har på intet sätt stämts av med markägarna.
+                Kontakta oss på blaha@blaha.se om ni har några synpunkter."</i>.
+            </p>
+            <p>
+                Välj vilken kommun som kartan tillhör, detta används t.ex. för att kunna filtrera ut kartor som tillhör en given kommun i den regionala vyn.
+            </p>
+            <p>
+                Under sektionen "Inställningar" finns ett antal kryssrutor, de har följande funktioner:<br />
+                <br />
+                <b>Publikt synlig</b> &mdash; Genom att kryssa ur rutan kan kartan endast granskas ifrån administrationssidan, det går inte längre att granska sidan i oinloggat läge.
+                 Detta kan vara praktiskt att göra om ni behöver göra stora förändringar av kartan som ni inte vill delge allmänheten innan allt är klart.<br /><br />
+
+                <b>Visa "paletten"</b> &mdash; Genom att kryssa ur rutan så visas inte längre paletten (den vita rutan med alla inställningar) på den publika vyn.<br /><br />
+
+                <b>Visa anslutningsgraden</b> &mdash; Om rutan är ikryssad så räknar systemet ut anslutningsgraden utifrån de antal markörer som representerar fastighet som vill ha fiber och de som inte vill ha fiber.
+                 En del föreningar väljer att bara placera ut markörer för de fastigheter som vill ha fiber, i det fallet är det lämpligt att kryssa ur denna ruta eftersom det annars visas en felaktig anslutningsgrad på 100%.<br /><br />
+
+                <b>Visa uppskattad schaktlängd</b> &mdash; Om rutan är ikryssad så summerar systemet alla utritade sträckor på kartan och presenterar en uppskattad totallängd av schaktsträckan.<br /><br />
+
+                <b>Tillåt att karta visas i regionsvyn</b> &mdash; Om man kryssar i denna ruta så kommer kartan att visas, i sin senaste version, tillsammans med andra kartor med denna inställning om man går in via länken <a href="../../TotalMap.aspx">"Visa regionskarta"</a> som visas i botten på administrationssidorna.
+                 Om flera föreningar väljer att aktivera denna funktion för sina kartor så kan man se hur fibernätverket växer i realtid i regionen, det ger också möjlighet att enklare planera för de fastigheter som ligger i gränslandet om man kan få se fiberdragningen för båda föreningarna sida vid sida.<br /><br />
+
+                <b>Visa bara fastigheter som skall ha fiber</b> &mdash; En del föreningar vill på adminsidan ha alla fastigheter utritade, både de som skall ha fiber och de som inte skall ha, men de vill inte att de fastigheter som inte vill ha fiber skall visas på den publika sidan. I så fall kryssar man i denna ruta, och endast de som vill ha fiber kommer då att visas. Anslutningsgraden kommer att visas i vilket fall som helst, denna kan stängas av via en annan kryssruta.<br /><br />
+            </p>
+        </section>
+        <div class="clear" ></div>
+
+        <h2>Importera kartor</h2>
+        <section id="import_map">
+            <p>
+                <a class="image" href="img/ImportMap.jpg" target="_blank" title="Importera karta eller delar av karta"><img src="img/tn_ImportMap.jpg" alt="" /></a>
+                Man kan importera information till en befintlig karta genom att trycka på Importera-knappen för den valda kartan i listan över tillgängliga kartor.
+                En ruta kommer att dyka upp där man får möjlighet att bläddra efter en fil att importera information ifrån, i dagsläget stöds bara <strong>KML</strong>-filer.
+                Google Maps och Google Earth kan exportera kartor av det formatet och eftersom formatet har blivit mycket populär så har flertal större komersiella applikationer nu stöd för att exportera kartor i detta format.
+                Google Earth exporterar även kartor i KMZ-format, vilket är en packad(zip) version av KML-filer, dessa stöds tyvärr ännu inte av FiberKartan.
+            </p>
+            <p>
+                Efter man valt fil kommer systemet att analysera filens innehåll och presentera en lista på de markörer, linjer och polygoner(områden) som den har identifierat.
+                Du får sedan valet att välja vilka av dessa som skall importeras och hur informationen skall tolkas (vad markörerna representerar).
+            </p>
+            <p>
+                Längst ner på sidan finns alternativet att slå samman informationen man importerar med en befintlig version av kartan för att skapa en ny sammanslagen version. Om man väljer alternativet "Ingen" så kommer det att skapas en ny version av kartan som enbart består att den informationen som man importerar, detta alternativ används då man vill importera en komplett karta eller en backup av kartan som man tagit tidigare.
+                I listan finns alla versioner av kartan som har skapats, genom att välja en version så skapas det en ny version av kartan med innehållet från den valda versionen OCH informationen som man importerar från filen.
+                Det senare alternativet kan t.ex. användas då man får en fil som innehåller alla placeringar av kopplingsskåp från en fiberentreprenör och man vill importera denna information till sin befintliga karta.
+                Ett annat exempel är om man ritat en karta som bara innehåller markörer över alla fastigheter och en karta som innehåller den tänkta fibersträckningen och sedan vill slå ihop informationen till en enda karta.
+            </p>         
+            <p>
+                Efter du har gjort ditt val så trycker du på "Importera" för att påbörja importeringen, om allt går väl så får du ett positivt meddelande efter en stund och du slussas vidare till sidan över kartans alla versioner.
+            </p>   
+        </section>
+        <div class="clear" ></div>
+        
+        <h2>Lista över en kartas versioner</h2>
+        <section id="list_map_versions">
+            <p>
+                Alla ändringar du gör på en karta i ritningsläge och sedan sparar resulterar i en ny version av kartan. <strong>En karta skrivs alltså aldrig över, det skapas bara en ny version av kartan.</strong>
+                Eftersom en karta aldrig skrivs över så betyder det att man alltid kan se hur kartan såg ut i ett tidigare skede, man kan även bygga vidare på en gammal version av kartan om nyare versioner inte är till belåtenhet.
+            </p>
+            <p>
+                <a class="image" href="img/MapVersions.jpg" target="_blank" title="Lista över tillgängliga versioner av en karta"><img src="img/tn_MapVersions.jpg" alt="" /></a>
+                När man har valt "Visa versioner" för en karta så får man upp en sida med alla versioner av den kartan som har skapats, listan är normalt sorterad i fallande ordning med senste versionen sist.
+                Om fler än tretio versioner av en karta har skapats så delas listan upp i flera sidor om tretio stycken rader (versioner), man kan bläddra mellan sidorna genom att klicka på det önskade sidnummret längst ner på sidan.
+                För varje rad/version presenteras dess versionsnummer, när versionen skapades och av vem. Vidare så visas även antalet besökare som har granskat kartan på den publika vyn. Man kan välja att <a href="#draw_map">"Visa"</a> (även ändra) denna version av kartan, och att <a href="#export_map">exportera</a> den valda versionen.
+                En "Senaste"-knapp i Visa-kolumnen tar en till visnings/redigerings-läge för den senaste versionen av kartan, vilket är bekvämt när man börjar få många versioner av kartan som ligger uppdelade på flera sidor.
+            </p>
+            <p>
+                <a class="image" href="img/DirectLinkMapVersion.jpg" target="_blank" title="Direktlänk till en specifik version av kartan"><img src="img/tn_DirectLinkMapVersion.jpg" alt="" /></a>
+                För varje version i listan så finns det en Länk längst till vänster som om man klickar på visar upp en ruta med en direktlänk till den valda versionen av den valda kartan.
+                Denna kan användas då man vill skicka en länk till någon, exempelvis en entreprenör, som tar dom till en specifik version av kartan.
+            </p>
+            
+        </section>
+        <div class="clear" ></div>
+
+        <h2>Exportera kartor</h2>
+        <section id="export_map">
+            <p> 
+                <a class="image" href="img/ExportMap.jpg" target="_blank" title="Exportering av en karta till fil"><img src="img/tn_ExportMap.jpg" alt="" /></a>
+                För att exportera en karta så börjar man med att klicka på "Visa versioner"-knappen på den önskade kartan för att komma till <a href="#list_map_versions">sidan</a> som innehåller en lista över den valda kartans alla versioner.
+                Därefter klickar man på knappen "Exportera" för den versionen av kartan man önskar exportera, vanligtvis är det den senaste versionen av kartan som i så fall ligger längst ner (notera att det kan finnas flera sidor).
+                En ruta kommer att presenteras som innehåller de val av information som skall exporteras och till vilket format informationen skall exporteras, när önskat val och filtrering gjorts så trycker man på Exportera-knappen för att påbörja exporteringen av kartan.
+                Kryssrutorna som visas på sidan används för att ange vilken information man är intresserad av, är du bara intresserad av att få ut de fastigheter som vill ha fiber så ser du till att bara kryssa i rutan "Ja" under Fastigheter-sektionen.
+            </p>
+            <p>
+                <strong>KML-fil</strong><br />
+                Detta alternativ används då ni vill exportera kartan till Google Earth, Google Maps, eller nåt annat GIS-liknande verktyg.
+                Att exportera till en KML-fil kan med fördel användas om man t.ex. har en iPad eller Androidbaserad surfplatta och om man har installerat Google Earth från AppStore eller Google Play.
+                Surfa sedan in på denna sida med surfplattan och exportera kartan till en KML-fil, Google Earth kommer att startas och du kan sedan gå runt med plattan ute på fält och med hjälp av den inbygda GPS-mottagaren se vart du befinner dig på er karta.
+            </p>
+            <p>
+                <strong>Excel-fil</strong><br />
+                Informationen på en karta kan även exporteras till ett Microsoft Excel-ark för vidare bearbetning.
+                I detta fall kommer markörernas fastighetsbeteckning/namn visas i en kolumn och markörernas position i ett antal ytterligare kolumner (positionen visas i ett flertal koordinatsystem).
+                En direktlänk kommer även att genereras som kan användas i en webbläsare för att visuellt visa markörens plats på kartan.
+                Beroende av markörens typ så kan även ytterligare kolumner visas specifika för just denna markörtyp. Om ni valt att exportera flera olika typer av information (olika markörtyper eller linjer) så kommer var och en av dessa få en egen flik i Excel-arket. 
+            </p>
+        </section>
+        <div class="clear" ></div>
+
+        <h2>Rita/redigera en karta</h2>
+        <section id="draw_map">
+            <p>För att rita/redigera en karta så klickar man på "Visa"-knappen på önskad kartversion man vill utgå ifrån på <a href="#list_map_versions">sidan</a> med listan över kartans alla versioner.
+            Alternativt så kan man trycka på "Senaste"-knappen i samma lista för att utgå ifrån den allra senaste versionen.</p>
+            
+            Efter man har gjort sitt val så får man upp en traditionell Google Maps-sida (applikationen bygger på Google Maps) men med en "palett" med rit och filtreringsverktyg på vänster sida och verktyg för att rita sträckor och områden längst upp på sidan.
+            Längst upp till höger finns valet om man vill se kartan i form av en satelitvy eller en traditionell kartvy, längst till vänster finns kontrollerna för att zooma (scrollhjulet fungerar också) och panorera kartvyn.
+            
+            <a class="image" href="img/ViewAdminMap.jpg" target="_blank"><img src="img/tn_ViewAdminMap.jpg" alt="" /></a>
+
+            <p>Notera den röda raden längst upp i paletten, den signalerar att du granskar kartan i den administrativa vyn där man har tillgång till kartans fullständiga information och kanske även rättigheter till att ändra dess innehåll, till skillnad mot den publika eller regionala vyn med en blå rad som signalerar att man bara kan studera kartan och att all information inte är tillgänglig/synlig.</p>
+            <p>Under den röda listen finns ett par rader som lämnar information om hur många fastigher som är intresserade av fiber, hur många som inte är det och utifrån dessa räknas och presenteras en anslutningsgrad i form av en procentsats.
+            Siffrorna uppdateras efter man sparat kartan. Den uppskattade totala sträckan räknas ut genom att systemet automatiskt summerar alla ritade sträckor och presenterar summan i antal meter.
+            Om schaktsträckan och anslutningsgraden skall visas på kartan kan man reglera på sidan med kartans <a href="#create_map">grundinställningar</a>.
+            </p>
+
+            <p>
+            Nedanför statistiken följer ett par sektioner som kan visas och döljas genom att klicka på deras rubrik (för att få paletten att ta mindre plats).
+            </p>
+            <ul>
+                <li><strong>Visa</strong> &mdash; Filtreringsfunktioner för att visa och dölja viss information på kartan.
+                Ibland blir det för mycket markörer på kartan och då kan det vara bra att kunna släcka de som man inte är intresserad av för stunden.</li>
+
+                <li><strong>Markörer</strong> &mdash; Här finns de markörer som man kan lägga till på kartan.
+                För att lägga till en markör, tryck ner musknappen på önskad markör och dra ut den till önskad plats på kartan.
+                Håll muspekaren svävande över markören i paletten för att få en beskrivning av vad den representerar.</li>
+
+                <li><strong>Sök</strong> &mdash; Här har man möjlighet att söka efter fastighetsbeteckningen eller namnet på en markör man redan lagt till på kartan.
+                Har du namngivit dina markörer på ett bra sätt så kan du enkelt med denna funktion hitta dom på kartan igen.
+                Börja skriva på den önskade markörens namn så presenterar systemet alla träffar den kan hitta med denna början.</li>
+
+                <li><strong>Utskrift</strong> &mdash; Funktioner för att skriva ut aktuell kartbild.</li>
+            </ul>
+
+            <p>
+            Längst ner i paletten finns en knapp, "Tillbaka", för att gå tillbaka till listan över kartversioner, om du har rättigheter att modifiera kartan så finns även en "Spara"-knapp.
+            Till höger om dessa finns tre små symboler, ett kuvert, ett hus och en informationssymbol. Om man trycker på kuvertet så startar ditt standard e-postprogram och ett nytt brev skapas som innehåller en genererad länk till just den kartvy du har framför dig, denna funktion kan användas då du t.ex. vill diskutera med någon om ett visst område eller fastighet.
+            Hussymbolen i mitten återställer kartvyn till grundinställningen (försöker zooma ut och centrera så att alla markörer får plats). Informationssymbolen längst till höger visar upp en dialogruta med information om kartan när man klickar på den.
+            </p>
+            <p>
+            <strong>För att alla ändringar man har gjort på kartan skall sparas så måste man trycka på "Spara"-knappen!</strong> När detta är gjort så kommer informationen att sparas ner till servern, sidan kommer att laddas om och du kommer tillbaka till det läge du var när du klickade på Spara-knappen. Omladdningen av sidan är till för att bekräfta att förändringarna du har gjort verkligen blev sparade.
+            </p>
+
+            <h3>Lägg till, redigera, och ta bort markörer</h3>
+            <p>
+            För att lägga till en markör så trycker man ned vänster musknapp på den önskade markören i paletten, drar ut den till önskat position på kartan och släpper knappen.
+            Om man håller muspekaren "svävande" ovanför ett markör i paletten så får man en kort sammanfattning av markörens funktion ifall man är osäker på vad markören representerar.
+            Det går lätt att efterjustera en markör som sitter på kartan genom dra markören till önskad postition, när man drar en markör så syns ett kryss under markören som kan användas som ett riktmärke för den slutgiltiga positionen.
+            </p>
+            <p>
+            För att redigera en markör på kartan så klickar man på den med vänster musknapp, en ruta öppnas då upp där man kan redigera markörens egenskaper.
+            I det översta textfältet anger ni markörens fastighetsadress eller benämning, denna information blir synlig även på den publika vyn och det är på denna text som ni kan söka med den inbyggda sökfunktionen.
+            I beskrivningsrutan kan ni ange en beskrivande text för markören, denna är inte synligt publikt, texten kan innehålla länkar till bilder och andra hemsidor om man så vill.
+            Beroende av markörtyp så kan man välja att ändra markören till en annan markörtyp, en fastighet som inte blivit kontaktad kan t.ex. bli en fastighet som vill ha fiber, en vägundergång som skall göras kan bli en vägundergång som är gjord, osv. Medan markörtyper som kopplingsskåp och fornlämning inte har några andra val av naturliga skäl. För att byta markörtyp, klicka bara på önskat val.
+            Ytterligare inställningar för en markörtyp kan förekomma, markörtyper för fastigheter har t.ex. extra kryssrutor för huruvida fastigheten har betalat in insatsen eller om fastigheten skall vara "vilande".
+            När ni är nöjda med ändringarna så klickar ni på "Ok"-knappen, om ni vill ångra ändringarna så klickar ni på krysset längst upp till höger för att avsluta redigeringen.            
+            </p>
+            <p>
+            För att ta bort en markör så klickar ni först på den för att komma in i redigeringsläget. Därefter klickar ni på knappen "Radera".            
+            </p>
+            <a class="image" href="img/EditMarker.jpg" target="_blank"><img src="img/tn_EditMarker.jpg" alt="" /></a>
+            <div class="clear" ></div>
+
+            <h3>Lägg till, ändra, och ta bort schaktsträcka/linje</h3>
+            <p>
+            <a class="image" href="img/DrawLine.jpg" target="_blank"><img src="img/tn_DrawLine.jpg" alt="" /></a>
+            För att rita en ny linje som symboliserar en tänkt schaktsträcka så klickar ni på knappen "Rita en linje" (vågformad figur längst upp i mitten på sidan), muspekaren ändrar nu form från en pil till ett kryss.
+            Klicka med vänster musknapp där första punkten på linjen skall vara och fortsätt att klicka där linjen skall fortsätta. För att avsluta linjen så klickar man en extra gång på sista punkten på linjen.
+            Linjen "släpper" nu muspekaren och man kan påbörja att rita en ny linje om man så vill. När man inte längre vill rita fler linjer så klickar man på knappen som föreställer en hand (till vänster om "Rita en linje"-knappen) för att lämna ritnings läget och muspekaren återgår nu till en pil.
+            </p>
+            <p>
+            Om man vill ändra på en linjes dragning så klickar man en gång på linjen, varje punkt på linjen kommer nu att att markeras med en liten fyrkant, genom att dra i fyrkanterna så kan ni ändra på linjen utseende.
+            Genom att högerklicka på en punkt på linjen så får man upp valet att lägga till nya punkter eller ta bort vald punkt.
+            </p>
+            <p>
+            Genom att klicka en gång till på en linje som redan är markerad så får man upp en ruta med egenskaper för den valda linjen. Man kan där ange ett namn på linjen/schaktsträckan och en beskrivning, längst ner står även sträckans totala längd i meter.
+            När ni är nöjda med ändringarna så klickar ni på "Ok"-knappen, om ni vill ångra ändringarna så klickar ni på krysset längst upp till höger för att avsluta redigeringen.
+            </p>
+            <p>
+            För att ta bort en linje så klickar ni två gånger på linjen för att få upp rutan med linjens egenskaper, därefter klickar ni på knappen "Radera". Man kan även högerklicka på en markerad linjen och välja "Ta bort linje".
+            </p>
+                        
+            <h3>Lägg till, ändra, och ta bort områden</h3>
+            <p>
+            Styrelsen/projektgruppen för föreningen brukar vanligtvis bestå av fem till tio personer, att dessa personer skall ha en dialog med varje enskilld fastighetsägare och ha detaljkännedom om alla markers beskaffenhet är nästen omöjligt!
+            Så i praktiken brukar man dela upp socknen/byn i flera områden där varje område har en person som är områdesansvarig (personen bör inte sitta med i styrelsen), denna är ansvarig för dialogen med fastighetsägare och markägare i det området.
+            Han/hon blir styrelsens röst mot folket, men även folkets röst mot styrelsen, personen leder även arbetet i området när det är dags att röja väg för grävarna, käppning av tänkt grävsträcka, vid grävning, och vid återställning efter grävning.
+            För att arbetsbelastningen inte skall bli för betyngande så bör området inte vara för stort, tio till tjugo fastigheter är lämpliga riktvärden, det vill säga dom närmaste grannarna till personen.
+            </p>
+            <p>
+            För att på ett enkelt sätt illustrera de olika områdena så finns det en inbyggd funktion i FiberKartan för att rita ut och redigera områden.
+            Klicka på knappen "Rita en figur" (längst upp i mitten på sidan), muspekaren ändrar nu form från en pil till ett kryss.
+            Klicka med vänster musknapp där första punkten på området skall vara och fortsätt att klicka där området skall fortsätta. För att avsluta så klickar man en extra gång på sista punkten på området.
+            Området "släpper" nu muspekaren och man kan påbörja att rita ett nytt område om man så vill. När man inte längre vill rita fler områden så klickar man på knappen som föreställer en hand (till vänster om "Rita en linje"-knappen) för att lämna ritnings läget och muspekaren återgår nu till en pil.
+            </p>
+            <p>
+            Om man vill ändra på ett områdes dragning så klickar man en gång på området, varje punkt på området kommer nu att att markeras med en liten fyrkant, genom att dra i fyrkanterna så kan ni ändra på områdets utseende.
+            Genom att högerklicka på en punkt på området så får man upp valet att lägga till nya punkter eller ta bort vald punkt.
+            </p>
+            <p>
+            Genom att klicka en gång till på ett område som redan är markerad så får man upp en ruta med egenskaper för det valda området. Man kan där ange ett namn på området och en beskrivning, en rekommendation är att ni anger namn och telefonnummer till personen som är områdesansvarig i beskrivningsrutan.
+            Om någon fastighetsägare klickar på det område de tillhör på den publika vyn av kartan så kommer dom att få upp en ruta med kontaktuppgifter till deras områdesansvariga, vilket har uppskattats i vår förening.
+            När ni är nöjda med ändringarna så klickar ni på "Ok"-knappen, om ni vill ångra ändringarna så klickar ni på krysset längst upp till höger för att avsluta redigeringen.
+            </p>
+            <p>
+            För att ta bort ett område så klickar ni två gånger på området för att få upp rutan med områdets egenskaper, därefter klickar ni på knappen "Radera". Man kan även högerklicka på ett markerat område och välja "Ta bort område".
+            </p>
+
+            <h3>Bind fastigheter till kopplingsskåp</h3>            
+            <p>
+            <a class="image" href="img/KsBinding.jpg" target="_blank"><img src="img/tn_KsBinding.jpg" alt="" /></a>
+            I många fall så får ni information och underlag från er fiberentreprenör om vilka fastigheter som skall anslutas till vilket kopplingsskåp/kopplingsbrunn, men om ni har tänkt använda denna karta som underlag vid käppning och för att ge till grävmaskinisterna inför grävningen så kan det vara bra om det är tydligt markerat vilken fastighet som skall anslutas till repektive kopplingsskåp/kopplingsbrunn.
+            För att göra det synligt på kartan så kan man "binda" fastigheter till kopplingsskåp, det visas då visuellt på kartan vilket skåp det är tänkt att fastigheten skall anslutas till och när man exporterar kartan till en Excel-fil finns där en kolumn som anger kopplingsskåpets nummer.
+            </p>
+            <p>
+            Börja med att klicka i "Fibernätverk" i paletten på kartan i den administrativa vyn, rutan "Kopplingsskåpsnumrering" därunder tänds då upp, klicka i denna också. Nu visas en rund cirkel i vänstra hörnet på varje markör av fastighets- och kopplingsskåpstyp.
+            För kopplingsskåp står där en siffra, det är numret på skåpet, för fastigheter visas ett frågetecken vilket innebär att fastigheten inte är bunden till något skåp.
+            För att binda en fastighet till ett skåp så klickar man på den runda cirkeln på fastigheten, kartan tonas då ner och endast de närliggande kopplingsskåpen visas, klicka sedan på önskat kopplingsskåp som fastigheten skall anslutas till.
+            Den runda cirkeln på fastigheten skall nu innehålla samma nummer som det valda skåpet. Repetera dessa steg för alla fastigheter, om ni vill ändra på en befintligt bindning så är det bara att klicka på cirkeln för fastigheten och välja ett annat skåp.
+            När alla ändringar är gjorda så bör ni Spara kartan.
+            </p>
+        </section>
+        <div class="clear" ></div>
+
+        <h2>Advancerat</h2>
+        <section id="advanced">            
+            <h3>Uppdatera fibersträckan med en GPS-inmätt KML-fil</h3>            
+            <p>
+            I vår förening så har vi begärt att gräventreprenören skall mäta in med GPS vart fiberkablarna blev förlagda vid grävning, ofta förekommer det att man avviker av olika anledningar från den tänkta grävsträckan under grävtillfället.
+            Som ledningsägare är det viktigt att vi vet vart kablarna är förlagda så att vi inte riskerar att gräva av dom i framtiden.
+            I vårt fall fick vi den inmätta fibersträckan som en AutoCAD DXF-fil, eftersom få personer i styrelsen har tillgång till proffesionell CAD-programvara och flertalet markägare var intresserade av att få veta vart kablarna blev förlagda på deras marker så var vi tvungna att få över inmätningen till ett mer lätthanterligt format.
+            Genom ett par programvaror och steg lyckades jag att få in fibersträckan i vår befintliga karta på FiberKartan.se, nu är det lätt för alla att ta del av <a href="http://fiberkartan.se/7?network=true" target="_blank">hur fibern blev förlagd</a>.
+            </p>
+            <p>
+            Här följer de steg jag fick göra för att importera inmätningen:<br />
+            [Mer detaljer måste skrivas!]
+            </p>
+            <ol>
+                <li>Ladda ner och installera en Gratis provversion av <a href="http://www.expertgps.com/" target="_blank">ExpertGPS</a>.</li>
+                <li>Exportera hela kartan till en KML-fil.</li>
+                <li>Ladda ner och installera <a href="http://www.google.com/earth/index.html" target="_blank">Google Earth</a>.</li>
+                <li>Öppna KML-filen i Google Earth, välj att exportera bara mappen som innehåller fibersträckan till en KML-fil.</li>
+                <li>På dina önskade karta på FiberKartan.se, välj importera och välj den nyss exporterade KML-filen, välj att sammanfoga informationen med den senaste versionen av kartan och klicka ur "Inkludera gamla linjer". Tryck på "Importera"-knappen.</li>
+                <li>Nu bör ni ha en karta som innehåller facit över hur fibern blev förlagd.</li>
+            </ol>
+
+            <h3>Visa kartinformation utifrån parametrar</h3>
+            <p>
+            Genom att ange olika parametrar till adressen(URL) till kartsidan så kan man styra vilka kryssrutor i paletten som är ifyllda, det vill säga vilken information som skall visas, på kartan när denna laddas.
+            Följande parametrar kan anges:
+            </p>
+            <ul>
+            <li>houseyes=[true|false]</li>
+            <li>houseno=[true|false]</li>
+            <li>network=[true|false]</li>
+            <li>fibernodes=[true|false] (kräver att parametern "network" är angiven)</li>
+            <li>fiberboxes=[true|false] (kräver att parametern "network" är angiven)</li>
+            <li>crossings=[true|false]</li>
+            <li>regions=[true|false]</li>
+            <li>mapType=[HYBRID|ROADMAP]</li>
+            <li>center=[lat]x[long]</li>
+            <li>zoom=[1-19] (kräver att parametern "center" är angiven)</li>
+            </ul>
+            <p>Första parametern (vilken man nu väljer) skall alltid föregås av ett "?"-tecken, eventuellt nästföljande parametrar skall föregås av "&amp;"-tecken.
+            Man kan utelämna de parametrar som man inte är intresserade av för att få standardvärdet, här följer ett exempel på hur en komplett adress kan se ut:</p>
+            <pre>http://fiberkartan.se/10/?center=57.56027718880664x18.56242907047273&amp;zoom=17&amp;houseyes=false&amp;houseno=false&amp;network=true&amp;fiberboxes=true&amp;crossings=false&amp;regions=true</pre>
+        </section>
+        <div class="clear" ></div>
+
+        <h2>Markörer på kartan</h2>
+        <section id="markers">
+            <p>
+                <img src="../../inc/img/markers/HouseYes.png" />Fastighet som har eller vill ha fiber.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/HouseNotDecided.png" />Fastighet som har blivit kontaktad, men som ännu inte har bestämt sig.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/HouseNotContacted.png" />Fastighet som ännu inte har kontaktats.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/HouseNo.png" />Fastighet som inte är intresserad av fiber.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/FiberNode.png" />Fibernod/överlämningspunkt, här sitter den aktiva utrustningen som vanligtvis ägs av operatören. Härifrån utgår alla fiberkablar till fastigheterna.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/FiberBox.png" />Kopplingsskåp. Innehåller vanligtvis ingen aktiv utrustning utan används främst som skarv och förgreningsskåp för fiberkablar.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/RoadCrossing_Existing.png" />Befintlig väg/kanal-undergång.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/RoadCrossing_ToBeMade.png" />Väg/kanal-undergång som måste göras.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/Fornlamning.png" />Fornlämning.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/Observe.png" />Känslig plats, iaktag försiktighet. Kan användas för att markera t.ex. dränering, avlopp, elkabel, m.m.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/Note.png" />Info-ruta. Kan användas för att lämna en anteckning eller beskrivning på kartan. Genom att klicka i "Visa i publika vyn" så syns även rutorna med dess innehåll på den publika vyn.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/UnknownSymbol.png" />Okänd markör. Denna markör kan visas ifall du har importerat information ifrån en fil till kartan, men programmet vet inte hur den skall tolka markörerna som finns i filen. Lösningen på problemet är att ni själva klickar på markörerna och väljer vilken typ de är av och sparar kartan.
+            </p>
+            <p>
+                <img src="../../inc/img/markers/man.png" />Om man kryssat i att applikationen skall visa din nuvarande position (kräver att enheten du använder är utrustad med GPS) så kommer denna markör att indikera din plats på kartan.
+                 Kartan kommer att förflyttas allt eftersom du förflyttar dig, markören kommer hela tiden vara i fönstrets centrum. Hur ofta markörens position uppdateras och hur väl markören indikerar din position är beroende på kvaliteten på GPS-mottagaren, mottagen signal och hur bra stödet i webbläsaren är utbyggt.
+                 Erfarenhetsmässigt så kan jag säga att det kan skilja sig rätt mycket åt mellan webbläsarna!
+            </p>            
+            En packad fil med alla markörbilder finns att hämta <a href="Fiber-markers.zip">här</a>. För utvecklare och designers som vill förbättra eller lägga till nya markörer så finns SVG-filerna att hämta <a href="Fiber-markers-svg.zip">här</a>. Själv använder jag mig av <a href="http://inkscape.org/download/">Incscape</a>, som är gratis att ladda ner, för att rita alla markörer. OBS! Markörerna måste vara i storleken 32x32 pixlar och ha en transparant bakgrund.
+        </section>
+        <div class="clear" ></div>
+        <script type="text/javascript" src="/inc/js/jquery.min.js?ver=1.0"></script>
+        <script type="text/javascript" src="/inc/js/fancybox/jquery.fancybox.pack.js"></script>
+        <script type="text/javascript" >
+            $(document).ready(function () {
+                $("a.image").fancybox();
+                $("h2").click(function () {
+                    $(this).next().toggle("slow");
+                });
+            });
+        </script>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-33911019-1']);
+            _gaq.push(['_setDomainName', 'fiberkartan.se']);
+            _gaq.push(['_gat._anonymizeIp']);
+            _gaq.push(['_trackPageview']);
+
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+	    </script>
+    </body>
+</html>
