@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiberKartan", "FiberKartan\FiberKartan.csproj", "{727301C9-E7B7-4231-AE1C-8A5744180382}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FiberKartanInstaller", "FiberKartanInstaller\FiberKartanInstaller.vdproj", "{0E3E3ECA-6087-4D2A-B360-9BAA1890B681}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FD193A21-0AD8-4FD2-B198-DE8B4AD17F69}"
+	ProjectSection(SolutionItems) = preProject
+		TODO.txt = TODO.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{727301C9-E7B7-4231-AE1C-8A5744180382}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{727301C9-E7B7-4231-AE1C-8A5744180382}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{727301C9-E7B7-4231-AE1C-8A5744180382}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{727301C9-E7B7-4231-AE1C-8A5744180382}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E3E3ECA-6087-4D2A-B360-9BAA1890B681}.Debug|Any CPU.ActiveCfg = Debug
+		{0E3E3ECA-6087-4D2A-B360-9BAA1890B681}.Release|Any CPU.ActiveCfg = Release
+		{0E3E3ECA-6087-4D2A-B360-9BAA1890B681}.Release|Any CPU.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
