@@ -4,9 +4,9 @@
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:TRUE"
 "ProjectName" = "8:FiberKartanInstaller"
-"LanguageId" = "3:1033"
+"LanguageId" = "3:0"
 "CodePage" = "3:1252"
-"UILanguageId" = "3:1033"
+"UILanguageId" = "3:0"
 "SccProjectName" = "8:"
 "SccLocalPath" = "8:"
 "SccAuxPath" = "8:"
@@ -338,7 +338,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v4.0"
+                "FrameworkVersion" = "8:ANY"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=131000"
                 }
@@ -862,22 +862,22 @@
         }
         "MsiBootstrapper"
         {
-        "LangId" = "3:1033"
+        "LangId" = "3:0"
         "RequiresElevation" = "11:TRUE"
         }
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FiberKartan"
-        "ProductCode" = "8:{050D411B-7430-4EA1-9513-C42F1AC5AF26}"
-        "PackageCode" = "8:{017E9770-EA1B-4614-98ED-745E3776220F}"
+        "ProductCode" = "8:{1F511003-88B6-40C1-80A0-BD79BD07B151}"
+        "PackageCode" = "8:{D4663F32-A21E-4B0C-92BA-4813C01D82C2}"
         "UpgradeCode" = "8:{7A3D63B4-1AFD-44E8-885F-8F80A75D6A67}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:TRUE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:Liquidbytes"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -886,12 +886,12 @@
         "ARPCONTACT" = "8:Liquidbytes"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:Applikation för att modellera och granska byggnationer av fibernätverk i mindre orter."
-        "ARPURLINFOABOUT" = "8:liquidbytes.se"
+        "ARPURLINFOABOUT" = "8:http://liquidbytes.se"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:0"
+        "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -951,7 +951,7 @@
                                                             {
                                                             "Name" = "8:FiberKartan"
                                                             "Condition" = "8:"
-                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "AlwaysCreate" = "11:TRUE"
                                                             "DeleteAtUninstall" = "11:FALSE"
                                                             "Transitive" = "11:FALSE"
                                                                 "Keys"
@@ -1406,7 +1406,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_35C3E9487FC943EF9980FAEFC8AD4B9F"
             {
-            "SourcePath" = "8:..\\FiberKartan\\obj\\Debug\\FiberKartan.dll"
+            "SourcePath" = "8:..\\FiberKartan\\obj\\Release\\FiberKartan.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_EEC4E87B571F4814B4C55A4C97164A7F"
@@ -1432,7 +1432,7 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_660F05E2208846449F62BDD0B6FC5FA1"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D89144734AAB4382A5E1A04A0E4BFCB4"
             {
             "SourcePath" = "8:"
             "TargetName" = "8:"
@@ -1458,8 +1458,6 @@
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
-                "ExcludeFilter" = "8:Web.Release.config"
-                "ExcludeFilter" = "8:Web.Debug.config"
                 }
             }
         }

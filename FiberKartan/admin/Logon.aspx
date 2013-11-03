@@ -9,7 +9,7 @@
         <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
 	    <meta http-equiv="content-type" content="text/html;charset=UTF-8" >
         <link rel="Stylesheet" type="text/css" href="/inc/css/base.css?ver=1.7" media="screen" />
-        <link rel="Stylesheet" type="text/css" href="/inc/css/admin.css?ver=2.0" />
+        <link rel="Stylesheet" type="text/css" href="/inc/css/admin.css?ver=2.1" />
     </head>
     <body  class="dark">
         <form id="loginForm" runat="server">

@@ -42,12 +42,14 @@
                             Text="Importera" Visible='<%# ((MapAccessRights)Eval("AccessRight")).HasFlag(MapAccessRights.Write) %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField ItemStyle-Width="120px" ItemStyle-HorizontalAlign="Center">
+                <asp:TemplateField ItemStyle-Width="200px" ItemStyle-HorizontalAlign="Left">
                     <ItemTemplate>
                         <asp:HyperLink ID="EditMap" runat="server" CssClass="editMapButton button" NavigateUrl='<%# "/admin/EditMap.aspx?mid=" + Eval("Id") %>'
                             ToolTip="Redigera karta" Text="Redigera" Visible='<%# ((MapAccessRights)Eval("AccessRight")).HasFlag(MapAccessRights.Write) %>' />
                         <asp:HyperLink ID="ShareMap" runat="server" CssClass="marginLeft5px" NavigateUrl='<%# "/admin/ShareMap.aspx?mid=" + Eval("Id") %>'
                             ToolTip="Dela karta med andra" Text="Dela" Visible='<%# ((MapAccessRights)Eval("AccessRight")).HasFlag(MapAccessRights.FullAccess) %>' />
+                        <asp:HyperLink ID="ReportIncident" runat="server" CssClass="marginLeft5px" NavigateUrl='<%# "/admin/IncidentReportMap.aspx?mid=" + Eval("Id") %>'
+                            ToolTip="Rapportera fel på nätverk" Text="Rapportera fel" Visible='<%# (((MapAccessRights)Eval("AccessRight")).HasFlag(MapAccessRights.FullAccess) && (Eval("HasServiceCompany").Equals(1))) %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
@@ -62,7 +64,7 @@
             <SortedDescendingHeaderStyle BackColor="#575357" />
         </asp:GridView>
         <asp:SqlDataSource ID="SqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:FiberDBConnectionString %>"
-            SelectCommand="SELECT mt.[Id], mt.[Title], mt.[MapUrl], (SELECT u.[Name] FROM [User] u WHERE u.[Id] = mt.CreatorId) as Creator, mtar.[AccessRight], mtar.[EmailSubscribeChanges] FROM [MapTypeAccessRight] mtar INNER JOIN [MapType] mt ON mt.[Id]=mtar.[MapTypeId] WHERE (mtar.[UserId] = @userId) AND (mtar.[AccessRight] > 0) ORDER BY mt.[Title], mt.[Id]"
+            SelectCommand="SELECT mt.[Id], mt.[Title], mt.[MapUrl], CASE WHEN mt.[ServiceCompanyId] is not null THEN 1 ELSE 0 END [HasServiceCompany], (SELECT u.[Name] FROM [User] u WHERE u.[Id] = mt.CreatorId) as Creator, mtar.[AccessRight], mtar.[EmailSubscribeChanges] FROM [MapTypeAccessRight] mtar INNER JOIN [MapType] mt ON mt.[Id]=mtar.[MapTypeId] WHERE (mtar.[UserId] = @userId) AND (mtar.[AccessRight] > 0) ORDER BY mt.[Title], mt.[Id]"
             OnSelecting="SqlDataSource_Selecting">
             <SelectParameters>
                 <asp:Parameter Name="userId" Type="Int32" />
