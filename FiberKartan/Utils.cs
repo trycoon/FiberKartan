@@ -9,6 +9,7 @@ using System.Net.Mail;
 using System.Configuration;
 using System.Net.Mime;
 using System.Threading;
+using System.Xml;
 
 /*
 The zlib/libpng License
@@ -94,6 +95,12 @@ namespace FiberKartan
             {
                 return MapAccessRights.None;
             }
+
+            /*if (user.IsAdmin)
+            {
+                // Adminusers has full access, so that we could help users when in trouble.
+                return MapAccessRights.Read | MapAccessRights.Export | MapAccessRights.Write | MapAccessRights.FullAccess;
+            }*/
 
             var access = fiberDb.MapTypeAccessRights.Where(mtar => mtar.MapTypeId == mapTypeId && mtar.UserId == user.Id).SingleOrDefault();
 
@@ -280,6 +287,54 @@ namespace FiberKartan
             sendThread.Priority = ThreadPriority.BelowNormal; // Konkurrera inte om resurser om det finns viktigare saker att göra.
             sendThread.Start();
         }
+
+        /// <summary>
+        /// Method removes character from string that is not allowed in XML.
+        /// </summary>
+        /// <param name="text">String to filter</param>
+        /// <param name="trim">Trim string of whitespaces</param>
+        /// <returns>Filtered string</returns>
+        public static string RemoveInvalidXmlChars(string text, bool trim = false)
+        {
+            // http://stackoverflow.com/questions/8331119/escape-invalid-xml-characters-in-c-sharp
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+
+            if (trim)
+            {
+                text = text.Trim();
+            }
+
+            var validXmlChars = text.Where(ch => XmlConvert.IsXmlChar(ch)).ToArray();
+            
+            return new string(validXmlChars);
+        }
+
+        /// <summary>
+        /// Method returns whether string is valid or if it contains characters that are not allowed in XML.
+        /// </summary>
+        /// <param name="text">String to check</param>
+        /// <returns>If it's valid</returns>
+        public static bool IsValidXmlString(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return true;
+            }
+
+            try
+            {
+                XmlConvert.VerifyXmlChars(text);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 
     /// <summary>

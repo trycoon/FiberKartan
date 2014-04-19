@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using FiberKartan;
 using System.Configuration;
 using System.Web.Security;
+using FiberKartan.Database;
 
 /*
 The zlib/libpng License
@@ -38,6 +39,12 @@ namespace FiberKartan.Admin
             user = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).First();
 
             mapType = fiberDb.MapTypes.Where(mt => mt.Id == int.Parse(Request.QueryString["mid"])).SingleOrDefault();
+
+            // Om kartan inte finns, skicka tillbaka användaren.
+            if (mapType == null)
+            {
+                Response.Redirect("ShowMaps.aspx");
+            }
 
             // Om man skapat en ny kartan, men inte valt att importera information till denna så skapar vi en ny tom version av denna vid första besöket på denna sida.
             // Om vi inte gör det så kan man inte "Visa" kartan och därifrån lägga till markörer osv. Detta gäller såklart bara om vi har skrivrättigheter, annars står det bara att det inte finns några versioner av denna karta.

@@ -1,4 +1,13 @@
-﻿html,body,#mapForm { height: 100%; margin: 0px; padding: 0px }
+﻿html,body,#mapForm  
+{
+    height: 100%; 
+    margin: 0px; 
+    padding: 0px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+}
 html { font: 12px/14px Arial,Helvetica,sans-serif; }
 body { margin: 0; font-size: 1em; line-height: 1.4; }
 
@@ -83,10 +92,6 @@ input[disabled] + label {
     box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
     -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=7, Direction=135, Color='#000000')";
     -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
-}
-.palette .subOption {
-    display: none;
-    margin-left: 20px;
 }
 .palette .subOption {
     display: none;

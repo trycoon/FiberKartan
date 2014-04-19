@@ -13,7 +13,8 @@
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
         <%= WebExtensions.CombresLink("adminCss")%>
         <link rel="Stylesheet" type="text/css" href="/inc/css/map_print.css?ver=1.1" media="print" />        
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry,drawing"></script>
+        <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry,drawing"></script>
+        <script>var fk = fk || {};</script>
     </head>
     <body>
         <form id="mapForm" runat="server" enableviewstate="false" onsubmit="return false;">
@@ -80,7 +81,7 @@
                         </div>
                     </div> 
                     <h3><a href="#">Markörer</a></h3>
-                    <div id="markerTypes" runat="server">
+                    <div id="markerTypes" class="hidden" runat="server">
                         <img title="Dra ut markör för att lägga till, fastighet som vill ha fiber." src="../inc/img/markers/HouseYes.png" data-markerType="HouseYes" />
                         <img title="Dra ut markör för att lägga till, fastighet som ännu inte har bestämt sig." src="../inc/img/markers/HouseNotDecided.png" data-markerType="HouseMaybe" />
                         <img title="Dra ut markör för att lägga till, fastighet som ännu inte har kontaktats." src="../inc/img/markers/HouseNotContacted.png" data-markerType="HouseNotContacted" />
@@ -94,11 +95,11 @@
                         <img title="Dra ut markör för att lägga till, info-ruta." src="../inc/img/markers/Note.png" data-markerType="Note" />
                     </div>
                     <h3><a href="#">Sök</a></h3>
-                    <div class="searchPanel">                        
+                    <div class="searchPanel hidden">                        
                         <input id="searchBox" maxlength="100" /><input id="clearSearchBox" class="button" value="Rensa" />
                     </div>
                     <h3><a href="#">Utskrift</a></h3>
-                    <div class="viewSettingsBox">
+                    <div class="viewSettingsBox hidden">
                         Anpassa f&ouml;nster efter
                         <select id="viewSettings" name="viewSettings">
                                 <option selected="selected" value="screen" >Bildskärm</option>
@@ -150,8 +151,7 @@
             <!-- Slut Contextmenyer -->
         </form>
         <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>
-        <%= WebExtensions.CombresLink("adminJs")%>        
-        <script type="text/javascript">
+        <script>
             var _gaq = _gaq || [];
             _gaq.push(['_setAccount', 'UA-33911019-1']);
             _gaq.push(['_setDomainName', 'fiberkartan.se']);
@@ -164,5 +164,6 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
 	    </script>
+        <%= WebExtensions.CombresLink("adminJs")%>
     </body>
 </html>

@@ -48,7 +48,7 @@
                             ToolTip="Redigera karta" Text="Redigera" Visible='<%# ((MapAccessRights)Eval("AccessRight")).HasFlag(MapAccessRights.Write) %>' />
                         <asp:HyperLink ID="ShareMap" runat="server" CssClass="marginLeft5px" NavigateUrl='<%# "/admin/ShareMap.aspx?mid=" + Eval("Id") %>'
                             ToolTip="Dela karta med andra" Text="Dela" Visible='<%# ((MapAccessRights)Eval("AccessRight")).HasFlag(MapAccessRights.FullAccess) %>' />
-                        <asp:HyperLink ID="ReportIncident" runat="server" CssClass="marginLeft5px" NavigateUrl='<%# "/admin/IncidentReportMap.aspx?mid=" + Eval("Id") %>'
+                        <asp:HyperLink ID="ReportIncident" runat="server" CssClass="marginLeft5px redText" NavigateUrl='<%# "/admin/IncidentReportMap.aspx?mid=" + Eval("Id") %>'
                             ToolTip="Rapportera fel på nätverk" Text="Rapportera fel" Visible='<%# (((MapAccessRights)Eval("AccessRight")).HasFlag(MapAccessRights.FullAccess) && (Eval("HasServiceCompany").Equals(1))) %>' />
                     </ItemTemplate>
                 </asp:TemplateField>

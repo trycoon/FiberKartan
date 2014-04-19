@@ -164,16 +164,9 @@ namespace FiberKartan.Admin.Security
 
         #endregion
 
-        //IUserRepository _repository;
-
-        public AdminMemberProvider() //: this(null)
+        public AdminMemberProvider()
         {
         }
-
-        /*public AdminMemberProvider(IUserRepository repository) : base()
-        {
-            _repository = repository ?? UserRepositoryFactory.GetRepository();
-        }*/
 
         public User User
         {
@@ -195,8 +188,7 @@ namespace FiberKartan.Admin.Security
         public override bool ValidateUser(string username, string password)
         {
             if (string.IsNullOrEmpty(username.Trim())) return false;
-
-            //string hash = EncryptPassword(password.Trim());
+            
             var fiberDb = new FiberDataContext();
             var dbUser = fiberDb.Users.Where(u => u.Username == username.Trim().ToLower()).SingleOrDefault();
 

@@ -26,7 +26,7 @@
     + Declare all cache vary providers
   -->
   <cacheVaryProviders>
-    <provider type="Provider1, Assembly1">
+    <provider type="LanguageCacheVaryProvider, SampleCommon.LanguageCacheVaryProvider">
       <param name="SessionKey" type="string" value="language" />
     </provider>
     <provider type="Provider2, Assembly2" acceptedResourceSets="siteCss" />

@@ -15,13 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_08AE759D3C35E9CCD84AF056A1BE305D"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
+        "MsmKey" = "8:_02A4AE80951B463D97AD00A51A3DD8F1"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2E4C8B752DC9E89AEB73AF87DF619461"
+        "MsmKey" = "8:_099CABB08D429DF38DF30784AC8B54F4"
         "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -33,121 +33,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4F2F714D191297F355C11EEFA80D5DE4"
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_5A62C443A7993CAE2BDEE746A5DAFE87"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6D4B4A323E463E2849384589DCB3E8D4"
-        "OwnerKey" = "8:_820AFC12EFCA6C80951DB5E7FEE43767"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6D4B4A323E463E2849384589DCB3E8D4"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7CCA9076872C1003752A04AA997083C8"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_80E8C78C4F8B85AD54CD3A22CF9CC335"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_80E8C78C4F8B85AD54CD3A22CF9CC335"
-        "OwnerKey" = "8:_7CCA9076872C1003752A04AA997083C8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_820AFC12EFCA6C80951DB5E7FEE43767"
-        "OwnerKey" = "8:_08AE759D3C35E9CCD84AF056A1BE305D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_820AFC12EFCA6C80951DB5E7FEE43767"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_84E0E9045B332494BF7BC92D28D37573"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_84E0E9045B332494BF7BC92D28D37573"
-        "OwnerKey" = "8:_2E4C8B752DC9E89AEB73AF87DF619461"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_87726F7A1247416769A3426A7AF983F9"
-        "OwnerKey" = "8:_08AE759D3C35E9CCD84AF056A1BE305D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_87726F7A1247416769A3426A7AF983F9"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_94E9425A8A40D26D7F918BD853406277"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_94E9425A8A40D26D7F918BD853406277"
-        "OwnerKey" = "8:_08AE759D3C35E9CCD84AF056A1BE305D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_AC11B99CFB17C8C831DB49A4B57D139B"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CE84BD8BD46AC5971A73F03E7AD113C6"
-        "OwnerKey" = "8:_08AE759D3C35E9CCD84AF056A1BE305D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CE84BD8BD46AC5971A73F03E7AD113C6"
-        "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EAEA57DBAE7D109D0E8C9C14602F5920"
-        "OwnerKey" = "8:_08AE759D3C35E9CCD84AF056A1BE305D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EAEA57DBAE7D109D0E8C9C14602F5920"
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_35C3E9487FC943EF9980FAEFC8AD4B9F"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -160,85 +52,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2E4C8B752DC9E89AEB73AF87DF619461"
+        "OwnerKey" = "8:_099CABB08D429DF38DF30784AC8B54F4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AC11B99CFB17C8C831DB49A4B57D139B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_84E0E9045B332494BF7BC92D28D37573"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5A62C443A7993CAE2BDEE746A5DAFE87"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_08AE759D3C35E9CCD84AF056A1BE305D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_820AFC12EFCA6C80951DB5E7FEE43767"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6D4B4A323E463E2849384589DCB3E8D4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_87726F7A1247416769A3426A7AF983F9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EAEA57DBAE7D109D0E8C9C14602F5920"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CE84BD8BD46AC5971A73F03E7AD113C6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_94E9425A8A40D26D7F918BD853406277"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7CCA9076872C1003752A04AA997083C8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4F2F714D191297F355C11EEFA80D5DE4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_80E8C78C4F8B85AD54CD3A22CF9CC335"
+        "OwnerKey" = "8:_02A4AE80951B463D97AD00A51A3DD8F1"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -338,7 +158,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:ANY"
+                "FrameworkVersion" = "8:.NETFramework,Version=v4.0"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=131000"
                 }
@@ -353,13 +173,39 @@
             "AssemblyAsmDisplayName" = "8:Combres, Version=2.2.2.6, Culture=neutral, PublicKeyToken=1ca6b37997dd7536, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_08AE759D3C35E9CCD84AF056A1BE305D"
+                }
+            "SourcePath" = "8:Combres.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_ABB180F1E52843398FC11102EA7697BC"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_099CABB08D429DF38DF30784AC8B54F4"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FiberKartan.Database, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_099CABB08D429DF38DF30784AC8B54F4"
                     {
-                    "Name" = "8:Combres.dll"
+                    "Name" = "8:FiberKartan.Database.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Combres.dll"
+            "SourcePath" = "8:FiberKartan.Database.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ABB180F1E52843398FC11102EA7697BC"
@@ -384,11 +230,6 @@
             "AssemblyAsmDisplayName" = "8:WebActivator, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_2E4C8B752DC9E89AEB73AF87DF619461"
-                    {
-                    "Name" = "8:WebActivator.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:WebActivator.dll"
             "TargetName" = "8:"
@@ -415,11 +256,6 @@
             "AssemblyAsmDisplayName" = "8:MightyLittleGeodesy, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4F2F714D191297F355C11EEFA80D5DE4"
-                    {
-                    "Name" = "8:MightyLittleGeodesy.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:MightyLittleGeodesy.dll"
             "TargetName" = "8:"
@@ -446,11 +282,6 @@
             "AssemblyAsmDisplayName" = "8:EPPlus, Version=3.1.2.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5A62C443A7993CAE2BDEE746A5DAFE87"
-                    {
-                    "Name" = "8:EPPlus.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:EPPlus.dll"
             "TargetName" = "8:"
@@ -477,11 +308,6 @@
             "AssemblyAsmDisplayName" = "8:EcmaScript.NET.modified, Version=0.1.1.0, Culture=neutral, PublicKeyToken=7d53ba4f537753a5, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6D4B4A323E463E2849384589DCB3E8D4"
-                    {
-                    "Name" = "8:EcmaScript.NET.modified.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:EcmaScript.NET.modified.dll"
             "TargetName" = "8:"
@@ -508,11 +334,6 @@
             "AssemblyAsmDisplayName" = "8:SharpKml, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_7CCA9076872C1003752A04AA997083C8"
-                    {
-                    "Name" = "8:SharpKml.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:SharpKml.dll"
             "TargetName" = "8:"
@@ -539,11 +360,6 @@
             "AssemblyAsmDisplayName" = "8:Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_80E8C78C4F8B85AD54CD3A22CF9CC335"
-                    {
-                    "Name" = "8:Ionic.Zip.Reduced.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Ionic.Zip.Reduced.dll"
             "TargetName" = "8:"
@@ -570,11 +386,6 @@
             "AssemblyAsmDisplayName" = "8:Yahoo.Yui.Compressor, Version=1.7.1.0, Culture=neutral, PublicKeyToken=f8b4b81ec75097e2, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_820AFC12EFCA6C80951DB5E7FEE43767"
-                    {
-                    "Name" = "8:Yahoo.Yui.Compressor.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Yahoo.Yui.Compressor.dll"
             "TargetName" = "8:"
@@ -601,11 +412,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_84E0E9045B332494BF7BC92D28D37573"
-                    {
-                    "Name" = "8:Microsoft.Web.Infrastructure.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.Web.Infrastructure.dll"
             "TargetName" = "8:"
@@ -632,11 +438,6 @@
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_87726F7A1247416769A3426A7AF983F9"
-                    {
-                    "Name" = "8:log4net.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
@@ -663,11 +464,6 @@
             "AssemblyAsmDisplayName" = "8:AjaxMin, Version=4.48.4489.28432, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_94E9425A8A40D26D7F918BD853406277"
-                    {
-                    "Name" = "8:AjaxMin.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:AjaxMin.dll"
             "TargetName" = "8:"
@@ -694,11 +490,6 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_AC11B99CFB17C8C831DB49A4B57D139B"
-                    {
-                    "Name" = "8:Newtonsoft.Json.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -725,11 +516,6 @@
             "AssemblyAsmDisplayName" = "8:dotless.Core, Version=1.3.0.2, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_CE84BD8BD46AC5971A73F03E7AD113C6"
-                    {
-                    "Name" = "8:dotless.Core.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:dotless.Core.dll"
             "TargetName" = "8:"
@@ -756,11 +542,6 @@
             "AssemblyAsmDisplayName" = "8:Fasterflect, Version=2.1.0.8328, Culture=neutral, PublicKeyToken=38d18473284c1ca7, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_EAEA57DBAE7D109D0E8C9C14602F5920"
-                    {
-                    "Name" = "8:Fasterflect.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Fasterflect.dll"
             "TargetName" = "8:"
@@ -869,21 +650,21 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FiberKartan"
-        "ProductCode" = "8:{1F511003-88B6-40C1-80A0-BD79BD07B151}"
-        "PackageCode" = "8:{D4663F32-A21E-4B0C-92BA-4813C01D82C2}"
+        "ProductCode" = "8:{EF69EA19-EA6B-4148-A445-52FE1BC38865}"
+        "PackageCode" = "8:{C311730A-DF05-4642-BB8F-2A1FBDBFDA15}"
         "UpgradeCode" = "8:{7A3D63B4-1AFD-44E8-885F-8F80A75D6A67}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:TRUE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.1"
-        "Manufacturer" = "8:Liquidbytes"
+        "ProductVersion" = "8:1.0.2"
+        "Manufacturer" = "8:Liquidbytes.se"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:FiberKartan"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Liquidbytes"
+        "ARPCONTACT" = "8:Liquidbytes.se"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:Applikation för att modellera och granska byggnationer av fibernätverk i mindre orter."
         "ARPURLINFOABOUT" = "8:http://liquidbytes.se"
@@ -1404,9 +1185,37 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_02A4AE80951B463D97AD00A51A3DD8F1"
+            {
+            "SourcePath" = "8:..\\FiberKartan.Database\\obj\\Debug\\FiberKartan.Database.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_EEC4E87B571F4814B4C55A4C97164A7F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{CC63B146-CFAF-4E37-AE14-128338824BD4}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_35C3E9487FC943EF9980FAEFC8AD4B9F"
             {
-            "SourcePath" = "8:..\\FiberKartan\\obj\\Release\\FiberKartan.dll"
+            "SourcePath" = "8:..\\FiberKartan\\obj\\Debug\\FiberKartan.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_EEC4E87B571F4814B4C55A4C97164A7F"

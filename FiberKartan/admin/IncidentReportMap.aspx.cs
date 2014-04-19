@@ -8,6 +8,7 @@ using FiberKartan.MapEntities;
 using System.Configuration;
 using Newtonsoft.Json;
 using FiberKartan.Kml;
+using System.Globalization;
 
 /*
 The zlib/libpng License
@@ -75,6 +76,12 @@ namespace FiberKartan.Admin
 
                 #region Skapa komplext objekt med alla markörer, fibersträckor, områden, m.m.
 
+                if (!string.IsNullOrEmpty(map.MapType.Municipality.CenterLatitude) && !string.IsNullOrEmpty(map.MapType.Municipality.CenterLongitude))
+                {
+                    mapContent.DefaultLatitude = double.Parse(map.MapType.Municipality.CenterLatitude, NumberStyles.Float, CultureInfo.InvariantCulture);
+                    mapContent.DefaultLongitude = double.Parse(map.MapType.Municipality.CenterLongitude, NumberStyles.Float, CultureInfo.InvariantCulture);
+                }
+
                 mapContent.MarkerTypes = new List<MapEntities.MarkerType>();
                 var markerTypes = fiberDb.MarkerTypes;
                 var iconFolder = ConfigurationManager.AppSettings["ServerAdress"] + ConfigurationManager.AppSettings["IconFolder"];
@@ -102,16 +109,12 @@ namespace FiberKartan.Admin
                 Page.MetaKeywords = "fiberkarta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg";
 
                 // Omvandlar information till ett JSON-objekt som renderas ut på sidan, så att kartinnehållet kan processas på klientsidan.
-                this.ClientScript.RegisterStartupScript(typeof(Page), "mapContent", "var mapContent=" + JsonConvert.SerializeObject(mapContent) + "; ", true);
-                this.ClientScript.RegisterStartupScript(typeof(Page), "serverRoot", "var serverRoot='" + ConfigurationManager.AppSettings.Get("ServerAdress") + "';", true);
-                this.ClientScript.RegisterStartupScript(typeof(Page), "serviceProvider", "var serviceProvider='" + map.MapType.ServiceCompany.Name + "';", true);
+                this.ClientScript.RegisterStartupScript(typeof(Page), "mapContent", "fk.mapContent=" + JsonConvert.SerializeObject(mapContent) + "; ", true);
+                this.ClientScript.RegisterStartupScript(typeof(Page), "serverRoot", "fk.serverRoot='" + ConfigurationManager.AppSettings.Get("ServerAdress") + "'; ", true);
+                this.ClientScript.RegisterStartupScript(typeof(Page), "serviceProvider", "fk.serviceProvider='" + map.MapType.ServiceCompany.Name + "'; ", true);
    
                 Response.Cache.SetLastModified(map.Created);
                 Response.Cache.SetETag(map.MapTypeId + "_" + map.Ver);
-            }
-            else
-            {
-                this.ClientScript.RegisterStartupScript(typeof(Page), "mapWelcomeMessage", "var welcomeMessage='Kartan kunde inte hittas.'; ", true);
             }
         }
     }

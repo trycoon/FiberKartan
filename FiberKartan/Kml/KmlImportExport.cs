@@ -292,9 +292,9 @@ namespace FiberKartan.Kml
                     var marker = new FiberKartan.Marker()
                         {
                             MapTypeId = map.MapTypeId,
-                            Name = kmlMarker.Name,
+                            Name = Utils.RemoveInvalidXmlChars(kmlMarker.Name, true),
                             MarkerTypeId = kmlMarker.MarkerTypeId,
-                            Description = kmlMarker.Description,
+                            Description = Utils.RemoveInvalidXmlChars(kmlMarker.Description, true),
                             Latitude = kmlMarker.Point.Lat,
                             Longitude = kmlMarker.Point.Long,
                             Settings = kmlMarker.Settings,
@@ -310,8 +310,8 @@ namespace FiberKartan.Kml
                     var line = new FiberKartan.Line()
                     {
                         MapTypeId = map.MapTypeId,
-                        Name = kmlLine.Name,
-                        Description = kmlLine.Description,
+                        Name = Utils.RemoveInvalidXmlChars(kmlLine.Name, true),
+                        Description = Utils.RemoveInvalidXmlChars(kmlLine.Description, true),
                         LineColor = Utils.KmlColor2HtmlColor(kmlLine.Color),
                         Width = kmlLine.Width,
                         Type = kmlLine.Type
@@ -331,8 +331,8 @@ namespace FiberKartan.Kml
                     var region = new FiberKartan.Region()
                     {
                         MapTypeId = map.MapTypeId,
-                        Name = kmlPolygon.Name,
-                        Description = kmlPolygon.Description,
+                        Name = Utils.RemoveInvalidXmlChars(kmlPolygon.Name, true),
+                        Description = Utils.RemoveInvalidXmlChars(kmlPolygon.Description, true),
                         FillColor = Utils.KmlColor2HtmlColor(kmlPolygon.FillColor),
                         LineColor = Utils.KmlColor2HtmlColor(kmlPolygon.LineColor)
                     };

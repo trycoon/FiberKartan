@@ -16,7 +16,8 @@
         <meta name="keywords" content="fiberkarta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg" >
         <%= WebExtensions.CombresLink("userCss")%>
         <link rel="Stylesheet" type="text/css" href="/inc/css/map_print.css?ver=1.1" media="print" />
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry,drawing"></script>
+        <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry,drawing"></script>
+        <script>var fk = fk || {};</script>
     </head>
     <body>
         <form id="mapForm" runat="server" enableviewstate="false" onsubmit="return false;">
@@ -24,8 +25,7 @@
             </div>
         </form>
         <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>
-        <%= WebExtensions.CombresLink("incidentReportJs")%>
-        <script type="text/javascript">
+        <script>
             var _gaq = _gaq || [];
             _gaq.push(['_setAccount', 'UA-33911019-1']);
             _gaq.push(['_setDomainName', 'fiberkartan.se']);
@@ -38,5 +38,6 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
         </script>
+        <%= WebExtensions.CombresLink("incidentReportJs")%>
     </body>
 </html>

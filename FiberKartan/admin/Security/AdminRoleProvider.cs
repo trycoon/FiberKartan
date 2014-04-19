@@ -19,24 +19,14 @@ namespace FiberKartan.Admin.Security
 {
     public class AdminRoleProvider : RoleProvider
     {
-        //IUserRepository _repository;
         public AdminRoleProvider()
-            //: this(UserRepositoryFactory.GetRepository())
         {
 
         }
-        /*public AdminRoleProvider(IUserRepository repository)
-            : base()
-        {
-            _repository = repository ?? UserRepositoryFactory.GetRepository();
-        }*/
+   
         public override bool IsUserInRole(string username, string roleName)
         {
-            /*User user = _repository.GetByUserName(username);
-            if (user != null)
-                return user.IsInRole(roleName);
-            else*/
-                return false;
+            return false;
         }
 
         public override string ApplicationName
@@ -79,14 +69,6 @@ namespace FiberKartan.Admin.Security
         public override string[] GetRolesForUser(string username)
         {
             return new string[] {};
-            /*User user = _repository.GetByUserName(username);
-            string[] roles = new string[user.Role.Rights.Count + 1];
-            roles[0] = user.Role.Description;
-            int idx = 0;
-            foreach (Right right in user.Role.Rights)
-                roles[++idx] = right.Description;
-
-            return roles;*/
         }
 
         public override string[] GetUsersInRole(string roleName)
@@ -97,13 +79,11 @@ namespace FiberKartan.Admin.Security
         public override string[] FindUsersInRole(string roleName, string usernameToMatch)
         {
             throw new NotImplementedException();
-
         }
 
         public override string[] GetAllRoles()
         {
             throw new NotImplementedException();
-
         }
     }
 }

@@ -38,15 +38,7 @@ namespace FiberKartan.Admin.Security
         }        
 
         public virtual bool IsInRole(string role)
-        {
-            /*if (Role.Description.ToLower() == role.ToLower())
-                return true;
-
-            foreach (Right right in Role.Rights)
-            {
-                if (right.Description.ToLower() == role.ToLower())
-                    return true;
-            }*/
+        {            
             return false;
         }
     }

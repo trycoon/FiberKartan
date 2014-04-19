@@ -117,8 +117,8 @@ namespace FiberKartan.REST
                     map.Markers.Add(new FiberKartan.Marker()
                     {
                         Uid = updatedMarker.Uid,
-                        Name = updatedMarker.Name ?? string.Empty,
-                        Description = updatedMarker.Desc ?? existingMarker.Description,
+                        Name = Utils.RemoveInvalidXmlChars(updatedMarker.Name, true) ?? string.Empty,
+                        Description = Utils.RemoveInvalidXmlChars(updatedMarker.Desc, true) ?? Utils.RemoveInvalidXmlChars(existingMarker.Description, true),
                         MarkerTypeId = updatedMarker.MarkId,
                         Latitude = double.Parse(updatedMarker.Lat, CultureInfo.InvariantCulture.NumberFormat),
                         Longitude = double.Parse(updatedMarker.Lng, CultureInfo.InvariantCulture.NumberFormat),
@@ -135,8 +135,8 @@ namespace FiberKartan.REST
                     map.Markers.Add(new FiberKartan.Marker()
                     {
                         Uid = 0,    // Ny markör får Uid satt till Id av databasen.
-                        Name = newMarker.Name ?? string.Empty,
-                        Description = newMarker.Desc ?? string.Empty,
+                        Name = Utils.RemoveInvalidXmlChars(newMarker.Name, true) ?? string.Empty,
+                        Description = Utils.RemoveInvalidXmlChars(newMarker.Desc, true) ?? string.Empty,
                         MarkerTypeId = newMarker.MarkId,
                         Latitude = double.Parse(newMarker.Lat, CultureInfo.InvariantCulture.NumberFormat),
                         Longitude = double.Parse(newMarker.Lng, CultureInfo.InvariantCulture.NumberFormat),
@@ -171,8 +171,8 @@ namespace FiberKartan.REST
                     map.Lines.Add(new FiberKartan.Line()
                     {
                         Uid = updatedLine.Uid,
-                        Name = updatedLine.Name ?? string.Empty,
-                        Description = updatedLine.Desc ?? existingLine.Description,
+                        Name = Utils.RemoveInvalidXmlChars(updatedLine.Name, true) ?? string.Empty,
+                        Description = Utils.RemoveInvalidXmlChars(updatedLine.Desc, true) ?? Utils.RemoveInvalidXmlChars(existingLine.Description, true),
                         LineColor = updatedLine.Color,
                         Width = int.Parse(updatedLine.Width),
                         Coordinates = updatedCoordinates.ToString(),
@@ -200,8 +200,8 @@ namespace FiberKartan.REST
                     map.Lines.Add(new FiberKartan.Line()
                     {
                         Uid = 0,    // Ny linje får Uid satt till Id av databasen.
-                        Name = newLine.Name ?? string.Empty,
-                        Description = newLine.Desc ?? string.Empty,
+                        Name = Utils.RemoveInvalidXmlChars(newLine.Name, true) ?? string.Empty,
+                        Description = Utils.RemoveInvalidXmlChars(newLine.Desc, true) ?? string.Empty,
                         LineColor = newLine.Color,
                         Width = int.Parse(newLine.Width),
                         Coordinates = newCoordinates.ToString(),
@@ -235,8 +235,8 @@ namespace FiberKartan.REST
                     map.Regions.Add(new FiberKartan.Region()
                     {
                         Uid = updatedRegion.Uid,
-                        Name = updatedRegion.Name ?? string.Empty,
-                        Description = updatedRegion.Desc ?? existingRegion.Description,
+                        Name = Utils.RemoveInvalidXmlChars(updatedRegion.Name, true) ?? string.Empty,
+                        Description = Utils.RemoveInvalidXmlChars(updatedRegion.Desc, true) ?? Utils.RemoveInvalidXmlChars(existingRegion.Description, true),
                         FillColor = updatedRegion.FillColor,
                         LineColor = updatedRegion.BorderColor,
                         Coordinates = updatedCoordinates.ToString()
@@ -263,8 +263,8 @@ namespace FiberKartan.REST
                     map.Regions.Add(new FiberKartan.Region()
                     {
                         Uid = 0,    // Nytt område får Uid satt till Id av databasen.
-                        Name = newRegion.Name ?? string.Empty,
-                        Description = newRegion.Desc ?? string.Empty,
+                        Name = Utils.RemoveInvalidXmlChars(newRegion.Name, true) ?? string.Empty,
+                        Description = Utils.RemoveInvalidXmlChars(newRegion.Desc, true) ?? string.Empty,
                         FillColor = newRegion.FillColor,
                         LineColor = newRegion.BorderColor,
                         Coordinates = newCoordinates.ToString()

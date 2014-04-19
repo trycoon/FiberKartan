@@ -152,7 +152,11 @@ namespace FiberKartan
 
                     mapContent.Created = cachedMap.LastUpdateTime.ToString();
 
-                    HttpContext.Current.Cache.Insert("CachedTotalMap_" + municipalityCode, cachedMap, null, DateTime.Now.AddDays(1), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Default, null);
+                    // Kolla en gång till innan vi lägger in den i cachen, om steget ovanför tog lång tid att exekvera så kan någon annan tråd ha hunnit före sedan den första if-satsen.
+                    if (HttpContext.Current.Cache.Get("CachedTotalMap_" + municipalityCode) == null)
+                    {
+                        HttpContext.Current.Cache.Insert("CachedTotalMap_" + municipalityCode, cachedMap, null, DateTime.Now.AddDays(1), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Default, null);
+                    }
                 }
             }
 
@@ -163,10 +167,9 @@ namespace FiberKartan
             NrHouses.Text = cachedMap.MapContent.Markers.Count(x => x.TypeId == (int)MapEntityEnum.HouseYes).ToString();
 
             // Omvandlar information till ett JSON-objekt som renderas ut på sidan, så att kartinnehållet kan processas på klientsidan.
-            this.ClientScript.RegisterStartupScript(typeof(Page), "mapContent", "var mapContent=" + JsonConvert.SerializeObject(cachedMap.MapContent) + "; ", true);
-            this.ClientScript.RegisterStartupScript(typeof(Page), "serverRoot", "var serverRoot='" + ConfigurationManager.AppSettings.Get("ServerAdress") + "'", true);
+            this.ClientScript.RegisterStartupScript(typeof(Page), "mapContent", "fk.mapContent=" + JsonConvert.SerializeObject(cachedMap.MapContent) + "; ", true);
+            this.ClientScript.RegisterStartupScript(typeof(Page), "serverRoot", "fk.serverRoot='" + ConfigurationManager.AppSettings.Get("ServerAdress") + "'; ", true);
 
-            //Response.Cache.SetExpires(DateTime.Now.AddMinutes(10));
             Response.Cache.SetLastModified(cachedMap.LastUpdateTime);
             Response.Cache.SetETag(cachedMap.ToString());
         }
