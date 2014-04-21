@@ -331,4 +331,8 @@ form
     right: 0;
     top: 0;
 }
+.incidentButtonBar {
+    position: relative;
+    margin-top: -30px;
+}
  

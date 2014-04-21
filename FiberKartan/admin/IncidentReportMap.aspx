@@ -21,7 +21,10 @@
     </head>
     <body>
         <form id="mapForm" runat="server" enableviewstate="false" onsubmit="return false;">
-            <div id="map_canvas" style="width: 100%; height: 100%">
+            <div id="map_canvas" style="width: 100%; height: 100%"></div>
+            <div id="buttonBar" class="incidentButtonBar center alpha60" runat="server" visible="true">
+                <asp:HyperLink id="backButton" runat="server" CssClass="button" Text="Tillbaka" />
+                <input id="sendButton" type="button" runat="server" value="Skicka" title="Skicka incidentrapport" class="button red" disabled="disabled" />
             </div>
         </form>
         <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>

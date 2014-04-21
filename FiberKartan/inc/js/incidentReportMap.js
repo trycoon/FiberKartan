@@ -1,5 +1,6 @@
 ﻿(function (fk) {
     var map;
+    var drawingManager;
     var mapContent = fk.mapContent;
     var serverRoot = fk.serverRoot;
     var serviceProvider = fk.serviceProvider;
@@ -9,6 +10,7 @@
     var MARKERTYPE = { HouseYes: 'HouseYes', FiberNode: 'FiberNode', FiberBox: 'FiberBox', RoadCrossing_Existing: 'RoadCrossing_Existing', RoadCrossing_ToBeMade: 'RoadCrossing_ToBeMade' };
     var markerTypeLookup = new Object();
     var mapBounds = new google.maps.LatLngBounds();
+    var incidentInfoWindow = new google.maps.InfoWindow({});
 
     // Deklarera ny funktion i jQuery för att hämta ut querystring-parametrar. Används: $.QueryString["param"]
     (function ($) {
@@ -33,12 +35,32 @@
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
+        drawingManager = new google.maps.drawing.DrawingManager({
+            drawingControl: true,
+            drawingControlOptions: {
+                position: google.maps.ControlPosition.TOP_CENTER,
+                drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+            },           
+            polygonOptions: {
+                strokeColor: '#000000',
+                fillColor: '#FF9999',
+                fillOpacity: 0.3,
+                strokeWeight: 2,
+                strokeOpacity: 0.7
+            }
+        });
+        drawingManager.setMap(map);
+
         if (typeof mapContent !== 'undefined') {
             createMarkerTypeLookupTable();
             plotMapContent();
 
             map.setOptions({ draggableCursor: 'crosshair' });
             showDialog('<div class="mapPopup">För att rapportera en incident klicka med korshåret på den plats på kartan som skall rapporteras, ni kan zooma in med scrollhjulet på musen för att närmare specificera den exakta positionen. Fyll därefter i formuläret och klicka på "Skicka" för att sända en incidentrapport till ' + serviceProvider + '.</div>', 'Beskrivning');
+
+            google.maps.event.addListener(map, 'click', function (e) {
+                clickedSpot(e);
+            });
         }
 
         var centerPos = $.QueryString["center"];
@@ -112,4 +134,9 @@
         lineArray.push({ cable: line });
     }
 
+    function clickedSpot(event) {
+        incidentInfoWindow.setContent('test');
+        incidentInfoWindow.setPosition(event.latLng);
+        incidentInfoWindow.open(map);
+    }
 })(fk);
