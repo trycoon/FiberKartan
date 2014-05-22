@@ -148,12 +148,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A40325B8B568A62FFD36491BA13D4D98"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_DF21BEF267564673A5ED7FE93962B238"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -233,6 +227,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_80E8C78C4F8B85AD54CD3A22CF9CC335"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A40325B8B568A62FFD36491BA13D4D98"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -864,7 +864,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FiberKartan"
         "ProductCode" = "8:{EF69EA19-EA6B-4148-A445-52FE1BC38865}"
-        "PackageCode" = "8:{4FAD6C00-D3E8-41B3-AF12-F3773EA21076}"
+        "PackageCode" = "8:{39C1775E-2795-4FE8-906B-2EE0F8F18085}"
         "UpgradeCode" = "8:{7A3D63B4-1AFD-44E8-885F-8F80A75D6A67}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:TRUE"
@@ -1400,7 +1400,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C557B6164C4643B78ABAA6766BD25655"
             {
-            "SourcePath" = "8:..\\FiberKartan.Database\\obj\\Debug\\FiberKartan.Database.dll"
+            "SourcePath" = "8:..\\FiberKartan.Database\\obj\\Release\\FiberKartan.Database.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_EEC4E87B571F4814B4C55A4C97164A7F"
@@ -1456,7 +1456,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DF21BEF267564673A5ED7FE93962B238"
             {
-            "SourcePath" = "8:..\\FiberKartan\\obj\\Debug\\FiberKartan.dll"
+            "SourcePath" = "8:..\\FiberKartan\\obj\\Release\\FiberKartan.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_EEC4E87B571F4814B4C55A4C97164A7F"

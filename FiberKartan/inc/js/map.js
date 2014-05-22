@@ -542,16 +542,16 @@ Permission is granted to anyone to use this software for any purpose, including 
     }
 
     function addRegion(id, name, borderColor, fillColor, coordinatesString) {
-        var path = new google.maps.MVCArray();
+        var paths = new google.maps.MVCArray();
         var coordinates = coordinatesString.split('|');
 
         for (var i = 0, length = coordinates.length; i < length; i++) {
             var coordinatePair = coordinates[i].split(':');
-            path.push(new google.maps.LatLng(parseFloat(coordinatePair[0]), parseFloat(coordinatePair[1])));
+            paths.push(new google.maps.LatLng(parseFloat(coordinatePair[0]), parseFloat(coordinatePair[1])));
         }
         var polygon = new google.maps.Polygon({
             map: null,  // Visas inte till att börja med.
-            path: path,
+            paths: paths,
             strokeColor: '#' + borderColor,
             fillColor: '#' + fillColor,
             fillOpacity: 0.3,
