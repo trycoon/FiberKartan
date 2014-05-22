@@ -31,7 +31,7 @@
                 </asp:ContentPlaceHolder>
             </div>
             <div class="footer clear">
-                <a href="manual/index.htm">Manual&nbsp;/&nbsp;Hjälp</a> <a href="../TotalMap.aspx">Visa&nbsp;regionskarta</a>
+                <a href="manual/index.htm">Manual&nbsp;/&nbsp;Hjälp</a> <a href="../region">Visa&nbsp;Sverigekarta</a>
             </div>
         </form>        
         <script src="/inc/js/jquery.ui.touch-punch.min.js?ver=1.0"></script>

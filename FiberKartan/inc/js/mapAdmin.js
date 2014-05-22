@@ -172,7 +172,7 @@ Permission is granted to anyone to use this software for any purpose, including 
             google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
                 // Tar först bort området vi skapade och skapar sedan om den med addRegion()-funktionen så den läggs till korrekt och får alla eventlyssnare kopplade till sig.
                 polygon.setMap(null);
-                addRegion(--temporaryRegionId, 0, "Nytt område", "000000", "9999FF", polygon.getPaths());
+                addRegion(--temporaryRegionId, 0, "Nytt område", "000000", "9999FF", polygon.getPath());
 
                 // Har man börjat rita ett område så skall områden visas, annars försvinner området bara spårlöst(visuellt) när man är klar.
                 if (!$("#show_regions").is(":checked")) {
@@ -1402,20 +1402,20 @@ Permission is granted to anyone to use this software for any purpose, including 
     }
 
     function addRegion(id, uid, name, borderColor, fillColor, coordinatesString) {
-        var path = coordinatesString;
+        var paths = coordinatesString;
         // coordinatesString kan antingen vara ett färdigt MVCArray-objekt eller en sträng som skall konverteras till ett MVCArray-objekt.
         if (typeof (coordinatesString) == "string") {
-            path = new google.maps.MVCArray();
+            paths = new google.maps.MVCArray();
             var coordinates = coordinatesString.split('|');
 
             for (var i = 0, length = coordinates.length; i < length; i++) {
                 var coordinatePair = coordinates[i].split(':');
-                path.push(new google.maps.LatLng(parseFloat(coordinatePair[0]), parseFloat(coordinatePair[1])));
+                paths.push(new google.maps.LatLng(parseFloat(coordinatePair[0]), parseFloat(coordinatePair[1])));
             }
         }
         var polygon = new google.maps.Polygon({
             map: $("#show_regions").is(":checked") ? map : null,
-            path: path,
+            paths: paths,
             strokeColor: '#' + borderColor,
             fillColor: '#' + fillColor,
             fillOpacity: 0.3,

@@ -1,6 +1,6 @@
 ﻿html  
 {
-    font: medium/1.200 "Times New Roman",serif;
+    font: normal 16px arial, sans-serif;
 }
 body 
 {
@@ -11,8 +11,12 @@ body
     padding-bottom: 2em;
     word-spacing: 0.1em;
 }
+.text-center {
+    text-align: center;
+}
 h1 {
     margin: 20px auto 50px auto;
+    text-align: center;
 }    
 a {
     text-decoration: none;
@@ -23,10 +27,6 @@ a:link {
 a:visited {
     color: RosyBrown;
 }
-img {
-    border: dotted 1px;
-    margin: 4px 4px 4px 20px;
-}
 .clear {
     clear: both;
 }
@@ -35,10 +35,10 @@ img {
     background: #555 url('../img/background-dark.png') repeat;
     background-color: #555;
 }
-.images
+.image
 {
-    margin: 40px auto;
-    width: 800px;
+    margin: 40px auto 20px auto;
+    max-width: 720px;
 }
 .copyright
 {

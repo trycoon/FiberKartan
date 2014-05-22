@@ -35,4 +35,4 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Länken till regionskartan bör peka till /region.
 - Exportera karta skall öppnas som ett eget fönster och inte som en modal ruta.
 - Uppdatera TinyMCE.
-
+- Uppdatera startsidan så att den blir mer sökbar, beskär bilden så att man inte ser länkarna i min webbläsare. Lägg in länkar och sitemap till regionskartorna.
