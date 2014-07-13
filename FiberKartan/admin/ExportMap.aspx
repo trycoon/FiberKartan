@@ -46,7 +46,7 @@
             <br />
             <asp:Button ID="ExportButton" runat="server" Text="Exportera" CssClass="button" onclick="ExportButton_Click" />
         </form>
-        <script type="text/javascript" src="/inc/js/jquery.min.js?ver=1.0"></script>
+        <script type="text/javascript" src="/inc/js/jquery.min.js?ver=1.1"></script>
         <script type="text/javascript" src="/inc/js/base.js?ver=1.4"></script>
         <script type="text/javascript">
             var _gaq = _gaq || [];

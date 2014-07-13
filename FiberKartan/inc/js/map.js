@@ -52,7 +52,7 @@ Permission is granted to anyone to use this software for any purpose, including 
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
-        $(window).bind('orientationchange', function (event) {
+        $(window).on('orientationchange', function (event) {
             if (window.orientation == 0) {
                 $('.palette').fadeOut();
             } else {

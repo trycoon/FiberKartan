@@ -145,9 +145,6 @@ namespace FiberKartan.Admin
                     // Sparar ner kommun.
                     mapType.MunicipalityCode = Municipality.SelectedValue;
 
-                    // Används inte längre.
-                    mapType.MapUrl = string.Empty;
-
                     var viewSettings = MapViewSettings.None;
 
                     if (PublicVisible.Checked)
@@ -240,9 +237,6 @@ namespace FiberKartan.Admin
 
                     // Sparar ner kommun.
                     mapType.MunicipalityCode = Municipality.SelectedValue;
-
-                    // Används inte längre.
-                    mapType.MapUrl = string.Empty;
 
                     var viewSettings = MapViewSettings.None;
 

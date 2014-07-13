@@ -182,7 +182,7 @@ Permission is granted to anyone to use this software for any purpose, including 
             });
         }
 
-        $(window).bind('orientationchange', function (event) {
+        $(window).on('orientationchange', function (event) {
             if (window.orientation == 0) {
                 $('.palette').fadeOut();
             } else {
@@ -385,66 +385,95 @@ Permission is granted to anyone to use this software for any purpose, including 
         }
 
         if (mapContent.Settings.HasWritePrivileges) {
-            $("#lineContextMenuPlaceholder").contextMenu({
-                menu: 'lineMenu'
-            },
-        function (action, el, pos) {
-            switch (action) {
-                case "removeVertex":
-                    var lineInfo = el.data("clickedLineInfo");
-                    if (lineInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
-                        var line = getLineById(lineInfo.id);
-                        var linePath = line.cable.getPath();
-                        // Ifall färre än två punkter på linjen blir kvar så tar vi bort hela linjen.
-                        if (linePath.length > 2) {
-                            linePath.removeAt(lineInfo.vertex);
-                        } else {
-                            removeLineById(lineInfo.id);
-                        }
-                    }
-                    break;
-                case "addVertex":
-                    var lineInfo = el.data("clickedLineInfo");
-                    var linePath = getLineById(lineInfo.id).cable.getPath();
-                    // Räkna ut i vilken ordning av punkterna som den nya punkten skall läggas till.
-                    var insertOrder = getPointInsertOrder(linePath, lineInfo.latLng);
-                    // Lägg till nya punkten på linjen.
-                    linePath.insertAt(insertOrder, lineInfo.latLng);
-                    break;
-                case "removeLine":
-                    removeLineById(el.data("clickedLineInfo").id);
-                    break;
-            }
-        });
 
-            $("#regionContextMenuPlaceholder").contextMenu({
-                menu: 'regionMenu'
-            },
-        function (action, el, pos) {
-            switch (action) {
-                case "removeVertex":
-                    var regionInfo = el.data("clickedRegionInfo");
-                    if (regionInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
-                        var region = getRegionById(regionInfo.id);
-                        var regionPath = region.region.getPath();
-                        // Ifall färre än tre punkter på området blir kvar så tar vi bort hela området.
-                        if (regionPath.length > 3) {
-                            regionPath.removeAt(regionInfo.vertex);
-                        } else {
-                            removeRegionById(regionInfo.id);
+            $.contextMenu({
+                selector: '#contextMenuLinePlaceholder',
+                trigger: 'none',
+                build: function ($trigger, e) {
+                    // this callback is executed every time the menu is to be shown
+                    // its results are destroyed every time the menu is hidden
+                    // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+                    return {
+                        callback: function (key, options) {
+                            var menuInfo = this.data('menuInfo');
+
+                            switch (key) {
+                                case "removeVertex":
+                                    if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
+                                        var line = getLineById(menuInfo.id);
+                                        var linePath = line.cable.getPath();
+                                        // Ifall färre än två punkter på linjen blir kvar så tar vi bort hela linjen.
+                                        if (linePath.length > 2) {
+                                            linePath.removeAt(menuInfo.vertex);
+                                        } else {
+                                            removeLineById(menuInfo.id);
+                                        }
+                                    }
+                                    break;
+                                case "addVertex":
+                                    var linePath = getLineById(menuInfo.id).cable.getPath();
+                                    // Räkna ut i vilken ordning av punkterna som den nya punkten skall läggas till.
+                                    var insertOrder = getPointInsertOrder(linePath, menuInfo.latLng);
+                                    // Lägg till nya punkten på linjen.
+                                    linePath.insertAt(insertOrder, menuInfo.latLng);
+                                    break;
+                                case "removeLine":
+                                    removeLineById(menuInfo.id);
+                                    break;
+                            }
+                        },
+                        items: {
+                            "addVertex": { name: "Lägg till punkt", icon: "add" },
+                            "removeVertex": { name: "Ta bort punkt", icon: "cut" },
+                            "sep1": "---------",
+                            "removeLine": { name: "Ta bort linje", icon: "delete" }
                         }
-                    }
-                    break;
-                case "addVertex":
-                    var regionInfo = el.data("clickedRegionInfo");
-                    var regionPath = getRegionById(regionInfo.id).region.getPath();
-                    regionPath.insertAt(regionPath.length, regionInfo.latLng);
-                    break;
-                case "removeRegion":
-                    removeRegionById(el.data("clickedRegionInfo").id);
-                    break;
-            }
-        });
+                    };
+                }
+            });
+
+            $.contextMenu({
+                selector: '#contextMenuRegionPlaceholder',
+                trigger: 'none',
+                build: function ($trigger, e) {
+                    // this callback is executed every time the menu is to be shown
+                    // its results are destroyed every time the menu is hidden
+                    // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+                    return {
+                        callback: function (key, options) {
+                            var menuInfo = this.data('menuInfo');
+
+                            switch (key) {
+                                case "removeVertex":
+                                    if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
+                                        var region = getRegionById(menuInfo.id);
+                                        var regionPath = region.region.getPath();
+                                        // Ifall färre än tre punkter på området blir kvar så tar vi bort hela området.
+                                        if (regionPath.length > 3) {
+                                            regionPath.removeAt(menuInfo.vertex);
+                                        } else {
+                                            removeRegionById(menuInfo.id);
+                                        }
+                                    }
+                                    break;
+                                case "addVertex":
+                                    var regionPath = getRegionById(menuInfo.id).region.getPath();
+                                    regionPath.insertAt(regionPath.length, menuInfo.latLng);
+                                    break;
+                                case "removeRegion":
+                                    removeRegionById(menuInfo.id);
+                                    break;
+                            }
+                        },
+                        items: {
+                            "addVertex": { name: "Lägg till punkt", icon: "add" },
+                            "removeVertex": { name: "Ta bort punkt", icon: "cut" },
+                            "sep1": "---------",
+                            "removeRegion": { name: "Ta bort område", icon: "delete" }
+                        }
+                    };
+                }
+            });
         }
 
         if ($("#saveButton").length > 0) {
@@ -1327,9 +1356,8 @@ Permission is granted to anyone to use this software for any purpose, including 
                 // Visa contextmenyn bara om objektet är valt.
                 if (currentSelectedObject == this) {
                     var positionXY = getCanvasXY(event.latLng);
-                    // Simulera ett höger-klick på platshållaren för att få fram contextmenyn, skicka med muspekarens position som parameter till eventet.
-                    $('#lineContextMenuPlaceholder').data("clickedLineInfo", { id: this.id, vertex: event.vertex, latLng: event.latLng });
-                    $('#lineContextMenuPlaceholder').trigger({ type: 'mousedown', button: 2 }).trigger({ type: 'mouseup', pageX: positionXY.x, pageY: positionXY.y });
+                    $('#contextMenuLinePlaceholder').data('menuInfo', { id: this.id, vertex: event.vertex, latLng: event.latLng });
+                    $('#contextMenuLinePlaceholder').contextMenu({ x: positionXY.x, y: positionXY.y });
                 }
             });
         }
@@ -1463,9 +1491,8 @@ Permission is granted to anyone to use this software for any purpose, including 
                 // Visa contextmenyn bara om objektet är valt.
                 if (currentSelectedObject == this) {
                     var positionXY = getCanvasXY(event.latLng);
-                    // Simulera ett höger-klick på platshållaren för att få fram contextmenyn, skicka med muspekarens position som parameter till eventet.
-                    $('#regionContextMenuPlaceholder').data("clickedRegionInfo", { id: this.id, vertex: event.vertex, latLng: event.latLng });
-                    $('#regionContextMenuPlaceholder').trigger({ type: 'mousedown', button: 2 }).trigger({ type: 'mouseup', pageX: positionXY.x, pageY: positionXY.y });
+                    $('#contextMenuRegionPlaceholder').data('menuInfo', { id: this.id, vertex: event.vertex, latLng: event.latLng });
+                    $('#contextMenuRegionPlaceholder').contextMenu({ x: positionXY.x, y: positionXY.y });
                 }
             });
         }

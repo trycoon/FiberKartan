@@ -77,7 +77,7 @@
                         </div>
                         <div id="propertyBoundaries">
                             <input id="show_propertyBoundaries" name="show_propertyBoundaries" type="checkbox" value="show_propertyBoundaries" />
-                            <label for="propertyBoundaries">Visa fastighetsgränser</label>
+                            <label for="show_propertyBoundaries">Visa fastighetsgränser</label>
                         </div>
                     </div> 
                     <h3><a href="#">Markörer</a></h3>
@@ -124,30 +124,8 @@
                 </div>                
             </div>
             <!-- Contextmenyer -->
-            <div id="lineContextMenuPlaceholder" class="contextMenuPlaceholder"></div>
-            <ul id="lineMenu" class="contextMenu">
-                <li>
-                    <a href="#removeVertex">Ta bort punkt</a>
-                </li>
-                <li>
-                    <a href="#addVertex">Lägg till punkt</a>
-                </li>
-                <li class="separator">
-                    <a href="#removeLine">Ta bort linje</a>
-                </li>
-            </ul>
-            <div id="regionContextMenuPlaceholder" class="contextMenuPlaceholder"></div>
-            <ul id="regionMenu" class="contextMenu">
-                <li>
-                    <a href="#removeVertex">Ta bort punkt</a>
-                </li>
-                <li>
-                    <a href="#addVertex">Lägg till punkt</a>
-                </li>
-                <li class="separator">
-                    <a href="#removeRegion">Ta bort område</a>
-                </li>
-            </ul>
+            <div id="contextMenuLinePlaceholder"></div>
+            <div id="contextMenuRegionPlaceholder"></div>
             <!-- Slut Contextmenyer -->
         </form>
         <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>

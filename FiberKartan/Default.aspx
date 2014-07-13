@@ -14,7 +14,7 @@
         <meta name="keywords" content="fiberkarta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg,gis,karta" />
         <title>FiberKartan - Projekteringsverktyg för socken- och byanät</title>
         <link rel="stylesheet" type="text/css" href="/inc/css/firstpage.css?ver=1.0" media="screen" />
-        <link rel="stylesheet" type="text/css" href="/inc/js/fancybox/jquery.fancybox.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="/inc/js/fancybox/jquery.fancybox.css?ver=1.0" media="screen" />
     </head>
     <body class="dark">
         <form id="default" runat="server" onsubmit="return false;" enableviewstate="false">
@@ -38,8 +38,8 @@
                 </footer>
             </article>
         </form>
-        <script type="text/javascript" src="/inc/js/jquery.min.js?ver=1.0"></script>
-        <script type="text/javascript" src="/inc/js/fancybox/jquery.fancybox.pack.js"></script>
+        <script type="text/javascript" src="/inc/js/jquery.min.js?ver=1.1"></script>
+        <script type="text/javascript" src="/inc/js/fancybox/jquery.fancybox.pack.js?ver=1.0"></script>
         <script type="text/javascript" >
             $(document).ready(function () {
                 $("a.image").fancybox();

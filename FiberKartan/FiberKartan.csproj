@@ -134,6 +134,12 @@
     <Content Include="Admin\manual\img\ViewAdminMap.jpg" />
     <Content Include="App_Data\combres_full_with_annotation.xml" />
     <Content Include="App_Data\combres_minimal.xml" />
+    <Content Include="inc\css\jquery-ui.min.css" />
+    <Content Include="inc\css\jquery-ui.structure.min.css" />
+    <Content Include="inc\css\jquery-ui.theme.min.css" />
+    <Content Include="inc\js\fancybox\fancybox_loading%402x.gif" />
+    <Content Include="inc\js\fancybox\fancybox_overlay.png" />
+    <Content Include="inc\js\fancybox\fancybox_sprite%402x.png" />
     <Content Include="inc\js\incidentReportMap.js" />
     <Content Include="ResultBox.ascx" />
     <Content Include="Admin\ExportMap.aspx" />
@@ -461,7 +467,6 @@
     <Content Include="Global.asax" />
     <Content Include="inc\css\admin.css" />
     <Content Include="inc\css\base.css" />
-    <Content Include="inc\css\jquery-ui.css" />
     <Content Include="inc\css\jquery.contextMenu.css" />
     <Content Include="inc\css\map.css" />
     <Content Include="inc\css\map_print.css" />

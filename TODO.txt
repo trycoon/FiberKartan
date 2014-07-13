@@ -24,7 +24,7 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Lägg till möjlighet att rita linjer som representerar grävd-, plöjd-, och fräs-sträcka.
 - Trycker man Enter vid inloggningsrutan så skall man logga in.
 - Lägg till stöd för att felanmäla nätverk. Mail skickas med en kartmarkör.
-- Fixa loader-animation som inte alltid visas i rutor.
+- Fixa loader-animation som inte alltid visas i rutor används spin.js.
 - När man exporterar till excel så borde man filtrera bort HTML från description-fältet på t.ex. markörer.
 - När man exporterar till excel så borde vi använda direktlänkar liknande: http://fiberkartan.se/admin/MapAdmin.aspx?mid=7&network=true&lineId=846767, istället för de jättelånga statiska Google Maps länkarna.
 - Lägg till stöd för att kunna spara eller spara och publicera kartor, på så sätt kan man ha arbetskopior som inte visas ut på den publika vyn.
@@ -36,3 +36,10 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Exportera karta skall öppnas som ett eget fönster och inte som en modal ruta.
 - Uppdatera TinyMCE.
 - Uppdatera startsidan så att den blir mer sökbar, beskär bilden så att man inte ser länkarna i min webbläsare. Lägg in länkar och sitemap till regionskartorna.
+
+
+
+Innan driftsättning:
+- Ta bort MapUrl från MapType-databasen, den används inte längre.
+- Lägg till [Published] [datetime] NULL på Map.
+- Lägg till [Layers] [nvarchar](max) NOT NULL DEFAULT '[]' på Map.

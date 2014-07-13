@@ -21,7 +21,7 @@
                 >
     <resourceSet name="commonCss" type="css">
       <resource path="~/inc/css/base.css" />
-      <resource path="~/inc/css/jquery-ui.css" />
+      <resource path="~/inc/css/jquery-ui.min.css" />
       <resource path="~/inc/css/map.css" />
     </resourceSet>
     <resourceSet name="adminCss" type="css">
