@@ -36,7 +36,7 @@
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
         drawingManager = new google.maps.drawing.DrawingManager({
-            drawingControl: true,
+            drawingControl: false,
             drawingControlOptions: {
                 position: google.maps.ControlPosition.TOP_CENTER,
                 drawingModes: [google.maps.drawing.OverlayType.POLYGON]
@@ -135,7 +135,13 @@
     }
 
     function clickedSpot(event) {
-        incidentInfoWindow.setContent('test');
+        incidentInfoWindow.setContent('<form onsubmit="return false;" action="#"><label for="desc">Beskrivning</label><br/><textarea id="desc" rows="6" cols="58"></textarea><br/>' +
+                                '<fieldset id="markerTypes"><legend>Typ av mark&ouml;r</legend></fieldset><fieldset id="other_settings"><legend>Övrigt</legend>' +
+                                    '<input type="checkbox" id="payedStake" name="payedStake" /><label for="payedStake">Har betalat insats</label><br />' +
+                                    '<input type="checkbox" id="extraHouse" name="extraHouse" /><label for="extraHouse">Avser flygelavtal</label><br />' +
+                                    '<input type="checkbox" id="wantDigHelp" name="wantDigHelp" /><label for="wantDigHelp">Önskar att förening ordnar grävning på fastighet</label><br />' +
+                                    '<input type="checkbox" id="noISPsubscription" name="noISPsubscription" /><label for="noISPsubscription">Önskar inget abonnemang med operatör (vilande)</label>' +
+                                '</fieldset></form>');
         incidentInfoWindow.setPosition(event.latLng);
         incidentInfoWindow.open(map);
     }

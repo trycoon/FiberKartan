@@ -8,12 +8,6 @@
         <elementListCompartment Id="e9f377e3-5b82-43db-9db1-18c3ac7e03dd" absoluteBounds="0.765, 1.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="d34b243a-779c-4b78-86f1-047b34f758b0" absoluteBounds="0.75, 9.375, 2, 2.7324039713541666">
-      <DataClassMoniker Name="/FiberDataContext/User" />
-      <nestedChildShapes>
-        <elementListCompartment Id="31b2fa51-668d-445d-a3af-ce3c2cfd1f41" absoluteBounds="0.765, 9.835, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <classShape Id="06e162b6-f400-4ddf-86f2-091fa13588f8" absoluteBounds="9, 12.375, 2, 2.7324039713541666">
       <DataClassMoniker Name="/FiberDataContext/Line" />
       <nestedChildShapes>
@@ -74,70 +68,42 @@
         <elementListCompartment Id="e5105e0a-28b1-4dea-91d4-789f188c2202" absoluteBounds="0.765, 16.335, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(1.75 : 9.375); (1.75 : 7.70274983723958); (3.5 : 7.70274983723958)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/FiberDataContext/User/User_MapAccessInvitation" />
-      <nodes>
-        <classShapeMoniker Id="d34b243a-779c-4b78-86f1-047b34f758b0" />
-        <classShapeMoniker Id="8901d311-9439-4817-b8e3-f96afecfd393" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 10.7604484049479); (3.29166666666667 : 10.7604484049479 : JumpStart); (3.45833333333333 : 10.7604484049479 : JumpEnd); (3.5 : 10.7604484049479)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/FiberDataContext/User/User_MapFile" />
-      <nodes>
-        <classShapeMoniker Id="d34b243a-779c-4b78-86f1-047b34f758b0" />
-        <classShapeMoniker Id="ad1c9cfc-57d8-43b8-ae28-7db552b7ac3d" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(3.53538361538462 : 12.625); (3.375 : 12.4646163846154); (3.375 : 8.90703713601763); (3.50153746153846 : 8.78049967447917)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(5.5 : 12.625); (5.875 : 12.25); (5.875 : 9.15549967447917); (5.5 : 8.78049967447917)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/FiberDataContext/MapType/MapType_MapAccessInvitation" />
       <nodes>
         <classShapeMoniker Id="eeab9773-78ef-4c41-96de-3c7f109adeed" />
         <classShapeMoniker Id="8901d311-9439-4817-b8e3-f96afecfd393" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(4.53202123076923 : 12.625); (4.53202123076923 : 11.6458968098958)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.8124975 : 12.625); (4.8124975 : 11.6458968098958)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/FiberDataContext/MapType/MapType_MapFile" />
       <nodes>
         <classShapeMoniker Id="eeab9773-78ef-4c41-96de-3c7f109adeed" />
         <classShapeMoniker Id="ad1c9cfc-57d8-43b8-ae28-7db552b7ac3d" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 12.073556817508); (2.9375 : 12.4833645098157); (2.9375 : 12.0948076923077); (3.5 : 12.6573076923077)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/FiberDataContext/User/User_MapType" />
-      <nodes>
-        <classShapeMoniker Id="d34b243a-779c-4b78-86f1-047b34f758b0" />
-        <classShapeMoniker Id="eeab9773-78ef-4c41-96de-3c7f109adeed" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(4.5 : 14.7804996744792); (4.5 : 16.0392976888021); (6.25 : 16.0392976888021)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.5 : 14.7804996744792); (4.5 : 16.0392976888021); (6.25 : 16.0392976888021)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/FiberDataContext/MapType/MapType_MapTypeAccessRight" />
       <nodes>
         <classShapeMoniker Id="eeab9773-78ef-4c41-96de-3c7f109adeed" />
         <classShapeMoniker Id="172101dd-3770-4064-bb26-6b41e379cd70" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.71769230769231 : 12.1074039713542); (2.74687112607759 : 12.1365827897394 : JumpStart); (2.86472225627535 : 12.2544339199372 : JumpEnd); (2.87857443490112 : 12.268286098563 : JumpStart); (2.99642556509888 : 12.3861372287607 : JumpEnd); (3.125 : 12.5147116636619); (3.125 : 15.613396844401); (3.88541416666667 : 15.613396844401 : JumpStart); (4.05208083333333 : 15.613396844401 : JumpEnd); (4.41666666666667 : 15.613396844401 : JumpStart); (4.58333333333333 : 15.613396844401 : JumpEnd); (6.25 : 15.613396844401)]" fixedFrom="NotFixed" fixedTo="Algorithm">
-      <AssociationMoniker Name="/FiberDataContext/User/User_MapTypeAccessRight" />
-      <nodes>
-        <classShapeMoniker Id="d34b243a-779c-4b78-86f1-047b34f758b0" />
-        <classShapeMoniker Id="172101dd-3770-4064-bb26-6b41e379cd70" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11.15625 : 8.02089680989583); (11.15625 : 11.8425744042969); (12 : 11.8425744042969)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(11.15625 : 8.02089680989583); (11.15625 : 11.8425744042969); (12 : 11.8425744042969)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/FiberDataContext/MarkerType/MarkerType_Marker" />
       <nodes>
         <classShapeMoniker Id="20f4be04-715c-4e86-aea5-f10cae519261" />
         <classShapeMoniker Id="19a1d1a8-61ca-423a-b07b-0c921c5625a2" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 14.0152498372396); (3.04166666666667 : 14.0152498372396 : JumpStart); (3.20833333333333 : 14.0152498372396 : JumpEnd); (3.5 : 14.0152498372396)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 14.0152498372396); (3.5 : 14.0152498372396)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/FiberDataContext/Municipality/Municipality_MapType" />
       <nodes>
         <classShapeMoniker Id="9e6adc6d-c5d7-4184-b2aa-046f029a164f" />
         <classShapeMoniker Id="eeab9773-78ef-4c41-96de-3c7f109adeed" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 17.1310493977865); (3.9687475 : 17.1310493977865); (3.9687475 : 14.7804996744792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 17.1310493977865); (3.9687475 : 17.1310493977865); (3.9687475 : 14.7804996744792)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/FiberDataContext/ServiceCompany/ServiceCompany_MapType" />
       <nodes>
         <classShapeMoniker Id="56100154-161c-418d-8f50-ffdc22711731" />
@@ -150,39 +116,86 @@
         <elementListCompartment Id="6f163e94-6d16-4a73-a43e-df5c0f540257" absoluteBounds="6.39, 10.71, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(8.375 : 12.6787019856771); (9 : 12.6787019856771)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(8.375 : 12.6787019856771); (9 : 12.6787019856771)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/FiberDataContext/Map/Map_Line" />
       <nodes>
         <classShapeMoniker Id="d31a5e6c-0b40-4563-bd52-eb76bd055672" />
         <classShapeMoniker Id="06e162b6-f400-4ddf-86f2-091fa13588f8" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(8.375 : 12.1400372021484); (12 : 12.1400372021484)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(8.375 : 12.1400372021484); (12 : 12.1400372021484)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/FiberDataContext/Map/Map_Marker" />
       <nodes>
         <classShapeMoniker Id="d31a5e6c-0b40-4563-bd52-eb76bd055672" />
         <classShapeMoniker Id="19a1d1a8-61ca-423a-b07b-0c921c5625a2" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(8.375 : 10.9575512695312); (9 : 10.9575512695312)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(8.375 : 10.9575512695312); (9 : 10.9575512695312)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/FiberDataContext/Map/Map_Region" />
       <nodes>
         <classShapeMoniker Id="d31a5e6c-0b40-4563-bd52-eb76bd055672" />
         <classShapeMoniker Id="99aff601-fcae-4aef-ad43-94777a26ef20" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 13.8814523229167); (7.375 : 13.8814523229167); (7.375 : 12.9824039713542)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.5 : 13.8814523229167); (7.375 : 13.8814523229167); (7.375 : 12.9824039713542)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/FiberDataContext/MapType/MapType_Map" />
       <nodes>
         <classShapeMoniker Id="eeab9773-78ef-4c41-96de-3c7f109adeed" />
         <classShapeMoniker Id="d31a5e6c-0b40-4563-bd52-eb76bd055672" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 11.8597243137019); (3.29166666666667 : 11.8597243137019 : JumpStart); (3.45833333333333 : 11.8597243137019 : JumpEnd); (4.4486878974359 : 11.8597243137019 : JumpStart); (4.61535456410256 : 11.8597243137019 : JumpEnd); (6.375 : 11.8597243137019)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <classShape Id="23331b12-34ae-4d00-8e64-accabd11a802" absoluteBounds="0.625, 9.375, 2, 2.9247054036458331">
+      <DataClassMoniker Name="/FiberDataContext/User" />
+      <nestedChildShapes>
+        <elementListCompartment Id="295ccf5d-54a5-4887-af27-048773c1c051" absoluteBounds="0.64000000000000012, 9.835, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.59375 : 9.375); (2.59375 : 8.1819482421875); (3.5 : 8.1819482421875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/FiberDataContext/User/User_MapAccessInvitation" />
+      <nodes>
+        <classShapeMoniker Id="23331b12-34ae-4d00-8e64-accabd11a802" />
+        <classShapeMoniker Id="8901d311-9439-4817-b8e3-f96afecfd393" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.625 : 10.7604484049479); (3.5 : 10.7604484049479)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/FiberDataContext/User/User_MapFile" />
+      <nodes>
+        <classShapeMoniker Id="23331b12-34ae-4d00-8e64-accabd11a802" />
+        <classShapeMoniker Id="ad1c9cfc-57d8-43b8-ae28-7db552b7ac3d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(0.65625 : 12.2997054036458); (0.65625 : 12.90625); (3.5 : 12.90625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/FiberDataContext/User/User_MapType" />
+      <nodes>
+        <classShapeMoniker Id="23331b12-34ae-4d00-8e64-accabd11a802" />
+        <classShapeMoniker Id="eeab9773-78ef-4c41-96de-3c7f109adeed" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(0.671875 : 12.2997054036458); (0.671875 : 15.53125); (3.88541416666667 : 15.53125 : JumpStart); (4.05208083333333 : 15.53125 : JumpEnd); (4.41666666666667 : 15.53125 : JumpStart); (4.58333333333333 : 15.53125 : JumpEnd); (6.25 : 15.53125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/FiberDataContext/User/User_MapTypeAccessRight" />
+      <nodes>
+        <classShapeMoniker Id="23331b12-34ae-4d00-8e64-accabd11a802" />
+        <classShapeMoniker Id="172101dd-3770-4064-bb26-6b41e379cd70" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.625 : 12.0040511067708); (4.72916416666667 : 12.0040511067708 : JumpStart); (4.89583083333333 : 12.0040511067708 : JumpEnd); (5.79166666666667 : 12.0040511067708 : JumpStart); (5.95833333333333 : 12.0040511067708 : JumpEnd); (6.375 : 12.0040511067708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/FiberDataContext/User/User_Map" />
       <nodes>
-        <classShapeMoniker Id="d34b243a-779c-4b78-86f1-047b34f758b0" />
+        <classShapeMoniker Id="23331b12-34ae-4d00-8e64-accabd11a802" />
         <classShapeMoniker Id="d31a5e6c-0b40-4563-bd52-eb76bd055672" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="d844f4b6-3e67-4680-93e2-f18c5dada078" absoluteBounds="0.5, 5.75, 2, 1.7708968098958331">
+      <DataClassMoniker Name="/FiberDataContext/NotificationMessage" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d1eb4c60-0614-451e-9b91-2a83aae8b629" absoluteBounds="0.51499999999999968, 6.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(1.5625 : 9.375); (1.5625 : 7.52089680989583)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/FiberDataContext/User/User_NotificationMessage" />
+      <nodes>
+        <classShapeMoniker Id="23331b12-34ae-4d00-8e64-accabd11a802" />
+        <classShapeMoniker Id="d844f4b6-3e67-4680-93e2-f18c5dada078" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>

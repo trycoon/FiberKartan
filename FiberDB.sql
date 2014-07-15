@@ -25,6 +25,7 @@ BEGIN
 		[Created] [datetime] NOT NULL DEFAULT(getdate()),
 		[LastLoggedOn] [datetime] NULL,
 		[LastActivity] [datetime] NULL,
+		[LastNotificationMessage] [int] NULL,
 	 CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
 	(
 		[Id] ASC
@@ -40,6 +41,27 @@ BEGIN
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 END
 --- End User -----------------------------------------
+
+--- NotificationMessage --------------------------------------------
+IF NOT EXISTS
+( SELECT [name] FROM sys.tables WHERE [name] = 'NotificationMessage')
+BEGIN
+	CREATE TABLE [dbo].[NotificationMessage](
+		[Id] [int] IDENTITY(1,1) NOT NULL,
+		[Title] [nvarchar](255) NOT NULL,
+		[Body] [nvarchar](4000) NULL,		
+		[Created] [datetime] NOT NULL DEFAULT(getdate()),
+		[CreatorId] [int] NOT NULL,
+	 CONSTRAINT [PK_NotificationMessage] PRIMARY KEY CLUSTERED 
+	(
+		[Id] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+	ALTER TABLE [dbo].[NotificationMessage] WITH CHECK ADD CONSTRAINT [FK_NotificationMessage_CreatorId] FOREIGN KEY([CreatorId])
+	REFERENCES [dbo].[User] ([Id]) ON DELETE CASCADE
+END
+
+--- End NotificationMessage -----------------------------------------
 
 --- Municipality -----------------------------------------
 IF NOT EXISTS

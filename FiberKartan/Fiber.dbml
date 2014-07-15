@@ -11,25 +11,6 @@
       <Column Name="StackTrace" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.[User]" Member="Users">
-    <Type Name="User">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
-      <Column Name="Username" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Password" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="Description" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
-      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="LastLoggedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastActivity" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="IsAdmin" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Association Name="User_MapAccessInvitation" Member="MapAccessInvitations" ThisKey="Id" OtherKey="InvitationSentBy" Type="MapAccessInvitation" />
-      <Association Name="User_MapFile" Member="MapFiles" ThisKey="Id" OtherKey="CreatorId" Type="MapFile" />
-      <Association Name="User_MapType" Member="MapTypes" ThisKey="Id" OtherKey="CreatorId" Type="MapType" />
-      <Association Name="User_MapTypeAccessRight" Member="MapTypeAccessRights" ThisKey="Id" OtherKey="UserId" Type="MapTypeAccessRight" />
-      <Association Name="User_Map" Member="Maps" ThisKey="Id" OtherKey="CreatorId" Type="Map" />
-    </Type>
-  </Table>
   <Table Name="dbo.Line" Member="Lines">
     <Type Name="Line">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -54,8 +35,8 @@
       <Column Name="InvitationCode" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
       <Column Name="InvitationSent" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="InvitationSentBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="User_MapAccessInvitation" Member="User" ThisKey="InvitationSentBy" OtherKey="Id" Type="User" IsForeignKey="true" />
       <Association Name="MapType_MapAccessInvitation" Member="MapType" ThisKey="MapTypeId" OtherKey="Id" Type="MapType" IsForeignKey="true" />
+      <Association Name="User_MapAccessInvitation" Member="User" ThisKey="InvitationSentBy" OtherKey="Id" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.MapFiles" Member="MapFiles">
@@ -65,8 +46,8 @@
       <Column Name="CreatorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="MapData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Association Name="User_MapFile" Member="User" ThisKey="CreatorId" OtherKey="Id" Type="User" IsForeignKey="true" />
       <Association Name="MapType_MapFile" Member="MapType" ThisKey="MapTypeId" OtherKey="Id" Type="MapType" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="User_MapFile" Member="User" ThisKey="CreatorId" OtherKey="Id" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.MapType" Member="MapTypes">
@@ -82,9 +63,9 @@
       <Association Name="MapType_MapFile" Member="MapFiles" ThisKey="Id" OtherKey="MapTypeId" Type="MapFile" />
       <Association Name="MapType_MapTypeAccessRight" Member="MapTypeAccessRights" ThisKey="Id" OtherKey="MapTypeId" Type="MapTypeAccessRight" />
       <Association Name="MapType_Map" Member="Maps" ThisKey="Id" OtherKey="MapTypeId" Type="Map" />
-      <Association Name="User_MapType" Member="User" ThisKey="CreatorId" OtherKey="Id" Type="User" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
       <Association Name="Municipality_MapType" Member="Municipality" ThisKey="MunicipalityCode" OtherKey="Code" Type="Municipality" IsForeignKey="true" />
       <Association Name="ServiceCompany_MapType" Member="ServiceCompany" ThisKey="ServiceCompanyId" OtherKey="Id" Type="ServiceCompany" IsForeignKey="true" />
+      <Association Name="User_MapType" Member="User" ThisKey="CreatorId" OtherKey="Id" Type="User" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.MapTypeAccessRight" Member="MapTypeAccessRights">
@@ -178,6 +159,37 @@
       <Association Name="Map_Region" Member="Regions" ThisKey="MapTypeId,Ver" OtherKey="MapTypeId,MapVer" Type="Region" />
       <Association Name="MapType_Map" Member="MapType" ThisKey="MapTypeId" OtherKey="Id" Type="MapType" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
       <Association Name="User_Map" Member="User" ThisKey="CreatorId" OtherKey="Id" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[User]" Member="Users">
+    <Type Name="User">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Username" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Password" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastLoggedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastActivity" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsAdmin" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="LastNotificationMessage" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="User_MapAccessInvitation" Member="MapAccessInvitations" ThisKey="Id" OtherKey="InvitationSentBy" Type="MapAccessInvitation" />
+      <Association Name="User_MapFile" Member="MapFiles" ThisKey="Id" OtherKey="CreatorId" Type="MapFile" />
+      <Association Name="User_MapType" Member="MapTypes" ThisKey="Id" OtherKey="CreatorId" Type="MapType" />
+      <Association Name="User_MapTypeAccessRight" Member="MapTypeAccessRights" ThisKey="Id" OtherKey="UserId" Type="MapTypeAccessRight" />
+      <Association Name="User_Map" Member="Maps" ThisKey="Id" OtherKey="CreatorId" Type="Map" />
+      <Association Name="User_NotificationMessage" Member="NotificationMessages" ThisKey="Id" OtherKey="CreatorId" Type="NotificationMessage" />
+    </Type>
+  </Table>
+  <Table Name="dbo.NotificationMessage" Member="NotificationMessages">
+    <Type Name="NotificationMessage">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Body" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreatorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="User_NotificationMessage" Member="User" ThisKey="CreatorId" OtherKey="Id" Type="User" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Function Name="dbo.DeleteMapType" Method="DeleteMapType">
