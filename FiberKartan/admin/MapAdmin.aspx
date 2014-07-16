@@ -11,7 +11,7 @@
         <meta charset="utf-8" >        
         <meta name="viewport" content="width=device-width" >
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
-        <%= WebExtensions.CombresLink("adminCss")%>
+        <%: System.Web.Optimization.Styles.Render("~/inc/adminCss") %>
         <link rel="Stylesheet" type="text/css" href="/inc/css/map_print.css?ver=1.1" media="print" />        
         <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry,drawing"></script>
         <script>var fk = fk || {};</script>
@@ -142,6 +142,7 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
 	    </script>
-        <%= WebExtensions.CombresLink("adminJs")%>
+        <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
+        <%: System.Web.Optimization.Scripts.Render("~/inc/adminJs") %>
     </body>
 </html>

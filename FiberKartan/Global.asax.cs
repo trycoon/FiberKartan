@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using FiberKartan.Admin.Security;
 using System.Web.Routing;
-using Combres;
+using System.Web.Optimization;
 
 /*
 The zlib/libpng License
@@ -25,7 +25,12 @@ namespace FiberKartan
     {
         protected void Application_Start(object sender, EventArgs e)
         {
-            RouteTable.Routes.AddCombresRoute("Combres Route");
+            // Handlebars views
+            var path = Server.MapPath("~/inc/js/handlebars-v1.3.0.js");
+            BundleConfig.RegisterHandlBarBundles(BundleTable.Bundles, path);
+            
+            // CSS and Javascripts
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
         protected void Session_Start(object sender, EventArgs e)

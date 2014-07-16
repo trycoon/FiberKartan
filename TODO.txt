@@ -47,3 +47,6 @@ Innan driftsättning:
 - Lägg till [Layers] [nvarchar](max) NOT NULL DEFAULT '[]' på Map.
 - Lägg till [LastNotificationMessage] [int] NULL på User.
 - Skapa tabellen [NotificationMessage].
+- Ta bort alla hänvisningar till combres ifrån web.config.
+- Ta bort     <compilation debug="true" targetFramework="4.5.2" /> från web.config
+- Lägg till <mimeMap fileExtension=".hbs" mimeType="text/x-handlebars-template" /> i web.config

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Liquidbytes.se")]
 [assembly: AssemblyProduct("FiberKartan")]
-[assembly: AssemblyCopyright("Copyright © Liquidbytes.se 2013")]
+[assembly: AssemblyCopyright("Copyright © Liquidbytes.se 2014")]
 [assembly: AssemblyTrademark("FiberKartan")]
 [assembly: AssemblyCulture("")]
 
