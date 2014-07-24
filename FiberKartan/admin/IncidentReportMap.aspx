@@ -42,5 +42,6 @@
             })();
         </script>
         <%: System.Web.Optimization.Scripts.Render("~/inc/incidentReportJs") %>
+        <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
     </body>
 </html>

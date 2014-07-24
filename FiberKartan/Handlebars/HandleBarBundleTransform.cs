@@ -125,7 +125,11 @@ namespace Controllers.Transform
         public string defaultTemplateName = "default";
         public string resourceNameSeparator = "/";
         public string fileNameSeparator = "-";
-        public bool minifyTemplates = true;
+         #if DEBUG
+            public bool minifyTemplates = false;
+         #else
+            public bool minifyTemplates = true;
+        #endif
         public string jsPath { get; set; }
     }
 }

@@ -133,27 +133,15 @@
     <Content Include="Admin\manual\img\tn_ShareMap.jpg" />
     <Content Include="Admin\manual\img\tn_ViewAdminMap.jpg" />
     <Content Include="Admin\manual\img\ViewAdminMap.jpg" />
-    <Content Include="inc\css\jquery-ui.min.css" />
-    <Content Include="inc\css\jquery-ui.structure.min.css" />
-    <Content Include="inc\css\jquery-ui.theme.min.css" />
-    <Content Include="inc\js\fancybox\fancybox_loading%402x.gif" />
-    <Content Include="inc\js\fancybox\fancybox_overlay.png" />
-    <Content Include="inc\js\fancybox\fancybox_sprite%402x.png" />
-    <Content Include="inc\js\handlebars-v1.3.0.js" />
-    <Content Include="inc\js\incidentReportMap.js" />
-    <Content Include="ResultBox.ascx" />
-    <Content Include="Admin\ExportMap.aspx" />
-    <Content Include="Admin\ImportIntoMap.aspx" />
-    <Content Include="Admin\manual\index.htm" />
-    <Content Include="Admin\ShareMap.aspx" />
-    <Content Include="Admin\ShowMaps.aspx" />
-    <Content Include="Admin\Logon.aspx" />
-    <Content Include="Admin\ShowMapVersions.aspx" />
-    <Content Include="Default.aspx" />
-    <Content Include="google5e8bfb131adedddb.html" />
-    <Content Include="inc\css\firstpage.css" />
+    <Content Include="inc\css\images\animated-overlay.gif" />
+    <Content Include="inc\css\images\cut.png" />
+    <Content Include="inc\css\images\door.png" />
+    <Content Include="inc\css\images\page_white_add.png" />
+    <Content Include="inc\css\images\page_white_copy.png" />
+    <Content Include="inc\css\images\page_white_delete.png" />
+    <Content Include="inc\css\images\page_white_edit.png" />
+    <Content Include="inc\css\images\page_white_paste.png" />
     <Content Include="inc\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="inc\css\images\ui-bg_flat_50_000000_40x100.png" />
     <Content Include="inc\css\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="inc\css\images\ui-bg_glass_55_fbf9ee_1x400.png" />
     <Content Include="inc\css\images\ui-bg_glass_65_ffffff_1x400.png" />
@@ -166,6 +154,26 @@
     <Content Include="inc\css\images\ui-icons_454545_256x240.png" />
     <Content Include="inc\css\images\ui-icons_888888_256x240.png" />
     <Content Include="inc\css\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="inc\css\jquery-ui.min.css" />
+    <Content Include="inc\css\jquery-ui.structure.min.css" />
+    <Content Include="inc\css\jquery-ui.theme.min.css" />
+    <Content Include="inc\js\fancybox\fancybox_loading%402x.gif" />
+    <Content Include="inc\js\fancybox\fancybox_overlay.png" />
+    <Content Include="inc\js\fancybox\fancybox_sprite%402x.png" />
+    <Content Include="inc\js\handlebars-v1.3.0.js" />
+    <Content Include="inc\js\handlebars.runtime-v1.3.0.js" />
+    <Content Include="inc\js\incidentReportMap.js" />
+    <Content Include="ResultBox.ascx" />
+    <Content Include="Admin\ExportMap.aspx" />
+    <Content Include="Admin\ImportIntoMap.aspx" />
+    <Content Include="Admin\manual\index.htm" />
+    <Content Include="Admin\ShareMap.aspx" />
+    <Content Include="Admin\ShowMaps.aspx" />
+    <Content Include="Admin\Logon.aspx" />
+    <Content Include="Admin\ShowMapVersions.aspx" />
+    <Content Include="Default.aspx" />
+    <Content Include="google5e8bfb131adedddb.html" />
+    <Content Include="inc\css\firstpage.css" />
     <Content Include="Admin\manual\manual.css" />
     <Content Include="inc\img\background-dark.png" />
     <Content Include="inc\img\email_add.png" />
@@ -685,6 +693,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Handlebars\views\marker.hbs" />
+    <Content Include="Handlebars\views\incidentForm.hbs" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

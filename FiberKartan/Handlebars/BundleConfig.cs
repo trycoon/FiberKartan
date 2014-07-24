@@ -16,9 +16,9 @@ namespace FiberKartan
             HandleBarBundleTransform transform = new HandleBarBundleTransform();
             transform.jsPath = path;
             bundles.Add(new Bundle("~/inc/views", transform).IncludeDirectory("~/Handlebars/views", "*.hbs", true));
-            #if !DEBUG
-                BundleTable.EnableOptimizations = true;
-            #endif
+
+            //TODO: Setting this to false will make the handlebars templates not to be compiled, but setting this to true will make all javascript-files minified which we don't want when debugging.
+            BundleTable.EnableOptimizations = true;
         }
 
         public static void RegisterBundles(BundleCollection bundles)
@@ -42,13 +42,14 @@ namespace FiberKartan
                "~/inc/js/jquery.min.js",
                "~/inc/js/jquery-ui.min.js",
                "~/inc/js/jquery.ui.touch-punch.min.js",
+               "~/inc/js/handlebars.runtime-v1.3.0.js",
                "~/inc/js/base.js",
-                "~/inc/js/jquery.contextMenu.js",
-                "~/inc/js/mapAdmin.js",
+                "~/inc/js/jquery.contextMenu.js",                
                 "~/inc/js/markerwithlabel.js",
                 "~/inc/js/jquery.fileupload.js",
                 "~/inc/js/jquery.iframe-transport.js",
-                "~/inc/js/jquery.cookie.js"
+                "~/inc/js/jquery.cookie.js",
+                "~/inc/js/mapAdmin.js"
                 ).ForceOrdered());
 
             bundles.Add(new ScriptBundle("~/inc/userJs").Include(
@@ -71,6 +72,7 @@ namespace FiberKartan
                "~/inc/js/jquery.min.js",
                "~/inc/js/jquery-ui.min.js",
                "~/inc/js/jquery.ui.touch-punch.min.js",
+               "~/inc/js/handlebars.runtime-v1.3.0.js",
                "~/inc/js/base.js",
                 "~/inc/js/incidentReportMap.js"
                 ).ForceOrdered());

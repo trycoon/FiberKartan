@@ -34,7 +34,7 @@ label
 }
 .dark
 {
-    background: #555 url('../img/background-dark.png') repeat;
+    background: #555 url('/inc/img/background-dark.png') repeat;
     background-color: #555;    
 }
 .header

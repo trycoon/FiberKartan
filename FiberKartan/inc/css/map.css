@@ -48,14 +48,14 @@ input[disabled] + label {
 }
 
 #mapForm #resetMapButton div {
-    background-image: url("images/ui-icons_222222_256x240.png");
+    background-image: url("/inc/css/images/ui-icons_222222_256x240.png");
     background-position: 0 -112px;
     height: 16px;
     width: 16px;
 }
 
 #mapForm #snapshotButton div {
-    background-image: url("images/ui-icons_222222_256x240.png");
+    background-image: url("/inc/css/images/ui-icons_222222_256x240.png");
     background-position: -80px -96px;
     height: 16px;
     width: 16px;
@@ -130,7 +130,7 @@ input[disabled] + label {
     width: 100%;
     height: 100%;
     border: 0;
-    background: #000 url("images/ui-bg_flat_50_000000_40x100.png") repeat-x scroll 50% 50%;
+    background: #000 url("/inc/css/images/ui-bg_flat_50_000000_40x100.png") repeat-x scroll 50% 50%;
 	zoom: 1;
 	z-index: 9000;
 	filter: alpha(opacity=90);
@@ -183,12 +183,12 @@ form
     margin-top: 15px;
 }
 #mapInfoIcon {
-    background:transparent url(../img/info_icon.gif);
+    background:transparent url("/inc/img/info_icon.gif");
 }
 
 .tooltip {
 	display:none;
-	background:transparent url(../img/black_arrow.png);
+	background:transparent url("/inc/img/black_arrow.png");
 	font-size:11px;
 	height:70px;
 	width:160px;

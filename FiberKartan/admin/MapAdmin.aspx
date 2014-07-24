@@ -142,7 +142,7 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
 	    </script>
-        <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
         <%: System.Web.Optimization.Scripts.Render("~/inc/adminJs") %>
+        <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
     </body>
 </html>
