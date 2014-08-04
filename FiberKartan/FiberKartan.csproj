@@ -543,8 +543,10 @@
     <Compile Include="Admin\ListUsers.aspx.designer.cs">
       <DependentUpon>ListUsers.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Handlebars\BundleConfig.cs" />
-    <Compile Include="Handlebars\HandleBarBundleTransform.cs" />
+    <Compile Include="Resources\BundleConfig.cs" />
+    <Compile Include="Resources\CssBundleTransform.cs" />
+    <Compile Include="Resources\JavascriptBundleTransform.cs" />
+    <Compile Include="Resources\HandleBarBundleTransform.cs" />
     <Compile Include="ResultBox.ascx.cs">
       <DependentUpon>ResultBox.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -692,8 +694,8 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Handlebars\views\marker.hbs" />
-    <Content Include="Handlebars\views\incidentForm.hbs" />
+    <Content Include="Resources\views\marker.hbs" />
+    <Content Include="Resources\views\incidentForm.hbs" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

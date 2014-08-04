@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Web.Security;
-using System.Web;
-using System.Security.Principal;
 using System.Collections.Generic;
+using System.Security.Principal;
 using System.Text;
-using FiberKartan.Admin.Security;
-using System.Web.Routing;
+using System.Web;
 using System.Web.Optimization;
+using System.Web.Routing;
+using System.Web.Security;
+using FiberKartan.Admin.Security;
+using FiberKartan.Resources;
 
 /*
 The zlib/libpng License
@@ -25,12 +26,14 @@ namespace FiberKartan
     {
         protected void Application_Start(object sender, EventArgs e)
         {
-            // Handlebars views
+            // Bundle and precompile Handlebars views.
             var path = Server.MapPath("~/inc/js/handlebars-v1.3.0.js");
             BundleConfig.RegisterHandlBarBundles(BundleTable.Bundles, path);
-            
-            // CSS and Javascripts
+
+            // Bundle CSS and Javascripts.
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            BundleTable.EnableOptimizations = true;
         }
 
         protected void Session_Start(object sender, EventArgs e)

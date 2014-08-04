@@ -47,6 +47,15 @@ Innan driftsättning:
 - Lägg till [Layers] [nvarchar](max) NOT NULL DEFAULT '[]' på Map.
 - Lägg till [LastNotificationMessage] [int] NULL på User.
 - Skapa tabellen [NotificationMessage].
+- Skapa tabellen [IncidentReport].
 - Ta bort alla hänvisningar till combres ifrån web.config.
 - Ta bort     <compilation debug="true" targetFramework="4.5.2" /> från web.config
 - Lägg till <mimeMap fileExtension=".hbs" mimeType="text/x-handlebars-template" /> i web.config
+
+- Vissa sökvägar till bilder saknas:
+GET http://localhost:1051/inc/images/ui-bg_highlight-soft_75_cccccc_1x100.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:3
+GET http://localhost:1051/inc/images/ui-icons_888888_256x240.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:3
+GET http://localhost:1051/inc/images/ui-bg_glass_75_e6e6e6_1x400.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:3
+GET http://localhost:1051/inc/images/ui-bg_flat_0_aaaaaa_40x100.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:4
+GET http://localhost:1051/inc/images/ui-icons_454545_256x240.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:4
+GET http://localhost:1051/inc/images/ui-bg_glass_75_dadada_1x400.png 404 (Not Found) 
