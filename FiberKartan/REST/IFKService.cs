@@ -51,6 +51,17 @@ namespace FiberKartan.REST
         Response ReportIncident(IncidentReport report);
 
         /// <summary>
+        /// Metod som returnerar ett lager för en karta.
+        /// </summary>
+        /// <param name="mapId">Id på karta</param>
+        /// <param name="name">Namn på lagret som skall hämtas</param>
+        /// <param name="ver">[Frivilligt] Version av kartan som skall användas, om inget versionsnummer anges så antas den senaste versionen</param>
+        /// <returns>Ett kartlager</returns>
+        [OperationContract]
+        [WebGet(UriTemplate = "/Layer/{mapId}/{name}/?ver={ver}")]
+        GetLayerResponse GetLayer(string mapId, string name, string ver);
+
+        /// <summary>
         /// Metod som returnerar beskrivningen för en markör.
         /// </summary>
         /// <param name="id">Markörens id</param>
@@ -86,19 +97,10 @@ namespace FiberKartan.REST
         PingResponse Ping();
     }
 
-    [DataContract]
-    public class Response
-    {
-        [DataMember]
-        public ErrorCode ErrorCode { get; set; }
-
-        [DataMember]
-        public string ErrorMessage { get; set; }
-    }
-
+    #region RequestDataTypes
     [DataContract]
     public class MapContent
-    {        
+    {
         [DataMember]
         public int MapTypeId { get; set; }
 
@@ -115,6 +117,74 @@ namespace FiberKartan.REST
         public List<Region> Regions { get; set; }
     }
 
+    [DataContract]
+    public class IncidentReport
+    {
+        [DataMember]
+        public int MapTypeId { get; set; }
+
+        [DataMember]
+        public int Ver { get; set; }
+
+        [DataMember]
+        public Coordinate Position { get; set; }
+
+        [DataMember]
+        public string Estate { get; set; }
+
+        [DataMember]
+        public string Description { get; set; }
+    }
+    #endregion RequestDataTypes
+
+    #region ResponseDataTypes
+    [DataContract]
+    public class Response
+    {
+        [DataMember]
+        public ErrorCode ErrorCode { get; set; }
+
+        [DataMember]
+        public string ErrorMessage { get; set; }
+    }
+
+    [DataContract]
+    public class SaveMapResponse : Response
+    {
+        [DataMember]
+        public int NewVersionNumber { get; set; }
+
+        [DataMember]
+        public List<Marker> AddedMarkers { get; set; }
+
+        [DataMember]
+        public List<Cable> AddedCables { get; set; }
+
+        [DataMember]
+        public List<Region> AddedRegions { get; set; }
+    }
+
+    [DataContract]
+    public class GetLayerResponse : Response
+    {
+        public GetLayerResponse()
+        {
+            this.Layer = "{}";
+        }
+
+        [DataMember]
+        public string Layer { get; set; }
+    }
+
+    [DataContract]
+    public class PingResponse
+    {
+        [DataMember]
+        public string Message { get; set; }
+    }
+    #endregion ResponseDataTypes
+
+    #region ModelDataTypes
     [DataContract]
     public class Marker
     {
@@ -208,48 +278,7 @@ namespace FiberKartan.REST
         [DataMember]
         public string Lng { get; set; }
     }
-
-    [DataContract]
-    public class SaveMapResponse
-    {
-        [DataMember]
-        public ErrorCode ErrorCode { get; set; }
-
-        [DataMember]
-        public string ErrorMessage { get; set; }
-
-        [DataMember]
-        public int NewVersionNumber { get; set; }
-
-        [DataMember]
-        public List<Marker> AddedMarkers { get; set; }
-
-        [DataMember]
-        public List<Cable> AddedCables { get; set; }
-
-        [DataMember]
-        public List<Region> AddedRegions { get; set; }
-    }
-
-    [DataContract]
-    public class IncidentReport
-    {
-        [DataMember]
-        public int MapTypeId { get; set; }
-
-        [DataMember]
-        public int Ver { get; set; }
-
-        [DataMember]
-        public Coordinate Position { get; set; }
-
-        [DataMember]
-        public string Estate { get; set; }
-
-        [DataMember]
-        public string Description { get; set; }
-    }
-
+    
     public class MarkerDescription
     {
         [DataMember]
@@ -267,11 +296,5 @@ namespace FiberKartan.REST
         [DataMember]
         public string Desc { get; set; }
     }
-
-    [DataContract]
-    public class PingResponse
-    {
-        [DataMember]
-        public string Message { get; set; }
-    }
+    #endregion ModelDataTypes
 }

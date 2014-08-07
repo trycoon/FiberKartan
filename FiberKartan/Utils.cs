@@ -252,7 +252,7 @@ namespace FiberKartan
                         #endregion CheckLines
 
                         body.Append("<p>Observera att listan ovan bara ger en grov bild av de ändringar som kan ha gjorts på kartan, ett flertal mindre ändringar kanske inte detekteras av denna funktion!</p>");
-                        body.Append("<br/><p>Detta e-post meddelande är automatgenererat av <a href=\"http://fiberkartan.se\">Fiberkartan.se</a> och kan inte svaras på - Om du inte längre önskar få e-post angående uppdateringar av denna karta, logga in på <a href=\"").Append(ConfigurationManager.AppSettings["ServerAdress"]).Append("/admin/ShowMaps.aspx\">Fiberkartan.se</a> och klicka på \"kuvertet\" för denna karta för att avsluta prenumerationen.</p></body></html>");
+                        body.Append("<br/><p>Detta e-postmeddelande är automatgenererat av <a href=\"http://fiberkartan.se\">Fiberkartan.se</a> och kan inte svaras på - Om du inte längre önskar få e-post angående uppdateringar av denna karta, logga in på <a href=\"").Append(ConfigurationManager.AppSettings["ServerAdress"]).Append("/admin/ShowMaps.aspx\">Fiberkartan.se</a> och klicka på \"kuvertet\" för denna karta för att avsluta prenumerationen.</p></body></html>");
 
                         using (var mail = new MailMessage()
                         {

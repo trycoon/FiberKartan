@@ -126,7 +126,7 @@ namespace FiberKartan.Admin
                         body.Append("<p>" + currentUser.Name + " har inbjudit dig till att samarbeta kring fiberkartan \"").Append(accessRight.MapType.Title).Append("\", klicka på följande <a href=\"")
                             .Append(ConfigurationManager.AppSettings["ServerAdress"]).Append("/admin/MapAdmin.aspx?mid=").Append(accessRight.MapTypeId)
                             .Append("\">länk</a> för att studera kartan.</p>")
-                            .Append("<p>Detta e-post meddelande är automatgenererat av <a href=\"http://fiberkartan.se\">Fiberkartan.se</a>.</p>");
+                            .Append("<p>Detta e-postmeddelande är automatgenererat av <a href=\"http://fiberkartan.se\">Fiberkartan.se</a>.</p>");
                         body.Append("</body></html>");
 
                         using (var mail = new MailMessage()
@@ -194,7 +194,7 @@ namespace FiberKartan.Admin
                     body.Append("<p>" + currentUser.Name + " har inbjudit dig till att samarbeta kring fiberkartan \"").Append(accessInvitation.MapType.Title).Append("\", klicka på följande <a href=\"")
                         .Append(ConfigurationManager.AppSettings["ServerAdress"]).Append("/admin/Logon.aspx?invitation=").Append(accessInvitation.InvitationCode)
                         .Append("\">länk</a> för att besvara inbjudan och skapa ett konto.</p>")
-                        .Append("<p>Detta e-post meddelande är automatgenererat av <a href=\"http://fiberkartan.se\">Fiberkartan.se</a>.</p>");
+                        .Append("<p>Detta e-postmeddelande är automatgenererat av <a href=\"http://fiberkartan.se\">Fiberkartan.se</a>.</p>");
                     body.Append("</body></html>");
 
                     using (var mail = new MailMessage()

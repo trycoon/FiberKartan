@@ -15,6 +15,7 @@ using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
 using FiberKartan;
+using Newtonsoft.Json;
 
 /*
 The zlib/libpng License
@@ -436,6 +437,76 @@ namespace FiberKartan.REST
                 }
 
                 throw;
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Metod som returnerar ett lager för en karta.
+        /// </summary>
+        /// <param name="mapId">Id på karta</param>
+        /// <param name="name">Namn på lagret som skall hämtas</param>
+        /// <param name="ver">[Frivilligt] Version av kartan som skall användas, om inget versionsnummer anges så antas den senaste versionen</param>
+        /// <returns>Ett kartlager</returns>
+        public GetLayerResponse GetLayer(string mapId, string name, string ver)
+        {
+            var fiberDb = new FiberDataContext();
+            var response = new GetLayerResponse();
+
+            if (string.IsNullOrEmpty(mapId) || string.IsNullOrEmpty(name))
+            {
+                response.ErrorCode = ErrorCode.MissingInformation;
+                response.ErrorMessage = "MapId och/eller namn på lager saknas i anrop.";
+
+                return response;
+            }
+
+            name = name.Trim().ToLower();
+
+            if (!HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                response.ErrorCode = ErrorCode.NotLoggedIn;
+                response.ErrorMessage = "Du måste vara inloggad för att hämta ett kartlager.";
+
+                return response;
+            }
+
+            int mapTypeId = 0;
+            int version = 0;
+            int.TryParse(mapId, out mapTypeId);
+            int.TryParse(ver, out version);
+ 
+            FiberKartan.Map map = null;
+
+            if (version > 0)
+            {
+                map = (from m in fiberDb.Maps where (m.MapTypeId == mapTypeId && m.Ver == version) select m).FirstOrDefault();
+            }
+            else
+            {
+                map = (from m in fiberDb.Maps.OrderByDescending(m => m.Ver) where m.MapTypeId == mapTypeId select m).FirstOrDefault();
+            }
+
+            if (!Utils.GetMapAccessRights(mapTypeId).HasFlag(MapAccessRights.Read))
+            {
+                response.ErrorCode = ErrorCode.NoAccessToMap;
+                response.ErrorMessage = "Du saknar behörighet för att hämta ett kartlager från denna karta.";
+
+                return response;
+            }
+
+            Utils.Log("Hämtar kartlager \"" + name + "\" för karta med MapId=" + mapTypeId + " för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 130);
+
+            if (!string.IsNullOrEmpty(map.Layers))
+            {
+                dynamic layers = JsonConvert.DeserializeObject(map.Layers);
+                var layer = layers[name];
+
+                if (layer != null)
+                {
+                    response.Layer = JsonConvert.SerializeObject(layer);
+                }
             }
 
             return response;
