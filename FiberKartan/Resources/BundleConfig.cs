@@ -24,20 +24,20 @@ namespace FiberKartan.Resources
             var cssTransform = new CssBundleTransform();
             // http://www.codeproject.com/Articles/748849/ASP-NET-Web-Optimization-Framework
 
-            bundles.Add(new Bundle("~/inc/adminCss", cssTransform).Include(
+            bundles.Add(new Bundle("~/inc/css/adminCss", cssTransform).Include(
                  "~/inc/css/base.css",
                 "~/inc/css/jquery-ui.min.css",
                 "~/inc/css/map.css",
                 "~/inc/css/jquery.contextMenu.css"
                 ).ForceOrdered());
 
-            bundles.Add(new Bundle("~/inc/userCss", cssTransform).Include(
+            bundles.Add(new Bundle("~/inc/css/userCss", cssTransform).Include(
                 "~/inc/css/base.css",
                 "~/inc/css/jquery-ui.min.css",
                 "~/inc/css/map.css"
                ).ForceOrdered());
 
-            bundles.Add(new Bundle("~/inc/adminJs", jsTransform).Include(
+            bundles.Add(new Bundle("~/inc/js/adminJs", jsTransform).Include(
                "~/inc/js/jquery.min.js",
                "~/inc/js/jquery-ui.min.js",
                "~/inc/js/jquery.ui.touch-punch.min.js",
@@ -51,7 +51,7 @@ namespace FiberKartan.Resources
                 "~/inc/js/mapAdmin.js"
                 ).ForceOrdered());
 
-            bundles.Add(new Bundle("~/inc/userJs", jsTransform).Include(
+            bundles.Add(new Bundle("~/inc/js/userJs", jsTransform).Include(
                "~/inc/js/jquery.min.js",
                "~/inc/js/jquery-ui.min.js",
                "~/inc/js/jquery.ui.touch-punch.min.js",
@@ -59,7 +59,7 @@ namespace FiberKartan.Resources
                 "~/inc/js/map.js"
                 ).ForceOrdered());
 
-            bundles.Add(new Bundle("~/inc/regionJs", jsTransform).Include(
+            bundles.Add(new Bundle("~/inc/js/regionJs", jsTransform).Include(
                "~/inc/js/jquery.min.js",
                "~/inc/js/jquery-ui.min.js",
                "~/inc/js/jquery.ui.touch-punch.min.js",
@@ -67,7 +67,7 @@ namespace FiberKartan.Resources
                 "~/inc/js/totalMap.js"
                 ).ForceOrdered());
 
-            bundles.Add(new Bundle("~/inc/incidentReportJs", jsTransform).Include(
+            bundles.Add(new Bundle("~/inc/js/incidentReportJs", jsTransform).Include(
                "~/inc/js/jquery.min.js",
                "~/inc/js/jquery-ui.min.js",
                "~/inc/js/jquery.ui.touch-punch.min.js",

@@ -14,7 +14,7 @@
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
         <meta name="description" content="FiberKartan - Projekteringsverktyg för socken och byanät" >
         <meta name="keywords" content="fiberkarta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg" >
-        <%: System.Web.Optimization.Styles.Render("~/inc/userCss") %>
+        <%: System.Web.Optimization.Styles.Render("~/inc/css/userCss") %>
         <link rel="Stylesheet" type="text/css" href="/inc/css/map_print.css?ver=1.1" media="print" />
         <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry,drawing"></script>
         <script>var fk = fk || {};</script>
@@ -40,7 +40,7 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
         </script>
-        <%: System.Web.Optimization.Scripts.Render("~/inc/incidentReportJs") %>
+        <%: System.Web.Optimization.Scripts.Render("~/inc/js/incidentReportJs") %>
         <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
     </body>
 </html>
