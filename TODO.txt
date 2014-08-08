@@ -38,13 +38,16 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Exportera karta skall öppnas som ett eget fönster och inte som en modal ruta.
 - Uppdatera TinyMCE.
 - Uppdatera startsidan så att den blir mer sökbar, beskär bilden så att man inte ser länkarna i min webbläsare. Lägg in länkar och sitemap till regionskartorna.
-
+- Lägg till markörerna Fiberbrunn och MobilMast.
+- Stöd olika lager av kartan.
+- Fixa så att man kan söka inte bara efter fastighetsadress utan även efter nyckelord i beskrivningsrutan när man söker.
+- Det finns önskemål om att den publika kartan även skall kunna visa fastighetsgränser.
 
 
 Innan driftsättning:
 - Ta bort MapUrl från MapType-databasen, den används inte längre.
 - Lägg till [Published] [datetime] NULL på Map.
-- Lägg till [Layers] [nvarchar](max) NOT NULL DEFAULT '[]' på Map.
+- Lägg till [Layers] [nvarchar](max) NOT NULL DEFAULT '{}' på Map.
 - Lägg till [LastNotificationMessage] [int] NULL på User.
 - Skapa tabellen [NotificationMessage].
 - Skapa tabellen [IncidentReport].

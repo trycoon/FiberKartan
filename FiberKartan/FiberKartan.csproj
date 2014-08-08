@@ -157,6 +157,8 @@
     <Content Include="inc\css\jquery-ui.min.css" />
     <Content Include="inc\css\jquery-ui.structure.min.css" />
     <Content Include="inc\css\jquery-ui.theme.min.css" />
+    <Content Include="inc\img\markers\FiberWell.png" />
+    <Content Include="inc\img\markers\MobileCell.png" />
     <Content Include="inc\js\fancybox\fancybox_loading%402x.gif" />
     <Content Include="inc\js\fancybox\fancybox_overlay.png" />
     <Content Include="inc\js\fancybox\fancybox_sprite%402x.png" />
