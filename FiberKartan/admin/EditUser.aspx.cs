@@ -39,7 +39,7 @@ namespace FiberKartan.Admin
             BackButton.NavigateUrl = Request.QueryString["ReturnUrl"];
             if (string.IsNullOrEmpty(Request.QueryString["ReturnUrl"]) && Request.UrlReferrer != null && Request.UrlReferrer.ToString().Length > 0)
             {
-                BackButton.NavigateUrl = Request.UrlReferrer.ToString();
+                BackButton.NavigateUrl = Request.UrlReferrer.AbsoluteUri;
             }
 
             // Den inloggade användaren

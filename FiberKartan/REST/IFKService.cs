@@ -20,9 +20,9 @@ Permission is granted to anyone to use this software for any purpose, including 
 namespace FiberKartan.REST
 {
     /// <summary>
-    /// Möjliga felkoder man kan få när mar sparar ner en karta.
+    /// Möjliga felkoder man kan få när mar anropar REST-gränssnittet.
     /// </summary>
-    public enum SaveMapErrorCode : int { OK = 0, NotLoggedIn = 1, NoAccessToMap = 2, FailedToSave = 3};
+    public enum ErrorCode : int { OK = 0, NotLoggedIn = 1, NoAccessToMap = 2, FailedToSave = 3, MissingInformation = 4 };
 
     [ServiceContract]
     public interface IFKService
@@ -31,12 +31,35 @@ namespace FiberKartan.REST
         /// Metod som sparar ner ändringar av en karta.
         /// </summary>
         /// <param name="mapContent">Kartans innehåll(markörer, kabelsträckor, osv)</param>
+        /// <param name="publish">Om satt till sann så publiceras kartan också.</param>
         /// <returns>Returkod och id på nya markörer, sträckor, osv.</returns>
         [OperationContract]
-        [WebInvoke(UriTemplate = "/SaveChanges",
+        [WebInvoke(UriTemplate = "/SaveMap",
+         Method = "POST",
+         RequestFormat = WebMessageFormat.Json,
+         BodyStyle=WebMessageBodyStyle.WrappedRequest)]
+        SaveMapResponse SaveMap(MapContent mapContent, bool publish = false);
+
+        /// <summary>
+        /// Metod som används för att rapportera fel på ett fibernätverk.
+        /// </summary>
+        /// <param name="report">Felrapport</param>
+        [OperationContract]
+        [WebInvoke(UriTemplate = "/ReportIncident",
          Method = "POST",
          RequestFormat = WebMessageFormat.Json)]
-        SaveResponse SaveChanges(MapContent mapContent);
+        Response ReportIncident(IncidentReport report);
+
+        /// <summary>
+        /// Metod som returnerar ett lager för en karta.
+        /// </summary>
+        /// <param name="mapId">Id på karta</param>
+        /// <param name="name">Namn på lagret som skall hämtas</param>
+        /// <param name="ver">[Frivilligt] Version av kartan som skall användas, om inget versionsnummer anges så antas den senaste versionen</param>
+        /// <returns>Ett kartlager</returns>
+        [OperationContract]
+        [WebGet(UriTemplate = "/Layer/{mapId}/{name}/?ver={ver}")]
+        GetLayerResponse GetLayer(string mapId, string name, string ver);
 
         /// <summary>
         /// Metod som returnerar beskrivningen för en markör.
@@ -73,10 +96,11 @@ namespace FiberKartan.REST
         [WebGet(UriTemplate = "/Ping")]
         PingResponse Ping();
     }
-    
+
+    #region RequestDataTypes
     [DataContract]
     public class MapContent
-    {        
+    {
         [DataMember]
         public int MapTypeId { get; set; }
 
@@ -93,6 +117,74 @@ namespace FiberKartan.REST
         public List<Region> Regions { get; set; }
     }
 
+    [DataContract]
+    public class IncidentReport
+    {
+        [DataMember]
+        public int MapTypeId { get; set; }
+
+        [DataMember]
+        public int Ver { get; set; }
+
+        [DataMember]
+        public Coordinate Position { get; set; }
+
+        [DataMember]
+        public string Estate { get; set; }
+
+        [DataMember]
+        public string Description { get; set; }
+    }
+    #endregion RequestDataTypes
+
+    #region ResponseDataTypes
+    [DataContract]
+    public class Response
+    {
+        [DataMember]
+        public ErrorCode ErrorCode { get; set; }
+
+        [DataMember]
+        public string ErrorMessage { get; set; }
+    }
+
+    [DataContract]
+    public class SaveMapResponse : Response
+    {
+        [DataMember]
+        public int NewVersionNumber { get; set; }
+
+        [DataMember]
+        public List<Marker> AddedMarkers { get; set; }
+
+        [DataMember]
+        public List<Cable> AddedCables { get; set; }
+
+        [DataMember]
+        public List<Region> AddedRegions { get; set; }
+    }
+
+    [DataContract]
+    public class GetLayerResponse : Response
+    {
+        public GetLayerResponse()
+        {
+            this.Layer = "{}";
+        }
+
+        [DataMember]
+        public string Layer { get; set; }
+    }
+
+    [DataContract]
+    public class PingResponse
+    {
+        [DataMember]
+        public string Message { get; set; }
+    }
+    #endregion ResponseDataTypes
+
+    #region ModelDataTypes
     [DataContract]
     public class Marker
     {
@@ -186,29 +278,7 @@ namespace FiberKartan.REST
         [DataMember]
         public string Lng { get; set; }
     }
-
-    [DataContract]
-    public class SaveResponse
-    {
-        [DataMember]
-        public SaveMapErrorCode ErrorCode { get; set; }
-
-        [DataMember]
-        public string ErrorMessage { get; set; }
-
-        [DataMember]
-        public int NewVersionNumber { get; set; }
-
-        [DataMember]
-        public List<Marker> AddedMarkers { get; set; }
-
-        [DataMember]
-        public List<Cable> AddedCables { get; set; }
-
-        [DataMember]
-        public List<Region> AddedRegions { get; set; }
-    }
-
+    
     public class MarkerDescription
     {
         [DataMember]
@@ -226,11 +296,5 @@ namespace FiberKartan.REST
         [DataMember]
         public string Desc { get; set; }
     }
-
-    [DataContract]
-    public class PingResponse
-    {
-        [DataMember]
-        public string Message { get; set; }
-    }
+    #endregion ModelDataTypes
 }

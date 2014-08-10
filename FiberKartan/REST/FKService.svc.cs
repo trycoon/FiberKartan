@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Security.Principal;
@@ -12,6 +15,7 @@ using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
 using FiberKartan;
+using Newtonsoft.Json;
 
 /*
 The zlib/libpng License
@@ -33,25 +37,26 @@ namespace FiberKartan.REST
         /// Metod som sparar ner ändringar av en karta.
         /// </summary>
         /// <param name="mapContent">Kartans innehåll(markörer, kabelsträckor, osv)</param>
+        /// <param name="publish">Om satt till sann så publiceras kartan också.</param>
         /// <returns>Returkod och id på nya markörer, sträckor, osv.</returns>
-        public SaveResponse SaveChanges(MapContent mapContent)
+        public SaveMapResponse SaveMap(MapContent mapContent, bool publish = false)
         {
-            Utils.Log("SaveChanges anropad för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 126);
-            var response = new SaveResponse() { ErrorCode = 0, ErrorMessage = string.Empty };
+            Utils.Log("SaveMap anropad för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 126);
+            var response = new SaveMapResponse() { ErrorCode = 0, ErrorMessage = string.Empty };
 
             try
             {
                 if (!HttpContext.Current.User.Identity.IsAuthenticated)
                 {
-                    return new SaveResponse() { ErrorCode = SaveMapErrorCode.NotLoggedIn, ErrorMessage = "Du måste vara inloggad för att spara karta." };
+                    return new SaveMapResponse() { ErrorCode = ErrorCode.NotLoggedIn, ErrorMessage = "Du måste vara inloggad för att spara karta." };
                 }
 
                 if (!Utils.GetMapAccessRights(mapContent.MapTypeId).HasFlag(MapAccessRights.Write))
                 {
-                    return new SaveResponse() { ErrorCode = SaveMapErrorCode.NoAccessToMap, ErrorMessage = "Du saknar behörighet för att spara karta." };
+                    return new SaveMapResponse() { ErrorCode = ErrorCode.NoAccessToMap, ErrorMessage = "Du saknar behörighet för att spara karta." };
                 }
 
-                Utils.Log("Ny version av karta skall sparas (MapTypeId=" + mapContent.MapTypeId + " för användare=" + HttpContext.Current.User.Identity.Name + ").", System.Diagnostics.EventLogEntryType.Information, 126);
+                Utils.Log("Ny version av karta skall sparas " + (publish ? "och publiceras " : string.Empty) + "(MapTypeId=" + mapContent.MapTypeId + " för användare=" + HttpContext.Current.User.Identity.Name + ").", System.Diagnostics.EventLogEntryType.Information, 126);
 
                 var fiberDb = new FiberDataContext();
 
@@ -60,7 +65,7 @@ namespace FiberKartan.REST
                 if (existingMap == null)
                 {
                     Utils.Log("Misslyckades med att spara karta, kunde inte hitta karta med MapTypeId=" + mapContent.MapTypeId + ", Version=" + mapContent.Ver + " för användare=" + HttpContext.Current.User.Identity.Name, System.Diagnostics.EventLogEntryType.Warning, 109);
-                    return new SaveResponse() { ErrorCode = SaveMapErrorCode.FailedToSave, ErrorMessage = "Karta kunde inte hittas." };
+                    return new SaveMapResponse() { ErrorCode = ErrorCode.FailedToSave, ErrorMessage = "Karta kunde inte hittas." };
                 }
 
                 // Förhindrar att det smäller om parametrar inte är satta.
@@ -98,10 +103,12 @@ namespace FiberKartan.REST
                 map.KML_Hash = hash;
                 map.SourceKML = string.Empty;   // Vet inte om vi behöver sätta denna, man kanske bara vill ha den för importerade kartor.
 
+                map.Layers = "{}"; //TODO: Fixa denna när vi skall ta stöd för flera lager.
+
                 // Påvisa vem som skapade denna nya version.
                 var user = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).FirstOrDefault();
                 map.User = user;
-                map.CreatorId = user.Id;
+                map.CreatorId = user.Id;                
 
                 existingMap.MapType.Maps.Add(map);  // Lägger till kartan.
 
@@ -283,7 +290,7 @@ namespace FiberKartan.REST
                 HttpContext.Current.Cache.Remove("CachedTotalMap_" + map.MapType.Municipality.Code);
                 HttpContext.Current.Cache.Remove("CachedTotalMap_null"); // Hela Sverige.
 
-                Utils.Log("Ny version av karta sparad (MapTypeId=" + map.MapTypeId + ", Version=" + map.Ver + " för användare=" + HttpContext.Current.User.Identity.Name + ").", System.Diagnostics.EventLogEntryType.Information, 125);
+                Utils.Log("Ny version av karta sparad " + (publish ? "och publicerad " : string.Empty) + "(MapTypeId=" + map.MapTypeId + ", Version=" + map.Ver + " för användare=" + HttpContext.Current.User.Identity.Name + ").", System.Diagnostics.EventLogEntryType.Information, 125);
 
                 Utils.NotifyEmailSubscribers(map.MapTypeId, map.Ver);
             }
@@ -292,7 +299,7 @@ namespace FiberKartan.REST
                 try
                 {
                     var browserCapabilities = HttpContext.Current.Request.Browser;
-                    Utils.Log("Misslyckades med att spara en ny version av karta för användare=" + HttpContext.Current.User.Identity.Name + " med webbläsare: " + browserCapabilities.Type + ", " + browserCapabilities.Browser + ", " + browserCapabilities.Version + ", " + browserCapabilities.Platform + ".", System.Diagnostics.EventLogEntryType.Error, 125);
+                    Utils.Log("Misslyckades med att spara en ny version av karta för användare=" + HttpContext.Current.User.Identity.Name + " med webbläsare: " + browserCapabilities.Type + ", " + browserCapabilities.Browser + ", " + browserCapabilities.Version + ", " + browserCapabilities.Platform + ". Error=" + exception.Message + ", Stacktrace=" + exception.StackTrace, System.Diagnostics.EventLogEntryType.Error, 125);
                 }
                 catch (Exception)
                 {
@@ -300,6 +307,206 @@ namespace FiberKartan.REST
                 }
 
                 throw;
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Metod som används för att rapportera fel på ett fibernätverk.
+        /// </summary>
+        /// <param name="report">Felrapport</param>
+        public Response ReportIncident(IncidentReport report)
+        {
+            Utils.Log("ReportIncident anropad för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 127);
+            var response = new Response() { ErrorCode = 0, ErrorMessage = string.Empty };
+
+            try
+            {
+                if (!HttpContext.Current.User.Identity.IsAuthenticated)
+                {
+                    return new Response() { ErrorCode = ErrorCode.NotLoggedIn, ErrorMessage = "Du måste vara inloggad för att rapportera incidenter." };
+                }
+
+                if (!Utils.GetMapAccessRights(report.MapTypeId).HasFlag(MapAccessRights.Write))
+                {
+                    return new Response() { ErrorCode = ErrorCode.NoAccessToMap, ErrorMessage = "Du saknar behörighet för att rapportera incidenter." };
+                }
+
+                Utils.Log("Ny incident skapas (MapTypeId=" + report.MapTypeId + ", Description=" + report.Description + ") för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 126);
+
+                var fiberDb = new FiberDataContext();
+
+                var existingMap = (from m in fiberDb.Maps where (m.MapTypeId == report.MapTypeId && m.Ver == report.Ver) select m).SingleOrDefault();
+
+                if (existingMap == null)
+                {
+                    Utils.Log("Misslyckades med att rapportera incident, kunde inte hitta karta med MapTypeId=" + report.MapTypeId + ", Version=" + report.Ver + " för användare=" + HttpContext.Current.User.Identity.Name, System.Diagnostics.EventLogEntryType.Warning, 109);
+                    return new Response() { ErrorCode = ErrorCode.FailedToSave, ErrorMessage = "Karta kunde inte hittas." };
+                }
+
+                if (!existingMap.MapType.ServiceCompanyId.HasValue)
+                {
+                    return new Response() { ErrorCode = ErrorCode.MissingInformation, ErrorMessage = "Karta saknar Serviceleverantör, ingen felrapportering kan därför ske." };
+                }
+
+                if (!string.IsNullOrEmpty(report.Estate))
+                {
+                    report.Estate = report.Estate.Trim();
+                }
+
+                if (!string.IsNullOrEmpty(report.Description))
+                {
+                    report.Description = report.Description.Trim();
+                }
+
+                if (string.IsNullOrEmpty(report.Description))
+                {
+                    return new Response() { ErrorCode = ErrorCode.MissingInformation, ErrorMessage = "En felbeskrivning måste anges." };
+                }
+
+                if (report.Position == null || string.IsNullOrEmpty(report.Position.Lat) || string.IsNullOrEmpty(report.Position.Lng))
+                {
+                    return new Response() { ErrorCode = ErrorCode.MissingInformation, ErrorMessage = "Position måste anges." };
+                }
+
+                // Påvisa vem som skapade denna rapport.
+                var user = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).FirstOrDefault();
+
+                var incidentReport = new FiberKartan.IncidentReport()
+                {
+                    MapTypeId = existingMap.MapTypeId,
+                    MapVer = existingMap.Ver,
+                    CreatorId = user.Id,
+                    Created = DateTime.Now,
+                    ServiceCompanyId = existingMap.MapType.ServiceCompanyId.Value,
+                    ReportStatus = 1,
+                    Latitude = double.Parse(report.Position.Lat, CultureInfo.InvariantCulture.NumberFormat),
+                    Longitude = double.Parse(report.Position.Lng, CultureInfo.InvariantCulture.NumberFormat),
+                    Estate = report.Estate,
+                    Description = report.Description
+                };
+
+                fiberDb.IncidentReports.InsertOnSubmit(incidentReport);
+
+                fiberDb.SubmitChanges();    // Sparar till databasen.
+
+                #region SendMail
+
+                var body = new StringBuilder("<html><head><title>Felrapport</title></head><body><h1>Felrapport</h1>");
+                body.Append(user.Name + " har rapporterat följande fel på fibernätverk <a href=\"" + ConfigurationManager.AppSettings["ServerAdress"] + "/admin/MapAdmin.aspx?mid=" + existingMap.MapTypeId + "&ver=" + existingMap.Ver + "\">\"" + existingMap.MapType.Title + "\"</a>:</p>");
+                body.Append("Felrapport skapad: " + incidentReport.Created + "<br/>");
+                body.Append("Till serviceföretag: " + existingMap.MapType.ServiceCompany.Name + "<br/>");
+                body.Append("Position(WGS84) latitud: <strong>" + report.Position.Lat + "</strong> longitud: <strong>" + report.Position.Lng + "</strong><br/>");
+                body.Append("Fastighet: <strong>" + incidentReport.Estate + "</strong><br/>");
+                body.Append("Felbeskrivning: " + incidentReport.Description + "<br/>");
+
+                using (var mail = new MailMessage()
+                {
+                    From = new MailAddress("noreply@fiberkartan.se", "FiberKartan"),
+                    ReplyTo = new MailAddress(user.Username, user.Name),
+                    Subject = "Felrapport-Fiberkartan",
+                    IsBodyHtml = true,
+                    DeliveryNotificationOptions = DeliveryNotificationOptions.Never
+                })
+                {
+                    // HTML-innehåll måste kodas så här
+                    mail.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(body.ToString(), Encoding.UTF8, MediaTypeNames.Text.Html));
+
+                    mail.Bcc.Add(new MailAddress(existingMap.MapType.ServiceCompany.ServiceEmail));
+
+                    using (var SMTPServer = new SmtpClient())
+                    {
+                        SMTPServer.Send(mail);
+                    }
+                }
+                
+                #endregion SendMail
+            }
+            catch (Exception exception)
+            {
+                try
+                {
+                    var browserCapabilities = HttpContext.Current.Request.Browser;
+                    Utils.Log("Misslyckades med att rapportera incident med MapTypeId=" + report.MapTypeId + ", Version=" + report.Ver + " för användare=" + HttpContext.Current.User.Identity.Name + " med webbläsare: " + browserCapabilities.Type + ", " + browserCapabilities.Browser + ", " + browserCapabilities.Version + ", " + browserCapabilities.Platform + ". Error=" + exception.Message + ", Stacktrace=" + exception.StackTrace, System.Diagnostics.EventLogEntryType.Error, 125);
+
+                }
+                catch (Exception)
+                {
+                    // Ignorera.
+                }
+
+                throw;
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Metod som returnerar ett lager för en karta.
+        /// </summary>
+        /// <param name="mapId">Id på karta</param>
+        /// <param name="name">Namn på lagret som skall hämtas</param>
+        /// <param name="ver">[Frivilligt] Version av kartan som skall användas, om inget versionsnummer anges så antas den senaste versionen</param>
+        /// <returns>Ett kartlager</returns>
+        public GetLayerResponse GetLayer(string mapId, string name, string ver)
+        {
+            var fiberDb = new FiberDataContext();
+            var response = new GetLayerResponse();
+
+            if (string.IsNullOrEmpty(mapId) || string.IsNullOrEmpty(name))
+            {
+                response.ErrorCode = ErrorCode.MissingInformation;
+                response.ErrorMessage = "MapId och/eller namn på lager saknas i anrop.";
+
+                return response;
+            }
+
+            name = name.Trim().ToLower();
+
+            if (!HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                response.ErrorCode = ErrorCode.NotLoggedIn;
+                response.ErrorMessage = "Du måste vara inloggad för att hämta ett kartlager.";
+
+                return response;
+            }
+
+            int mapTypeId = 0;
+            int version = 0;
+            int.TryParse(mapId, out mapTypeId);
+            int.TryParse(ver, out version);
+ 
+            FiberKartan.Map map = null;
+
+            if (version > 0)
+            {
+                map = (from m in fiberDb.Maps where (m.MapTypeId == mapTypeId && m.Ver == version) select m).FirstOrDefault();
+            }
+            else
+            {
+                map = (from m in fiberDb.Maps.OrderByDescending(m => m.Ver) where m.MapTypeId == mapTypeId select m).FirstOrDefault();
+            }
+
+            if (!Utils.GetMapAccessRights(mapTypeId).HasFlag(MapAccessRights.Read))
+            {
+                response.ErrorCode = ErrorCode.NoAccessToMap;
+                response.ErrorMessage = "Du saknar behörighet för att hämta ett kartlager från denna karta.";
+
+                return response;
+            }
+
+            Utils.Log("Hämtar kartlager \"" + name + "\" för karta med MapId=" + mapTypeId + " för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 130);
+
+            if (!string.IsNullOrEmpty(map.Layers))
+            {
+                dynamic layers = JsonConvert.DeserializeObject(map.Layers);
+                var layer = layers[name];
+
+                if (layer != null)
+                {
+                    response.Layer = JsonConvert.SerializeObject(layer);
+                }
             }
 
             return response;

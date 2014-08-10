@@ -59,6 +59,7 @@ BEGIN
 	) ON [PRIMARY]
 	ALTER TABLE [dbo].[NotificationMessage] WITH CHECK ADD CONSTRAINT [FK_NotificationMessage_CreatorId] FOREIGN KEY([CreatorId])
 	REFERENCES [dbo].[User] ([Id]) ON DELETE CASCADE
+	ALTER TABLE [dbo].[NotificationMessage] CHECK CONSTRAINT [FK_NotificationMessage_CreatorId]
 END
 
 --- End NotificationMessage -----------------------------------------
@@ -212,7 +213,7 @@ BEGIN
 		[CreatorId] [int] NOT NULL,
 		[Views] [int] NOT NULL DEFAULT 0,
 		[Published] [datetime] NULL,
-		[Layers] [nvarchar](max) NOT NULL DEFAULT '[]',
+		[Layers] [nvarchar](max) NOT NULL DEFAULT '{}',
 	 CONSTRAINT [PK_Map] PRIMARY KEY CLUSTERED 
 	(
 		[MapTypeId] ASC,
@@ -343,7 +344,7 @@ BEGIN
 		[MapVer] ASC
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
-	ALTER TABLE [dbo].[Line]  WITH CHECK ADD  CONSTRAINT [FK_Line_Map] FOREIGN KEY([MapTypeId], [MapVer])
+	ALTER TABLE [dbo].[Line]  WITH CHECK ADD CONSTRAINT [FK_Line_Map] FOREIGN KEY([MapTypeId], [MapVer])
 	REFERENCES [dbo].[Map] ([MapTypeId], [Ver]) ON DELETE CASCADE
 	ALTER TABLE [dbo].[Line] CHECK CONSTRAINT [FK_Line_Map]
 END	
@@ -400,6 +401,39 @@ BEGIN
 END
 --- End ServiceCompany -----------------------------------------
 
+--- IncidentReport -----------------------------------------
+IF NOT EXISTS
+( SELECT [name] FROM sys.tables WHERE [name] = 'IncidentReport')
+BEGIN
+	CREATE TABLE [dbo].[IncidentReport](
+		[Id] [int] IDENTITY(1,1) NOT NULL,
+		[MapTypeId] [int] NOT NULL,
+		[MapVer] [int] NOT NULL,
+		[CreatorId] [int] NOT NULL,
+		[Created] [datetime] NOT NULL DEFAULT(getdate()),
+		[ServiceCompanyId] [int] NOT NULL,				
+		[Latitude] [float] NOT NULL,
+		[Longitude] [float] NOT NULL,
+		[Estate] [nvarchar](200) NULL,
+		[Description] [nvarchar](2000) NULL,
+		[ReportStatus] [int] NOT NULL DEFAULT 1
+	CONSTRAINT [PK_IncidentReport] PRIMARY KEY CLUSTERED 
+	(
+		[Id] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+	ALTER TABLE [dbo].[IncidentReport] WITH CHECK ADD CONSTRAINT [FK_IncidentReport_Map] FOREIGN KEY([MapTypeId], [MapVer])
+	REFERENCES [dbo].[Map] ([MapTypeId], [Ver]) ON DELETE CASCADE
+	ALTER TABLE [dbo].[IncidentReport] CHECK CONSTRAINT [FK_IncidentReport_Map]
+	ALTER TABLE [dbo].[IncidentReport] WITH CHECK ADD CONSTRAINT [FK_IncidentReport_CreatorId] FOREIGN KEY([CreatorId])
+	REFERENCES [dbo].[User] ([Id])
+	ALTER TABLE [dbo].[IncidentReport] CHECK CONSTRAINT [FK_IncidentReport_CreatorId]
+	ALTER TABLE [dbo].[IncidentReport] WITH CHECK ADD CONSTRAINT [FK_IncidentReport_ServiceCompanyId] FOREIGN KEY([ServiceCompanyId])
+	REFERENCES [dbo].[ServiceCompany] ([Id]) ON DELETE CASCADE
+	ALTER TABLE [dbo].[IncidentReport] CHECK CONSTRAINT [FK_IncidentReport_ServiceCompanyId]
+END
+--- End IncidentReport -----------------------------------------
+
 GO
 
 -- ====================================
@@ -422,6 +456,7 @@ BEGIN
 		DELETE FROM MapTypeAccessRight WHERE MapTypeId = @mapTypeId
 		DELETE FROM MapAccessInvitation WHERE MapTypeId = @mapTypeId
 		DELETE FROM Map WHERE MapTypeId = @mapTypeId
+		DELETE FROM IncidentReport WHERE MapTypeId = @mapTypeId
 		DELETE FROM MapType WHERE Id = @mapTypeId
 	
 	IF @@Error <> 0

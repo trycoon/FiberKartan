@@ -1662,12 +1662,17 @@ Permission is granted to anyone to use this software for any purpose, including 
         return result;
     }
 
-    function saveChanges() {
+    /**
+     * Sparar ändringar av karta.
+     * @param {bool} publish Publicerar kartan efter den har sparats.
+     */
+    function saveChanges(publish) {
+
         var markers = [];
         var lines = [];
         var regions = [];
 
-        showLoader("Sparar karta...");
+        showLoader('Sparar ' + (publish ? "och publicerar " : "") + 'karta...');
         try {
             for (var i = 0, length = markersArray.length; i < length; i++) {
                 var marker = {
@@ -1746,8 +1751,8 @@ Permission is granted to anyone to use this software for any purpose, including 
 
             $.ajax({
                 type: 'POST',
-                url: serverRoot + '/REST/FKService.svc/SaveChanges',
-                data: JSON.stringify(saveMapContent),
+                url: serverRoot + '/REST/FKService.svc/SaveMap',
+                data: '{"mapContent": ' + JSON.stringify(saveMapContent) + ', "publish": ' + !!publish + '}',
                 contentType: 'application/json',
                 dataType: 'json',
                 success:

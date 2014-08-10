@@ -21,6 +21,12 @@ namespace FiberKartan.Admin
                 loggedOnName.NavigateUrl = "EditUser.aspx?uid=" + user.Id;
                 lastLoggedOn.Text = user.LastLoggedOn.ToString();
             }
+
+            if (user.IsAdmin)
+            {
+                ListUsersButton.Visible = true;
+                ListUsersButton.NavigateUrl = "ListUsers.aspx?ReturnUrl=" + Request.Url.AbsoluteUri;
+            }
         }
 
         protected void logoutButton_Click(object sender, EventArgs e)

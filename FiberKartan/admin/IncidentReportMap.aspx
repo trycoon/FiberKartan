@@ -14,7 +14,7 @@
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
         <meta name="description" content="FiberKartan - Projekteringsverktyg för socken och byanät" >
         <meta name="keywords" content="fiberkarta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg" >
-        <%: System.Web.Optimization.Styles.Render("~/inc/userCss") %>
+        <%: System.Web.Optimization.Styles.Render("~/inc/css/userCss") %>
         <link rel="Stylesheet" type="text/css" href="/inc/css/map_print.css?ver=1.1" media="print" />
         <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry,drawing"></script>
         <script>var fk = fk || {};</script>
@@ -23,8 +23,7 @@
         <form id="mapForm" runat="server" enableviewstate="false" onsubmit="return false;">
             <div id="map_canvas" style="width: 100%; height: 100%"></div>
             <div id="buttonBar" class="incidentButtonBar center alpha60" runat="server" visible="true">
-                <asp:HyperLink id="backButton" runat="server" CssClass="button" Text="Tillbaka" />
-                <input id="sendButton" type="button" runat="server" value="Skicka" title="Skicka incidentrapport" class="button red" disabled="disabled" />
+                <a href="ShowMaps.aspx" class="button">Tillbaka</a>
             </div>
         </form>
         <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>
@@ -41,6 +40,7 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
         </script>
-        <%: System.Web.Optimization.Scripts.Render("~/inc/incidentReportJs") %>
+        <%: System.Web.Optimization.Scripts.Render("~/inc/js/incidentReportJs") %>
+        <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
     </body>
 </html>

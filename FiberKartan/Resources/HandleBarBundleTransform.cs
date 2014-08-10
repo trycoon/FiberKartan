@@ -1,10 +1,11 @@
-﻿using System.Web;
-using Jurassic;
+﻿using System;
 using System.IO;
+using System.Web;
 using System.Web.Optimization;
-using System;
+using Jurassic;
 using Microsoft.Ajax.Utilities;
-namespace Controllers.Transform
+
+namespace FiberKartan.Resources
 {
     public class HandleBarBundleTransform : IBundleTransform
     {
@@ -125,7 +126,11 @@ namespace Controllers.Transform
         public string defaultTemplateName = "default";
         public string resourceNameSeparator = "/";
         public string fileNameSeparator = "-";
-        public bool minifyTemplates = true;
+         #if DEBUG
+            public bool minifyTemplates = false;
+         #else
+            public bool minifyTemplates = true;
+        #endif
         public string jsPath { get; set; }
     }
 }

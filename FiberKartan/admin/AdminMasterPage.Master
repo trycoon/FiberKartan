@@ -31,7 +31,9 @@
                 </asp:ContentPlaceHolder>
             </div>
             <div class="footer clear">
-                <a href="manual/index.htm">Manual&nbsp;/&nbsp;Hjälp</a> <a href="../region">Visa&nbsp;Sverigekarta</a>
+                <asp:HyperLink ID="ListUsersButton" runat="server" Visible="false" Text="Administrera användare" ToolTip="Administrera alla användare i systemet" />
+                <a href="manual/index.htm">Manual&nbsp;/&nbsp;Hjälp</a>
+                <a href="../region">Visa&nbsp;Sverigekarta</a>
             </div>
         </form>        
         <script src="/inc/js/jquery.ui.touch-punch.min.js?ver=1.0"></script>

@@ -374,9 +374,9 @@ namespace FiberKartan.Admin
 
                 Utils.NotifyEmailSubscribers(mapTypeId, newMapVersion);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                Utils.Log("Misslyckades med att importera karta. Filename=\"" + mapFilename + "\", MapTypeID=" + mapTypeId + ", MergeVersion=" + mergeVersion, System.Diagnostics.EventLogEntryType.Error, 104);
+                Utils.Log("Misslyckades med att importera karta. Filename=\"" + mapFilename + "\", MapTypeID=" + mapTypeId + ", MergeVersion=" + mergeVersion + ", Felmeddelande=" + exception.Message + ", Stacktrace=" + exception.StackTrace, System.Diagnostics.EventLogEntryType.Error, 104);
 
                 this.ClientScript.RegisterStartupScript(typeof(Page), "alertError",
                     "var $dialog = $('<div></div>')" +

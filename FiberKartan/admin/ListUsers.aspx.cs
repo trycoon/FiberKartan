@@ -26,6 +26,15 @@ namespace FiberKartan.Admin
             {
                 Response.Redirect("ShowMaps.aspx");
             }
+
+            if (!IsPostBack)
+            {
+                BackButton.NavigateUrl = Request.QueryString["ReturnUrl"];
+                if (string.IsNullOrEmpty(Request.QueryString["ReturnUrl"]) && Request.UrlReferrer != null && Request.UrlReferrer.ToString().Length > 0)
+                {
+                    BackButton.NavigateUrl = Request.UrlReferrer.AbsoluteUri;
+                }
+            }
         }
     }
 }

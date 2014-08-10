@@ -7,7 +7,7 @@
     var markersArray = [];
     var lineArray = [];
 
-    var MARKERTYPE = { HouseYes: 'HouseYes', FiberNode: 'FiberNode', FiberBox: 'FiberBox', RoadCrossing_Existing: 'RoadCrossing_Existing', RoadCrossing_ToBeMade: 'RoadCrossing_ToBeMade' };
+    var MARKERTYPE = { HouseYes: 'HouseYes', HouseMaybe: 'HouseMaybe', HouseNo: 'HouseNo', HouseNotContacted: 'HouseNotContacted', FiberNode: 'FiberNode', FiberBox: 'FiberBox', RoadCrossing_Existing: 'RoadCrossing_Existing', RoadCrossing_ToBeMade: 'RoadCrossing_ToBeMade', Fornlamning: 'Fornlamning', Observe: 'Observe', Note: 'Note', Unknown: 'Unknown' };
     var markerTypeLookup = new Object();
     var mapBounds = new google.maps.LatLngBounds();
     var incidentInfoWindow = new google.maps.InfoWindow({});
@@ -88,7 +88,7 @@
     function plotMapContent() {
         if (mapContent.Markers != null) {
             for (var i = 0, length = mapContent.Markers.length; i < length; i++) {
-                addMarker(mapContent.Markers[i].TypeId, new google.maps.LatLng(mapContent.Markers[i].Lat, mapContent.Markers[i].Long));
+                addMarker(mapContent.Markers[i]);
             }
         }
         if (mapContent.Cables != null) {
@@ -98,17 +98,30 @@
         }
     }
 
-    function addMarker(typeId, location) {
-        var markerType = markerTypeLookup[typeId];
+    function addMarker(markerInfo) {
+        var markerType = markerTypeLookup[markerInfo.TypeId];
+        var location = new google.maps.LatLng(markerInfo.Lat, markerInfo.Long);
+
         if (markerType != undefined) {  // Lägg bara till markörer som vi definierat.
+            var estate;
+
+            if (markerType.Name == MARKERTYPE.HouseYes || markerType.Name == MARKERTYPE.HouseMaybe || markerType.Name == MARKERTYPE.HouseNotContacted || markerType.Name == MARKERTYPE.HouseNo) {
+                estate = markerInfo.Name;
+            }
+
             var marker = new google.maps.Marker({
                 position: location,
                 map: map,
-                clickable: false,
+                estate: estate, //TODO skall vi verkligen besudla denna, eller skall vi inte alltid använda en wrapper-class???
+                clickable: true,
                 draggable: false,
                 icon: markerType.Icon
             });
             mapBounds.extend(location);
+
+            google.maps.event.addListener(marker, 'click', function (event) {
+                clickedSpot(event, marker);
+            });
 
             markersArray.push({ markerType: markerType, marker: marker });
         }
@@ -134,15 +147,49 @@
         lineArray.push({ cable: line });
     }
 
-    function clickedSpot(event) {
-        incidentInfoWindow.setContent('<form onsubmit="return false;" action="#"><label for="desc">Beskrivning</label><br/><textarea id="desc" rows="6" cols="58"></textarea><br/>' +
-                                '<fieldset id="markerTypes"><legend>Typ av mark&ouml;r</legend></fieldset><fieldset id="other_settings"><legend>Övrigt</legend>' +
-                                    '<input type="checkbox" id="payedStake" name="payedStake" /><label for="payedStake">Har betalat insats</label><br />' +
-                                    '<input type="checkbox" id="extraHouse" name="extraHouse" /><label for="extraHouse">Avser flygelavtal</label><br />' +
-                                    '<input type="checkbox" id="wantDigHelp" name="wantDigHelp" /><label for="wantDigHelp">Önskar att förening ordnar grävning på fastighet</label><br />' +
-                                    '<input type="checkbox" id="noISPsubscription" name="noISPsubscription" /><label for="noISPsubscription">Önskar inget abonnemang med operatör (vilande)</label>' +
-                                '</fieldset></form>');
-        incidentInfoWindow.setPosition(event.latLng);
+    function clickedSpot(event, marker) {
+        incidentInfoWindow.close(); // Close possible already open one.
+        var estate = marker && marker.estate;
+        
+        var position = event.latLng;
+        if (marker) {
+            position = marker.getPosition()
+        }
+
+        incidentInfoWindow.setContent(Handlebars.templates['incidentForm']({ estate: estate, lat: position.lat().toFixed(7), lng: position.lng().toFixed(6) }));
+        incidentInfoWindow.setPosition(position);
         incidentInfoWindow.open(map);
+
+        $('#sendbutton').on('click', function () {
+            var incidentReport = {
+                MapTypeId: mapContent.MapTypeId,
+                Ver: mapContent.MapVer,
+                Position: { Lat: position.lat().toFixed(7), Lng: position.lng().toFixed(6) },
+                Estate: estate,
+                Description: $('#desc').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: serverRoot + '/REST/FKService.svc/ReportIncident',
+                data: JSON.stringify(incidentReport),
+                contentType: 'application/json',
+                dataType: 'json',
+                success:
+            function (result) {
+                if (result.ErrorCode > 0) {
+                    hideLoader();
+                    alert(result.ErrorMessage);
+                } else {
+                    window.location.href = 'ShowMaps.aspx';
+                }
+            },
+                error:
+            function (XMLHttpRequest, textStatus, errorThrown) {
+                hideLoader();
+                alert("Ett fel uppstod vid rapportering av incident.");
+            }
+            });
+        });
     }
 })(fk);
