@@ -19,11 +19,11 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 
 Övrigt:
 
+- Centreringen av dialogrutor funkar inte längre.
 - Ange storlekarna på paletten med % istället för pixlar för att det skall funka bättre med mobila enheter!
 - Lägg till dynamisk sitemap så att Google hittar regionskartorna.
 - Lägg till möjlighet att rita linjer som representerar grävd-, plöjd-, och fräs-sträcka.
 - Trycker man Enter vid inloggningsrutan så skall man logga in.
-- Lägg till stöd för att felanmäla nätverk. Mail skickas med en kartmarkör.
 - Lägg till mätverktyg, rita en linje som visar sträckan.
 - Fixa loader-animation som inte alltid visas i rutor används spin.js.
 - All inline HTML bör renderas av Handlebars.js.
@@ -31,10 +31,8 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - När man exporterar till excel så borde vi använda direktlänkar liknande: http://fiberkartan.se/admin/MapAdmin.aspx?mid=7&network=true&lineId=846767, istället för de jättelånga statiska Google Maps länkarna.
 - Lägg till stöd för att kunna spara eller spara och publicera kartor, på så sätt kan man ha arbetskopior som inte visas ut på den publika vyn.
 - Lägg till stöd för att välja en anpassad storlek på utskrifter, ifall man vill ha en storlek utöver A0, A1, A2, osv...
-- Flytta "Lista användare" till sidfoten, den ligger så konstigt under en enskild användare nu. Blir konstiga loopar om man klickar på knappen när man är inne på en användare.
 - Lägg till möjlighet att skicka ett meddelande till en användare som är inloggad via admingränssnittet, kan användas för att meddela dom att vi nu lägger på en ny release.
 - Lägg till möjlighet att användaren skall få ett meddelande med viktig information vid nästa inloggning. T.ex. nyheter i den nya versionen.
-- Länken till regionskartan bör peka till /region.
 - Exportera karta skall öppnas som ett eget fönster och inte som en modal ruta.
 - Uppdatera TinyMCE.
 - Uppdatera startsidan så att den blir mer sökbar, beskär bilden så att man inte ser länkarna i min webbläsare. Lägg in länkar och sitemap till regionskartorna.

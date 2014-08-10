@@ -30,8 +30,6 @@
                 <p>
                     Senast aktiv:
                     <asp:Literal ID="LastActivity" runat="server"></asp:Literal></p>
-                <asp:HyperLink ID="ListUsersButton" runat="server" NavigateUrl="ListUsers.aspx" CssClass="button" Text="Lista användare"
-                    ToolTip="Lista alla användare i systemet" />
                 <asp:Button ID="ResetPasswordButton" runat="server" ClientIDMode="Static" Text="Nollställ lösenord"
                     ToolTip="Nollställer användarens lösenord, vid nästa inloggning ombeds dom att sätta ett nytt"
                     OnClick="ResetPasswordButton_Click" />
@@ -40,14 +38,7 @@
     </asp:Panel>
     <fk:ResultBox ID="ResultBox" runat="server" />
     <div class="marginTop10px">
-        <asp:HyperLink ID="BackButton" ClientIDMode="Static" runat="server" NavigateUrl="ShowMaps.aspx"
-            CssClass="button" Text="Tillbaka" /><asp:Button ID="SaveButton" runat="server" Text="Spara"
-                OnClick="SaveButton_Click" CssClass="green" />
+        <asp:HyperLink ID="BackButton" ClientIDMode="Static" runat="server" CssClass="button" Text="Tillbaka" />
+        <asp:Button ID="SaveButton" runat="server" Text="Spara" OnClick="SaveButton_Click" CssClass="green" />
     </div>
-    <script>
-        $('#BackButton').click(function (e) {
-            e.preventDefault();
-            history.back();
-        });
-    </script>
 </asp:Content>

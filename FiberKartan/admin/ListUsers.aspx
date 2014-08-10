@@ -41,19 +41,12 @@
         <SortedDescendingCellStyle BackColor="#EAEAD3" />
         <SortedDescendingHeaderStyle BackColor="#575357" />
     </asp:GridView>
-    <asp:HyperLink ID="BackButton" ClientIDMode="Static" runat="server" NavigateUrl="ShowMaps.aspx"
-        CssClass="button" Text="Tillbaka" />
+    <asp:HyperLink ID="BackButton" ClientIDMode="Static" runat="server" CssClass="button" Text="Tillbaka" />
     <asp:HyperLink ID="newUserButton" runat="server" CssClass="button green" NavigateUrl='EditUser.aspx'
         ToolTip="Skapa användare" Text="Ny användare" />
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:FiberDBConnectionString %>"
         SelectCommand="SELECT Id, Name, Username, Description, coalesce((SELECT 'Aktiv' WHERE DATEADD(ss, 20, LastActivity) >= GETDATE()), '') AS Online FROM [User] ORDER BY Description ASC">
     </asp:SqlDataSource>
-    <script>
-        $('#BackButton').click(function (e) {
-            e.preventDefault();
-            history.back();
-        });
-    </script>
 </asp:Content>
 <asp:Content ID="footer" ContentPlaceHolderID="footer" runat="server">
 </asp:Content>

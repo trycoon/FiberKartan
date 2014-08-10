@@ -200,6 +200,8 @@ namespace FiberKartan.Kml
                 map.KML_Hash = hash;
                 map.SourceKML = kmlString;
 
+                map.Layers = "{}"; //TODO: Fixa denna när vi skall ta stöd för flera lager.
+
                 // Påvisa vem som skapade denna nya version.
                 var user = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).FirstOrDefault();
                 map.User = user;

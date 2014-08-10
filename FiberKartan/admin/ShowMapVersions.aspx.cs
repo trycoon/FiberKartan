@@ -60,6 +60,7 @@ namespace FiberKartan.Admin
                         PreviousVer = 0,
                         SourceKML = string.Empty,
                         KML_Hash = string.Empty,
+                        Layers = "{}",
                         User = user,
                         CreatorId = user.Id
                     });

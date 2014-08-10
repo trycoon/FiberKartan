@@ -82,7 +82,9 @@
 
             if ($("#DeleteButton").length > 0) {
                 $("#DeleteButton").click(function (e) {
-                    if (!confirm("Är du säker på att du vill radera kartan med alla dess versioner? Tryck Ok för att fortsätta med raderingen.")) {
+                    if (confirm("Är du säker på att du vill radera kartan med alla dess versioner? Tryck Ok för att fortsätta med raderingen.")) {
+                        showLoader('Raderar karta, vänligen vänta...');
+                    } else {
                         e.preventDefault();
                     }
                 });
