@@ -1175,7 +1175,6 @@ Permission is granted to anyone to use this software for any purpose, including 
                                 }
                                 $(this).remove();
                             },
-                            position: 'center',
                             width: 430,
                             modal: true,
                             resizable: false,
@@ -1389,7 +1388,6 @@ Permission is granted to anyone to use this software for any purpose, including 
                     }
                     $(this).remove();
                 },
-                position: 'center',
                 width: 430,
                 modal: true,
                 resizable: false,
@@ -1525,7 +1523,6 @@ Permission is granted to anyone to use this software for any purpose, including 
                     }
                     $(this).remove();
                 },
-                position: 'center',
                 width: 430,
                 modal: true,
                 resizable: false,

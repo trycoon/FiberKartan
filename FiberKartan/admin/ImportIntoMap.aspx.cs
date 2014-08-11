@@ -174,7 +174,6 @@ namespace FiberKartan.Admin
                            "autoOpen: false," +
                            "title: 'Importering misslyckades'," +
                            "close: function () { $(this).remove(); }," +
-                           "position: 'center'," +
                            "width: 400," +
                            "height: 220," +
                            "modal: true," +
@@ -262,7 +261,6 @@ namespace FiberKartan.Admin
                             "autoOpen: false," +
                             "title: 'Importering'," +
                             "close: function () { $(this).remove(); window.location.href='ShowMapVersions.aspx?mid=" + mapTypeId + "'; }," +
-                            "position: 'center'," +
                             "width: 400," +
                             "modal: true," +
                             "resizable: false," +
@@ -286,7 +284,6 @@ namespace FiberKartan.Admin
                             "autoOpen: false," +
                             "title: 'Importering misslyckades'," +
                             "close: function () { $(this).remove(); }," +
-                            "position: 'center'," +
                             "width: 400," +
                             "height: 220," +
                             "modal: true," +
@@ -359,7 +356,6 @@ namespace FiberKartan.Admin
                             "autoOpen: false," +
                             "title: 'Importering'," +
                             "close: function () { $(this).remove(); window.location.href='ShowMapVersions.aspx?mid=" + mapTypeId + "'; }," +
-                            "position: 'center'," +
                             "width: 400," +
                             "modal: true," +
                             "resizable: false," +
@@ -385,7 +381,6 @@ namespace FiberKartan.Admin
                             "autoOpen: false," +
                             "title: 'Importering misslyckades'," +
                             "close: function () { $(this).remove(); }," +
-                            "position: 'center'," +
                             "width: 400," +
                             "height: 220," +
                             "modal: true," +

@@ -19,7 +19,8 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 
 Övrigt:
 
-- Centreringen av dialogrutor funkar inte längre.
+- Bara admin får välja service-företag.
+- När man exporterar till excel så borde man filtrera bort HTML från description-fältet på t.ex. markörer.
 - Ange storlekarna på paletten med % istället för pixlar för att det skall funka bättre med mobila enheter!
 - Lägg till dynamisk sitemap så att Google hittar regionskartorna.
 - Lägg till möjlighet att rita linjer som representerar grävd-, plöjd-, och fräs-sträcka.
@@ -27,7 +28,6 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Lägg till mätverktyg, rita en linje som visar sträckan.
 - Fixa loader-animation som inte alltid visas i rutor används spin.js.
 - All inline HTML bör renderas av Handlebars.js.
-- När man exporterar till excel så borde man filtrera bort HTML från description-fältet på t.ex. markörer.
 - När man exporterar till excel så borde vi använda direktlänkar liknande: http://fiberkartan.se/admin/MapAdmin.aspx?mid=7&network=true&lineId=846767, istället för de jättelånga statiska Google Maps länkarna.
 - Lägg till stöd för att kunna spara eller spara och publicera kartor, på så sätt kan man ha arbetskopior som inte visas ut på den publika vyn.
 - Lägg till stöd för att välja en anpassad storlek på utskrifter, ifall man vill ha en storlek utöver A0, A1, A2, osv...
@@ -42,21 +42,19 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Det finns önskemål om att den publika kartan även skall kunna visa fastighetsgränser.
 
 
-Innan driftsättning:
-- Ta bort MapUrl från MapType-databasen, den används inte längre.
-- Lägg till [Published] [datetime] NULL på Map.
-- Lägg till [Layers] [nvarchar](max) NOT NULL DEFAULT '{}' på Map.
-- Lägg till [LastNotificationMessage] [int] NULL på User.
-- Skapa tabellen [NotificationMessage].
-- Skapa tabellen [IncidentReport].
-- Ta bort alla hänvisningar till combres ifrån web.config.
-- Ta bort     <compilation debug="true" targetFramework="4.5.2" /> från web.config
-- Lägg till <mimeMap fileExtension=".hbs" mimeType="text/x-handlebars-template" /> i web.config
+Fixa fel i loggar:
+Handlebars-vyer funkar inte, får HTML tillbaka.
 
-- Vissa sökvägar till bilder saknas:
-GET http://localhost:1051/inc/images/ui-bg_highlight-soft_75_cccccc_1x100.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:3
-GET http://localhost:1051/inc/images/ui-icons_888888_256x240.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:3
-GET http://localhost:1051/inc/images/ui-bg_glass_75_e6e6e6_1x400.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:3
-GET http://localhost:1051/inc/images/ui-bg_flat_0_aaaaaa_40x100.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:4
-GET http://localhost:1051/inc/images/ui-icons_454545_256x240.png 404 (Not Found) adminJs?v=HiwbKycKn0bO_e3-KFVpvcpI3u8OLnC4EpeVHK9YFHY1:4
-GET http://localhost:1051/inc/images/ui-bg_glass_75_dadada_1x400.png 404 (Not Found) 
+
+Beskrivningen för händelse-ID 108 från källan FiberKartan kan inte hittas. Antingen är komponenten som skapat händelsen inte installerad på den här datorn eller så är installationen skadad. Installera eller återställ komponenten på datorn.
+
+Om händelsen skapades från en annan dator behövde visningsinformationen sparas med händelsen.
+
+Följande information inkluderades med händelsen: 
+
+Ett fel uppstod vid sparande av kartinställningar(mapTypeId=241, title=test2) för användare=trycoon@gmail.com. Errormsg=Tråden höll på att avbrytas., Stacktrace=   vid System.Threading.Thread.AbortInternal()
+   vid System.Threading.Thread.Abort(Object stateInfo)
+   vid System.Web.HttpResponse.AbortCurrentThread()
+   vid FiberKartan.Admin.EditMap.SaveButton_Click(Object sender, EventArgs e) i c:\Git\FiberKartan\FiberKartan\admin\EditMap.aspx.cs:rad 174
+
+meddelanderesursen finns men det går inte att hitta meddelandet i sträng-/meddelandetabellen
