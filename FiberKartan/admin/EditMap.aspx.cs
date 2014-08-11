@@ -64,7 +64,9 @@ namespace FiberKartan.Admin
                     // Om kartan inte finns eller om man inte har skrivrättigheter 
                     if (mapType == null || !Request.IsAuthenticated || !Utils.GetMapAccessRights().HasFlag(MapAccessRights.Write))
                     {
-                        Response.Redirect("ShowMaps.aspx");
+                        Response.Redirect("ShowMaps.aspx", false);
+                        Context.ApplicationInstance.CompleteRequest();
+                        return;
                     }
                     
                     ServiceCompany.SelectedValue = mapType.ServiceCompanyId.ToString();
@@ -114,7 +116,9 @@ namespace FiberKartan.Admin
                     // Om kartan inte finns eller om man inte har skrivrättigheter 
                     if (mapType == null || !Request.IsAuthenticated || !Utils.GetMapAccessRights().HasFlag(MapAccessRights.Write))
                     {
-                        Response.Redirect("ShowMaps.aspx");
+                        Response.Redirect("ShowMaps.aspx", false);
+                        Context.ApplicationInstance.CompleteRequest();
+                        return;
                     }
 
                     if (!string.IsNullOrEmpty(MapTitle.Text))
@@ -171,7 +175,8 @@ namespace FiberKartan.Admin
 
                     fiberDb.SubmitChanges();
 
-                    Response.Redirect("ShowMaps.aspx");
+                    Response.Redirect("ShowMaps.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
                 }
                 catch (ApplicationException exception)
                 {
@@ -193,14 +198,18 @@ namespace FiberKartan.Admin
                 {
                     if (!Request.IsAuthenticated)
                     {
-                        Response.Redirect("Logon.aspx");
+                        Response.Redirect("Logon.aspx", false);
+                        Context.ApplicationInstance.CompleteRequest();
+                        return;
                     }
 
                     var user = (from u in fiberDb.Users where u.Username == HttpContext.Current.User.Identity.Name select u).FirstOrDefault();
 
                     if (user == null)
                     {
-                        Response.Redirect("Logon.aspx");
+                        Response.Redirect("Logon.aspx", false);
+                        Context.ApplicationInstance.CompleteRequest();
+                        return;
                     }
 
                     FiberKartan.MapType mapType = new MapType();
@@ -279,7 +288,8 @@ namespace FiberKartan.Admin
 
                     fiberDb.SubmitChanges();
 
-                    Response.Redirect("ShowMaps.aspx");
+                    Response.Redirect("ShowMaps.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
                 }
                 catch (Exception exception)
                 {
@@ -295,7 +305,9 @@ namespace FiberKartan.Admin
         {
             if (!Request.IsAuthenticated)
             {
-                Response.Redirect("Logon.aspx");
+                Response.Redirect("Logon.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+                return;
             }
 
             FiberKartan.MapType mapType = (from mt in fiberDb.MapTypes where mt.Id == mapTypeId select mt).FirstOrDefault();
@@ -316,7 +328,8 @@ namespace FiberKartan.Admin
 
                 fiberDb.SubmitChanges();
 
-                Response.Redirect("ShowMaps.aspx");
+                Response.Redirect("ShowMaps.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
             catch (Exception exception)
             {
@@ -331,7 +344,9 @@ namespace FiberKartan.Admin
         {
             if (!Request.IsAuthenticated)
             {
-                Response.Redirect("Logon.aspx");
+                Response.Redirect("Logon.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+                return;
             }
 
             FiberKartan.MapType mapType = (from mt in fiberDb.MapTypes where mt.Id == mapTypeId select mt).FirstOrDefault();
@@ -352,7 +367,8 @@ namespace FiberKartan.Admin
                 
                 fiberDb.SubmitChanges();
 
-                Response.Redirect("ShowMaps.aspx");
+                Response.Redirect("ShowMaps.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
             catch (Exception exception)
             {
