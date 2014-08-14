@@ -120,6 +120,12 @@ Permission is granted to anyone to use this software for any purpose, including 
         mapOverlay.draw = function () { };   // Måste sätta denna, men vi behöver den inte.
         mapOverlay.setMap(map);
 
+        // Skapa en statusrad längst ner på kartan.
+        map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push($('<div class="bottomBar"><span class="pointerPosition"></span><span class="bottomBarText"></span></div>')[0]);
+        google.maps.event.addListener(map, 'mousemove', function (event) {
+            showPointerPosition(event.latLng.lat(), event.latLng.lng());
+        });
+
         google.maps.event.addDomListener(document, "keydown", function (e) {
             if (e.keyCode === 27) { // Esc-knapp
                 // Om man trycker på Esc så avbryter man pågående operation (t.ex. bindning av kopplingskåp).
@@ -331,10 +337,6 @@ Permission is granted to anyone to use this software for any purpose, including 
             content_css: "/inc/css/base.css?ver=1.7"
         });
 
-        /*google.maps.event.addListener(map, 'mousemove', function (event) {
-        window.status=event.latLng.lat() + ', ' + event.latLng.lng();
-        });*/
-
         // Kolla om webbläsaren är utrustad med GPS, och visar i så fall kryssruta för det valet.
         if (navigator.geolocation) {
             $('#myCurrentPosition').show();
@@ -483,6 +485,21 @@ Permission is granted to anyone to use this software for any purpose, including 
             });
         }
     }
+
+
+    /**
+     * Uppdaterar positionen för pekaren i statusraden längst ner på sidan.
+     * @param {number} lat
+     * @param {number} long
+     */
+    function showPointerPosition(lat, long) {
+        $('.pointerPosition').html('Pos lat: ' + lat.toFixed(7) + ', long: ' + long.toFixed(6));
+    }
+
+    function setStatusbarText(text) {
+        $('.bottomBarText').text(text);
+    }
+
     function createMarkerTypeLookupTable() {
         if (mapContent.MarkerTypes != null) {
             for (var i = 0, length = mapContent.MarkerTypes.length; i < length; i++) {
@@ -524,6 +541,7 @@ Permission is granted to anyone to use this software for any purpose, including 
     function removeLineById(id) {
         for (var i = 0, length = lineArray.length; i < length; i++) {
             if (lineArray[i].id == id) {
+                google.maps.event.clearInstanceListeners(lineArray[i].cable);    // Ta bort alla eventlyssnare.
                 lineArray[i].cable.setMap(null);
                 lineArray[i].cable = null;
                 lineArray.splice(i, 1); // Ta bort linje.
@@ -544,6 +562,7 @@ Permission is granted to anyone to use this software for any purpose, including 
     function removeRegionById(id) {
         for (var i = 0, length = regionsArray.length; i < length; i++) {
             if (regionsArray[i].id == id) {
+                google.maps.event.clearInstanceListeners(regionsArray[i].region);    // Ta bort alla eventlyssnare.
                 regionsArray[i].region.setMap(null);
                 regionsArray[i].region = null;
                 regionsArray.splice(i, 1); // Ta bort område.
@@ -1056,6 +1075,9 @@ Permission is granted to anyone to use this software for any purpose, including 
             google.maps.event.addListener(marker, 'click', function (event) {
                 editMarker(this);
             });
+            google.maps.event.addListener(marker, 'drag', function (event) {
+                showPointerPosition(event.latLng.lat(), event.latLng.lng());
+            });
 
             markersArray.push({ id: id, uid: uid, name: name, desc: null, markerType: markerType, settings: settings, optionalInfo: optionalInfo, marker: marker });
         }
@@ -1276,7 +1298,8 @@ Permission is granted to anyone to use this software for any purpose, including 
                                 $("#deleteButton").click(function (event) {
                                     for (var i = 0, length = markersArray.length; i < length; i++) {
                                         if (markersArray[i].id == clickedMarker.id) {
-                                            clickedMarker.marker.setMap(null);
+                                            google.maps.event.clearInstanceListeners(clickedMarker);    // Ta bort alla eventlyssnare.
+                                            clickedMarker.marker.setMap(null);                                            
                                             clickedMarker.marker = null;
                                             clickedMarker = null;
                                             markersArray.splice(i, 1); // Ta bort markör.
@@ -1449,6 +1472,10 @@ Permission is granted to anyone to use this software for any purpose, including 
             strokeOpacity: 0.5,
             // Sparar ner denna också, vi behöver den när vi editerar området.
             id: id
+        });
+
+        google.maps.event.addListener(polygon, 'mousemove', function (event) {
+            showPointerPosition(event.latLng.lat(), event.latLng.lng());
         });
 
         if (mapContent.Settings.HasWritePrivileges) {

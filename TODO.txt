@@ -19,7 +19,6 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 
 Övrigt:
 
-- Bara admin får välja service-företag.
 - När man exporterar till excel så borde man filtrera bort HTML från description-fältet på t.ex. markörer.
 - Ange storlekarna på paletten med % istället för pixlar för att det skall funka bättre med mobila enheter!
 - Lägg till dynamisk sitemap så att Google hittar regionskartorna.
@@ -39,6 +38,7 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Lägg till markörerna Fiberbrunn och MobilMast.
 - Stöd olika lager av kartan.
 - Fixa så att man kan söka inte bara efter fastighetsadress utan även efter nyckelord i beskrivningsrutan när man söker.
+- Sök/centrera kartat efter en angiven GPS-position.
 - Det finns önskemål om att den publika kartan även skall kunna visa fastighetsgränser.
 
 
