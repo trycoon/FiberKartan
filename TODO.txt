@@ -19,7 +19,6 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 
 Övrigt:
 
-- När man exporterar till excel så borde man filtrera bort HTML från description-fältet på t.ex. markörer.
 - Ange storlekarna på paletten med % istället för pixlar för att det skall funka bättre med mobila enheter!
 - Lägg till dynamisk sitemap så att Google hittar regionskartorna.
 - Lägg till möjlighet att rita linjer som representerar grävd-, plöjd-, och fräs-sträcka.

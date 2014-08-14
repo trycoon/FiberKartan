@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using FiberKartan.Kml;
+using HtmlAgilityPack;
 using MightyLittleGeodesy.Positions;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -28,9 +29,12 @@ namespace FiberKartan.Admin
 {
     public partial class ExportMap : System.Web.UI.Page
     {
+        // HTML document used for decoding and stripping HTML from descriptions and such.
+        HtmlDocument htmlDocument;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            htmlDocument = new HtmlAgilityPack.HtmlDocument();
         }
 
         protected void ExportButton_Click(object sender, EventArgs e)
@@ -350,7 +354,11 @@ namespace FiberKartan.Admin
                 // Vi lägger på prefixet "KS" för alla kopplingsskåp, annars kör vi direkt på namnet i databasen.
                 sheet.Cells[tmpRowIndex, 2].Value = entityType == MapEntityEnum.FiberBox ? ("KS" + marker.Name) : marker.Name;
 
-                sheet.Cells[tmpRowIndex, 3].Value = marker.Description;
+                if (marker.Description != string.Empty)
+                {
+                    htmlDocument.LoadHtml(marker.Description);
+                    sheet.Cells[tmpRowIndex, 3].Value = WebUtility.HtmlDecode(htmlDocument.DocumentNode.InnerText);
+                }
 
                 sheet.Cells[tmpRowIndex, 4].Value = marker.Latitude;
                 sheet.Cells[tmpRowIndex, 5].Value = marker.Longitude;
@@ -470,7 +478,13 @@ namespace FiberKartan.Admin
             {
                 sheet.Cells[tmpRowIndex, 1].Value = line.Id;
                 sheet.Cells[tmpRowIndex, 2].Value = line.Name;
-                sheet.Cells[tmpRowIndex, 3].Value = line.Description;
+
+                if (line.Description != string.Empty)
+                {
+                    htmlDocument.LoadHtml(line.Description);
+                    sheet.Cells[tmpRowIndex, 3].Value = WebUtility.HtmlDecode(htmlDocument.DocumentNode.InnerText);
+                }
+
                 sheet.Cells[tmpRowIndex, 4].Value = line.Width;
 
                 #region CalculateLineLength
@@ -555,7 +569,13 @@ namespace FiberKartan.Admin
             {
                 sheet.Cells[tmpRowIndex, 1].Value = region.Id;
                 sheet.Cells[tmpRowIndex, 2].Value = region.Name;
-                sheet.Cells[tmpRowIndex, 3].Value = region.Description;
+
+                if (region.Description != string.Empty)
+                {
+                    htmlDocument.LoadHtml(region.Description);
+                    sheet.Cells[tmpRowIndex, 3].Value = WebUtility.HtmlDecode(htmlDocument.DocumentNode.InnerText);
+                }
+
                 sheet.Cells[tmpRowIndex, 4].Value = region.Coordinates.Replace(':', ',').Replace('|', ' ');    // Kommaseparerad lista, ett kommatecken skiljer longitud och latitud, ett mellanslag skiljer koordinatpunkterna åt.
 
                 tmpRowIndex++;
