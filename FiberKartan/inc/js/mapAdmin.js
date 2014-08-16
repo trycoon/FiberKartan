@@ -64,46 +64,7 @@ Permission is granted to anyone to use this software for any purpose, including 
             $.get(serverRoot + '/REST/FKService.svc/Ping');
         }, 10000);
 
-        // Återställer state på accordion.
-        var accord_state = JSON.parse($.cookie('palette_accordion')) || { show: true, markers: true, search: false, printing: false };
-        if (accord_state.show) {
-            $("#togglePanels .showPanel").show()
-        } else {
-            $("#togglePanels .showPanel").hide();
-        }
-        if (accord_state.markers) {
-            $("#togglePanels #markerTypes").show();
-        } else {
-            $("#togglePanels #markerTypes").hide();
-        }
-        if (accord_state.search) {
-            $("#togglePanels .searchPanel").show();
-        } else {
-            $("#togglePanels .searchPanel").hide();
-        }
-        if (accord_state.printing) {
-            $("#togglePanels .viewSettingsBox").show();
-        } else {
-            $("#togglePanels .viewSettingsBox").hide();
-        }
-
-        // Sätter upp accordion.
-        $("#togglePanels")
-    .find("h3")
-    .click(function () {
-        $(this).next().slideToggle();
-
-        // Dessa går att läsa av först efter panelerna har fällts ihop.
-        setTimeout(function () {
-            accord_state.show = $("#togglePanels .showPanel").is(":visible");
-            accord_state.markers = $("#togglePanels #markerTypes").is(":visible");
-            accord_state.search = $("#togglePanels .searchPanel").is(":visible");
-            accord_state.printing = $("#togglePanels .viewSettingsBox").is(":visible");
-            $.cookie('palette_accordion', JSON.stringify(accord_state), { expires: 100 });
-        }, 600);
-
-        return false;
-    }).next();
+        setupAccordion();
 
         var mapOptions = {
             zoom: 9.0,
@@ -196,6 +157,131 @@ Permission is granted to anyone to use this software for any purpose, including 
             }
         });
 
+        setupCheckboxesFromQuerystring();
+        createMarkerTypeLookupTable();
+        plotMapContent();
+        setupPalette();
+        setupShowMyPosition();
+
+        var centerPos = $.QueryString["center"];
+        if (centerPos !== undefined) {
+            map.setCenter(new google.maps.LatLng(centerPos.split('x')[0], centerPos.split('x')[1]));
+
+            var centerZoom = $.QueryString["zoom"];
+            if (centerZoom !== undefined) {
+                map.setZoom(parseFloat(centerZoom));
+            }
+        }
+        else if (typeof mapContent !== 'undefined' && markersArray.length > 0) {
+            // Om vi skall visa upp någon speciell markör eller linje på kartan, detta skickas i så fall in som parameter på querystringen.
+            var markerId = $.QueryString["markerId"];
+            var lineId = $.QueryString["lineId"];
+
+            if (markerId !== undefined) {
+                var specialMarker = getMarkerById(markerId);
+                if (specialMarker != null) {
+                    map.setCenter(specialMarker.marker.getPosition());
+                    map.setZoom(16.0);
+                    specialMarker.marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            } else if (lineId !== undefined) {
+                var specialLine = getLineById(lineId);
+                if (specialLine != null) {
+                    map.setCenter(specialLine.cable.getPath().getAt(0));
+                    map.setZoom(16.0);
+                    specialLine.cable.originalStrokeColor = specialLine.cable.get('strokeColor');
+                    // Blink line.
+                    setInterval(function () {
+                        if (specialLine.cable.get('strokeColor') == specialLine.cable.originalStrokeColor) {
+                            specialLine.cable.setOptions({ strokeColor: '#FFFF00' });
+                        } else {
+                            specialLine.cable.setOptions({ strokeColor: specialLine.cable.originalStrokeColor });
+                        }
+                    }, 1000);
+                }
+            } else {
+                map.fitBounds(mapBounds);   // Sätt rätt zooom-nivå för att få med alla markörer.
+            }
+        }
+
+        // Initialiserar editor EN gång här, istället för varje på markör, linje och region.
+        tinyMCE.init({
+            mode: "none",
+            language: "sv",
+            width: "100%",
+            entity_encoding: "raw",
+            theme: "advanced",
+            plugins: "autolink,lists,style,advlink,inlinepopups,noneditable,wordcount,media,table",
+
+            // Theme options
+            theme_advanced_buttons1: "bold,italic,underline,strikethrough,bullist,numlist,|,undo,redo,|,link,unlink,charmap,image,media,|,delete_row",
+            theme_advanced_buttons2: "",
+            theme_advanced_buttons3: "",
+            theme_advanced_buttons4: "",
+            theme_advanced_toolbar_location: "top",
+            theme_advanced_toolbar_align: "left",
+            theme_advanced_statusbar_location: "bottom",
+            theme_advanced_resizing: false,
+            content_css: "/inc/css/base.css?ver=1.7"
+        });        
+
+        if (mapContent.Settings.HasWritePrivileges) {
+            setupContextMenues();            
+        }
+
+        if ($("#saveButton").length > 0) {
+            $("#saveButton").click(function (event) {
+                event.preventDefault()
+                saveChanges();
+            });
+        }
+    }
+
+    function setupAccordion() {
+        // Återställer state på accordion.
+        var accord_state = JSON.parse($.cookie('palette_accordion')) || { show: true, markers: true, search: false, printing: false };
+        if (accord_state.show) {
+            $("#togglePanels .showPanel").show()
+        } else {
+            $("#togglePanels .showPanel").hide();
+        }
+        if (accord_state.markers) {
+            $("#togglePanels #markerTypes").show();
+        } else {
+            $("#togglePanels #markerTypes").hide();
+        }
+        if (accord_state.search) {
+            $("#togglePanels .searchPanel").show();
+        } else {
+            $("#togglePanels .searchPanel").hide();
+        }
+        if (accord_state.printing) {
+            $("#togglePanels .viewSettingsBox").show();
+        } else {
+            $("#togglePanels .viewSettingsBox").hide();
+        }
+
+        // Sätter upp accordion.
+        $("#togglePanels")
+        .find("h3")
+        .click(function () {
+            $(this).next().slideToggle();
+
+            // Dessa går att läsa av först efter panelerna har fällts ihop.
+            setTimeout(function () {
+                accord_state.show = $("#togglePanels .showPanel").is(":visible");
+                accord_state.markers = $("#togglePanels #markerTypes").is(":visible");
+                accord_state.search = $("#togglePanels .searchPanel").is(":visible");
+                accord_state.printing = $("#togglePanels .viewSettingsBox").is(":visible");
+                $.cookie('palette_accordion', JSON.stringify(accord_state), { expires: 100 });
+            }, 600);
+
+            return false;
+        }).next();
+    }
+
+    function setupCheckboxesFromQuerystring() {
+
         // Om man har laddat upp en karta med fastighetsgränser, visa kryssruta för att visa och dölja denna.
         if (mapContent.PropertyBoundariesFile) {
             $('#propertyBoundaries').show();
@@ -267,76 +353,9 @@ Permission is granted to anyone to use this software for any purpose, including 
                 $('input[name=show_regions]').removeProp('checked');
             }
         }
+    }
 
-        if (typeof mapContent !== 'undefined') {
-            createMarkerTypeLookupTable();
-            plotMapContent();
-            setupPalette();
-        }
-
-        var centerPos = $.QueryString["center"];
-        if (centerPos !== undefined) {
-            map.setCenter(new google.maps.LatLng(centerPos.split('x')[0], centerPos.split('x')[1]));
-
-            var centerZoom = $.QueryString["zoom"];
-            if (centerZoom !== undefined) {
-                map.setZoom(parseFloat(centerZoom));
-            }
-        }
-        else if (typeof mapContent !== 'undefined' && markersArray.length > 0) {
-            // Om vi skall visa upp någon speciell markör eller linje på kartan, detta skickas i så fall in som parameter på querystringen.
-            var markerId = $.QueryString["markerId"];
-            var lineId = $.QueryString["lineId"];
-
-            if (markerId !== undefined) {
-                var specialMarker = getMarkerById(markerId);
-                if (specialMarker != null) {
-                    map.setCenter(specialMarker.marker.getPosition());
-                    map.setZoom(16.0);
-                    specialMarker.marker.setAnimation(google.maps.Animation.BOUNCE);
-                }
-            } else if (lineId !== undefined) {
-                var specialLine = getLineById(lineId);
-                if (specialLine != null) {
-                    map.setCenter(specialLine.cable.getPath().getAt(0));
-                    map.setZoom(16.0);
-                    specialLine.cable.originalStrokeColor = specialLine.cable.get('strokeColor');
-                    // Blink line.
-                    setInterval(function () {
-                        if (specialLine.cable.get('strokeColor') == specialLine.cable.originalStrokeColor) {
-                            specialLine.cable.setOptions({ strokeColor: '#FFFF00' });
-                        } else {
-                            specialLine.cable.setOptions({ strokeColor: specialLine.cable.originalStrokeColor });
-                        }
-                    }, 1000);
-                }
-            } else {
-                map.fitBounds(mapBounds);   // Sätt rätt zooom-nivå för att få med alla markörer.
-            }
-        }
-        // Avslutar uppsättning efter querystring.
-
-        // Initialiserar editor EN gång här, istället för varje på markör, linje och region.
-        tinyMCE.init({
-            mode: "none",
-            language: "sv",
-            width: "100%",
-            entity_encoding: "raw",
-            theme: "advanced",
-            plugins: "autolink,lists,style,advlink,inlinepopups,noneditable,wordcount,media,table",
-
-            // Theme options
-            theme_advanced_buttons1: "bold,italic,underline,strikethrough,bullist,numlist,|,undo,redo,|,link,unlink,charmap,image,media,|,delete_row",
-            theme_advanced_buttons2: "",
-            theme_advanced_buttons3: "",
-            theme_advanced_buttons4: "",
-            theme_advanced_toolbar_location: "top",
-            theme_advanced_toolbar_align: "left",
-            theme_advanced_statusbar_location: "bottom",
-            theme_advanced_resizing: false,
-            content_css: "/inc/css/base.css?ver=1.7"
-        });
-
+    function setupShowMyPosition() {
         // Kolla om webbläsaren är utrustad med GPS, och visar i så fall kryssruta för det valet.
         if (navigator.geolocation) {
             $('#myCurrentPosition').show();
@@ -385,107 +404,98 @@ Permission is granted to anyone to use this software for any purpose, including 
                 }
             });
         }
-
-        if (mapContent.Settings.HasWritePrivileges) {
-
-            $.contextMenu({
-                selector: '#contextMenuLinePlaceholder',
-                trigger: 'none',
-                build: function ($trigger, e) {
-                    // this callback is executed every time the menu is to be shown
-                    // its results are destroyed every time the menu is hidden
-                    // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
-                    return {
-                        callback: function (key, options) {
-                            var menuInfo = this.data('menuInfo');
-
-                            switch (key) {
-                                case "removeVertex":
-                                    if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
-                                        var line = getLineById(menuInfo.id);
-                                        var linePath = line.cable.getPath();
-                                        // Ifall färre än två punkter på linjen blir kvar så tar vi bort hela linjen.
-                                        if (linePath.length > 2) {
-                                            linePath.removeAt(menuInfo.vertex);
-                                        } else {
-                                            removeLineById(menuInfo.id);
-                                        }
-                                    }
-                                    break;
-                                case "addVertex":
-                                    var linePath = getLineById(menuInfo.id).cable.getPath();
-                                    // Räkna ut i vilken ordning av punkterna som den nya punkten skall läggas till.
-                                    var insertOrder = getPointInsertOrder(linePath, menuInfo.latLng);
-                                    // Lägg till nya punkten på linjen.
-                                    linePath.insertAt(insertOrder, menuInfo.latLng);
-                                    break;
-                                case "removeLine":
-                                    removeLineById(menuInfo.id);
-                                    break;
-                            }
-                        },
-                        items: {
-                            "addVertex": { name: "Lägg till punkt", icon: "add" },
-                            "removeVertex": { name: "Ta bort punkt", icon: "cut" },
-                            "sep1": "---------",
-                            "removeLine": { name: "Ta bort linje", icon: "delete" }
-                        }
-                    };
-                }
-            });
-
-            $.contextMenu({
-                selector: '#contextMenuRegionPlaceholder',
-                trigger: 'none',
-                build: function ($trigger, e) {
-                    // this callback is executed every time the menu is to be shown
-                    // its results are destroyed every time the menu is hidden
-                    // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
-                    return {
-                        callback: function (key, options) {
-                            var menuInfo = this.data('menuInfo');
-
-                            switch (key) {
-                                case "removeVertex":
-                                    if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
-                                        var region = getRegionById(menuInfo.id);
-                                        var regionPath = region.region.getPath();
-                                        // Ifall färre än tre punkter på området blir kvar så tar vi bort hela området.
-                                        if (regionPath.length > 3) {
-                                            regionPath.removeAt(menuInfo.vertex);
-                                        } else {
-                                            removeRegionById(menuInfo.id);
-                                        }
-                                    }
-                                    break;
-                                case "addVertex":
-                                    var regionPath = getRegionById(menuInfo.id).region.getPath();
-                                    regionPath.insertAt(regionPath.length, menuInfo.latLng);
-                                    break;
-                                case "removeRegion":
-                                    removeRegionById(menuInfo.id);
-                                    break;
-                            }
-                        },
-                        items: {
-                            "addVertex": { name: "Lägg till punkt", icon: "add" },
-                            "removeVertex": { name: "Ta bort punkt", icon: "cut" },
-                            "sep1": "---------",
-                            "removeRegion": { name: "Ta bort område", icon: "delete" }
-                        }
-                    };
-                }
-            });
-        }
-
-        if ($("#saveButton").length > 0) {
-            $("#saveButton").click(function (event) {
-                event.preventDefault()
-                saveChanges();
-            });
-        }
     }
 
+    function setupContextMenues() {
+        $.contextMenu({
+            selector: '#contextMenuLinePlaceholder',
+            trigger: 'none',
+            build: function ($trigger, e) {
+                // this callback is executed every time the menu is to be shown
+                // its results are destroyed every time the menu is hidden
+                // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+                return {
+                    callback: function (key, options) {
+                        var menuInfo = this.data('menuInfo');
+
+                        switch (key) {
+                            case "removeVertex":
+                                if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
+                                    var line = getLineById(menuInfo.id);
+                                    var linePath = line.cable.getPath();
+                                    // Ifall färre än två punkter på linjen blir kvar så tar vi bort hela linjen.
+                                    if (linePath.length > 2) {
+                                        linePath.removeAt(menuInfo.vertex);
+                                    } else {
+                                        removeLineById(menuInfo.id);
+                                    }
+                                }
+                                break;
+                            case "addVertex":
+                                var linePath = getLineById(menuInfo.id).cable.getPath();
+                                // Räkna ut i vilken ordning av punkterna som den nya punkten skall läggas till.
+                                var insertOrder = getPointInsertOrder(linePath, menuInfo.latLng);
+                                // Lägg till nya punkten på linjen.
+                                linePath.insertAt(insertOrder, menuInfo.latLng);
+                                break;
+                            case "removeLine":
+                                removeLineById(menuInfo.id);
+                                break;
+                        }
+                    },
+                    items: {
+                        "addVertex": { name: "Lägg till punkt", icon: "add" },
+                        "removeVertex": { name: "Ta bort punkt", icon: "cut" },
+                        "sep1": "---------",
+                        "removeLine": { name: "Ta bort linje", icon: "delete" }
+                    }
+                };
+            }
+        });
+
+        $.contextMenu({
+            selector: '#contextMenuRegionPlaceholder',
+            trigger: 'none',
+            build: function ($trigger, e) {
+                // this callback is executed every time the menu is to be shown
+                // its results are destroyed every time the menu is hidden
+                // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+                return {
+                    callback: function (key, options) {
+                        var menuInfo = this.data('menuInfo');
+
+                        switch (key) {
+                            case "removeVertex":
+                                if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
+                                    var region = getRegionById(menuInfo.id);
+                                    var regionPath = region.region.getPath();
+                                    // Ifall färre än tre punkter på området blir kvar så tar vi bort hela området.
+                                    if (regionPath.length > 3) {
+                                        regionPath.removeAt(menuInfo.vertex);
+                                    } else {
+                                        removeRegionById(menuInfo.id);
+                                    }
+                                }
+                                break;
+                            case "addVertex":
+                                var regionPath = getRegionById(menuInfo.id).region.getPath();
+                                regionPath.insertAt(regionPath.length, menuInfo.latLng);
+                                break;
+                            case "removeRegion":
+                                removeRegionById(menuInfo.id);
+                                break;
+                        }
+                    },
+                    items: {
+                        "addVertex": { name: "Lägg till punkt", icon: "add" },
+                        "removeVertex": { name: "Ta bort punkt", icon: "cut" },
+                        "sep1": "---------",
+                        "removeRegion": { name: "Ta bort område", icon: "delete" }
+                    }
+                };
+            }
+        });
+    }
 
     /**
      * Uppdaterar positionen för pekaren i statusraden längst ner på sidan.
@@ -745,7 +755,8 @@ Permission is granted to anyone to use this software for any purpose, including 
 
             // Möjlighet att dra ut nya markörer från paletten till kartan.
             if ($("#markerTypes").length > 0) {
-                $("#markerTypes img").draggable({ helper: 'clone',
+                $("#markerTypes img").draggable({
+                    helper: 'clone',
                     start: function (e) {
                         $(this).data("imgDragOffsetX", ((e.originalEvent.clientX - $(this).offset().left) > e.target.width / 2) ? 1 - (e.originalEvent.clientX - $(this).offset().left - e.target.width / 2) : (e.target.width / 2 - (e.originalEvent.clientX - $(this).offset().left)));
                         $(this).data("imgDragOffsetY", e.target.height - (e.originalEvent.clientY - $(this).offset().top));
@@ -1299,7 +1310,7 @@ Permission is granted to anyone to use this software for any purpose, including 
                                     for (var i = 0, length = markersArray.length; i < length; i++) {
                                         if (markersArray[i].id == clickedMarker.id) {
                                             google.maps.event.clearInstanceListeners(clickedMarker);    // Ta bort alla eventlyssnare.
-                                            clickedMarker.marker.setMap(null);                                            
+                                            clickedMarker.marker.setMap(null);
                                             clickedMarker.marker = null;
                                             clickedMarker = null;
                                             markersArray.splice(i, 1); // Ta bort markör.
@@ -1354,7 +1365,7 @@ Permission is granted to anyone to use this software for any purpose, including 
                     currentSelectedObject = this;    // Och gör detta object till den valda.
                     currentSelectedObject.setEditable(true);    // Tillåt att flytta på linjens vertices.
                 }
-                // Vid andra klicket på linjen (linjen är redan vald).
+                    // Vid andra klicket på linjen (linjen är redan vald).
                 else {
                     editCable(this);
                 }
@@ -1491,7 +1502,7 @@ Permission is granted to anyone to use this software for any purpose, including 
                     currentSelectedObject = this;    // Och gör detta object till den valda.
                     currentSelectedObject.setEditable(true);    // Tillåt att flytta på polygonens vertices.
                 }
-                // Vid andra klicket på området (polygonen är redan vald).
+                    // Vid andra klicket på området (polygonen är redan vald).
                 else {
                     editRegion(this);
                 }
