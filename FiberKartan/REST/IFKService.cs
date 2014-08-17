@@ -54,12 +54,12 @@ namespace FiberKartan.REST
         /// Metod som returnerar ett lager för en karta.
         /// </summary>
         /// <param name="mapId">Id på karta</param>
-        /// <param name="name">Namn på lagret som skall hämtas</param>
+        /// <param name="names">Namn på lagret som skall hämtas, kommaseparerad för flera</param>
         /// <param name="ver">[Frivilligt] Version av kartan som skall användas, om inget versionsnummer anges så antas den senaste versionen</param>
-        /// <returns>Ett kartlager</returns>
+        /// <returns>Lista med kartlager</returns>
         [OperationContract]
-        [WebGet(UriTemplate = "/Layer/{mapId}/{name}/?ver={ver}")]
-        GetLayerResponse GetLayer(string mapId, string name, string ver);
+        [WebGet(UriTemplate = "/Layer/{mapId}/{names}/?ver={ver}")]
+        GetLayerResponse GetLayer(string mapId, string names, string ver);
 
         /// <summary>
         /// Metod som returnerar beskrivningen för en markör.
@@ -169,11 +169,11 @@ namespace FiberKartan.REST
     {
         public GetLayerResponse()
         {
-            this.Layer = "{}";
+            this.Layers = "{}";
         }
 
         [DataMember]
-        public string Layer { get; set; }
+        public string Layers { get; set; }
     }
 
     [DataContract]

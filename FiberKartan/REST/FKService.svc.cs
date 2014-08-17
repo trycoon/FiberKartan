@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
@@ -446,15 +447,15 @@ namespace FiberKartan.REST
         /// Metod som returnerar ett lager för en karta.
         /// </summary>
         /// <param name="mapId">Id på karta</param>
-        /// <param name="name">Namn på lagret som skall hämtas</param>
+        /// <param name="names">Namn på lagret som skall hämtas, kommaseparerad för flera</param>
         /// <param name="ver">[Frivilligt] Version av kartan som skall användas, om inget versionsnummer anges så antas den senaste versionen</param>
-        /// <returns>Ett kartlager</returns>
-        public GetLayerResponse GetLayer(string mapId, string name, string ver)
+        /// <returns>Lista med kartlager</returns>
+        public GetLayerResponse GetLayer(string mapId, string names, string ver)
         {
             var fiberDb = new FiberDataContext();
             var response = new GetLayerResponse();
 
-            if (string.IsNullOrEmpty(mapId) || string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(mapId) || string.IsNullOrEmpty(names))
             {
                 response.ErrorCode = ErrorCode.MissingInformation;
                 response.ErrorMessage = "MapId och/eller namn på lager saknas i anrop.";
@@ -462,12 +463,10 @@ namespace FiberKartan.REST
                 return response;
             }
 
-            name = name.Trim().ToLower();
-
             if (!HttpContext.Current.User.Identity.IsAuthenticated)
             {
                 response.ErrorCode = ErrorCode.NotLoggedIn;
-                response.ErrorMessage = "Du måste vara inloggad för att hämta ett kartlager.";
+                response.ErrorMessage = "Du måste vara inloggad för att hämta kartlager.";
 
                 return response;
             }
@@ -495,18 +494,27 @@ namespace FiberKartan.REST
 
                 return response;
             }
+            
+            names = names.Trim().ToLower();
+            var layers = names.Split(',').Select(name => name.Trim()).ToArray();
 
-            Utils.Log("Hämtar kartlager \"" + name + "\" för karta med MapId=" + mapTypeId + " för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 130);
+            Utils.Log("Hämtar kartlager \"" + names + "\" för karta med MapId=" + mapTypeId + " för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 130);
 
             if (!string.IsNullOrEmpty(map.Layers))
             {
-                dynamic layers = JsonConvert.DeserializeObject(map.Layers);
-                var layer = layers[name];
+                dynamic availableLayers = JsonConvert.DeserializeObject(map.Layers);
+                var result = new ExpandoObject() as IDictionary<string, Object>;
 
-                if (layer != null)
-                {
-                    response.Layer = JsonConvert.SerializeObject(layer);
+                foreach (var requestedLayer in layers) {
+                    var layer = availableLayers[requestedLayer];
+
+                    if (layer != null)
+                    {
+                        result[requestedLayer] = layer;
+                    }
                 }
+
+                response.Layers = JsonConvert.SerializeObject(result);
             }
 
             return response;
