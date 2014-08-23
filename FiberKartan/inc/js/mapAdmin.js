@@ -1,13 +1,20 @@
 ﻿/*
-The zlib/libpng License
-Copyright (c) 2012 Henrik Östman
+Copyright (c) 2012, Henrik Östman.
 
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+This file is part of FiberKartan.
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
+FiberKartan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FiberKartan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 (function (fk) {
     // Const och enum
@@ -147,6 +154,8 @@ Permission is granted to anyone to use this software for any purpose, including 
                     toggleShowRegions();
                 }
             });
+
+            addMapRuler();
         }
 
         $(window).on('orientationchange', function (event) {
@@ -495,6 +504,57 @@ Permission is granted to anyone to use this software for any purpose, including 
                 };
             }
         });
+    }
+
+    function addMapRuler() {
+        addToolToDrawManager('useRuler', 'Mät sträcka', '/inc/img/ruler_icon.png', function(button) {
+           button.click(function () {
+               button.css('background-color', '#ebebeb');
+
+            });
+        });       
+    }
+
+    /**
+     * Adds a custom button to the Draw Manager toolbar.
+     * @param {string} buttonClass DOM class to use on button.
+     * @param {string} title Title of button.
+     * @param {string} imgSrc Uri to button image.
+     * @param {function} callback Callback to be executed when button has been created and added, new button is provided as a parameter.
+     * @param {number} imageMapHeight [optional] If image is an imagemap then specify its height.
+     * @param {number} imageMapTop [optional] If image is an imagemap then specify the number of pixels from the top to the image we shall render.
+     */
+    function addToolToDrawManager(buttonClass, title, imgSrc, callback, imageMapHeight, imageMapTop) {
+        if (!imageMapHeight) {
+            imageMapHeight = 16;
+        }
+        if (!imageMapTop) {
+            imageMapTop = 0;
+        }
+
+        var newButton = $('<div style="float: left; line-height: 0;"><div class="' + buttonClass + '" style="direction: ltr; overflow: hidden; text-align: left; position: relative; color: rgb(51, 51, 51); font-family: Arial,sans-serif; -moz-user-select: none; font-size: 13px; background: none repeat scroll 0% 0% rgb(255, 255, 255); padding: 4px; border-width: 1px 1px 1px 0px; border-style: solid solid solid none; border-color: rgb(113, 123, 135) rgb(113, 123, 135) rgb(113, 123, 135) -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4); font-weight: normal;" title="' + title + '"><span style="display: inline-block;"><div style="width: 16px; height: 16px; overflow: hidden; position: relative;"><img style="position: absolute; left: 0px; top: ' + imageMapTop + 'px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px; width: 16px; height: ' + imageMapHeight + 'px;" src="' + imgSrc + '" draggable="false"></div></span></div></div>');
+        // Om vi inte hittar ritverktygen så beror det på att Googles script ännu inte har renderat dessa, vänta på att load-eventet triggas och försök igen.
+        if ($('.gmnoprint').find("[title='Sluta rita']").length == 0) {
+            google.maps.event.addDomListener(window, 'load', function () {
+                var drawManagerToolbar = $('.gmnoprint').find("[title='Sluta rita']").parent().parent();
+                drawManagerToolbar.append(newButton);
+
+                if (callback) {
+                    callback(newButton);
+                }
+            });
+        } else {
+            var drawManagerToolbar = $('.gmnoprint').find("[title='Sluta rita']").parent().parent();
+            drawManagerToolbar.append(newButton);
+
+            if (callback) {
+                setTimeout( // Se till att vi returnerar asynkront även då Google har satt upp ritverktygen.
+                    callback(newButton),
+                1);
+            }
+        }
+
+
     }
 
     /**
