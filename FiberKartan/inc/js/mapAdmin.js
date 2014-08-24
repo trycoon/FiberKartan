@@ -376,12 +376,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 			            new google.maps.Size(32.0, 32.0),
 			            new google.maps.Point(0, 0),
 			            new google.maps.Point(16.0, 16.0)
-			        );
-                        var shadow = new google.maps.MarkerImage("/inc/img/markers/man-shadow.png",
-				        new google.maps.Size(49.0, 32.0),
-				        new google.maps.Point(0, 0),
-				        new google.maps.Point(16.0, 16.0)
-			        );
+			        );                       
                         var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         map.setCenter(latLng);
                         youMarker = new google.maps.Marker({
@@ -390,7 +385,6 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                             clickable: false,
                             draggable: false,
                             icon: image,
-                            shadow: shadow,
                             zIndex: 9999,
                             title: 'lat(' + position.coords.latitude.toFixed(7) + ') long(' + position.coords.longitude.toFixed(6) + ').'
                         });
@@ -507,9 +501,37 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function addMapRuler() {
-        addToolToDrawManager('useRuler', 'Mät sträcka', '/inc/img/ruler_icon.png', function(button) {
+        addToolToDrawManager('useRuler', 'Mät sträcka', 'http://maps.google.com/mapfiles/kml/pal5/icon5.png', function (button) {
            button.click(function () {
                button.css('background-color', '#ebebeb');
+
+               var polyOptions = {
+                   strokeColor: '#000000',
+                   strokeOpacity: 0.7,
+                   strokeWeight: 3
+               };
+               var rulerLine = new google.maps.Polyline(polyOptions);
+               rulerLine.setMap(map);
+
+               var vertexImage = {
+                   url: 'http://maps.google.com/mapfiles/kml/pal4/icon57.png',
+                   size: new google.maps.Size(32, 32),
+                   //origin: new google.maps.Point(16, 16),
+                   anchor: new google.maps.Point(16, 16)
+               };
+
+               // Add a listener for the click event
+               google.maps.event.addListener(map, 'click', function (event) {
+                   var path = rulerLine.getPath();
+                   path.push(event.latLng);
+
+                   var marker = new google.maps.Marker({
+                       position: event.latLng,
+                       title: '#' + path.getLength(),
+                       icon: vertexImage,
+                       map: map
+                   });
+               });
 
             });
         });       

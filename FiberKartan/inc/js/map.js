@@ -236,11 +236,6 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 			                new google.maps.Point(0, 0),
 			                new google.maps.Point(16.0, 16.0)
 			            );
-                        var shadow = new google.maps.MarkerImage("/inc/img/markers/man-shadow.png",
-				            new google.maps.Size(49.0, 32.0),
-				            new google.maps.Point(0, 0),
-				            new google.maps.Point(16.0, 16.0)
-			            );
                         var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         map.setCenter(latLng);
                         youMarker = new google.maps.Marker({
@@ -249,7 +244,6 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                             clickable: false,
                             draggable: false,
                             icon: image,
-                            shadow: shadow,
                             zIndex: 9999,
                             title: 'lat(' + position.coords.latitude.toFixed(7) + ') long(' + position.coords.longitude.toFixed(6) + ').'
                         });
