@@ -44,7 +44,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     geocoder,
     ruler = {   // Initalisera linjalen
         rulerLine: new google.maps.Polyline({
-            strokeColor: '#000000',
+            strokeColor: '#FF3333',
             strokeOpacity: 0.7,
             strokeWeight: 3
         }),
@@ -522,36 +522,75 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         });       
     }
 
+    function countAndCleanRulerVertex() {
+        count = 0;
+        for (var i = ruler.vertexMarkers.length - 1; i >= 0; i--) {
+            if (ruler.vertexMarkers[i].getMap() === null) {
+                google.maps.event.clearInstanceListeners(ruler.vertexMarkers[i]); // Ta bort alla eventlyssnare.
+                ruler.vertexMarkers.splice(i, 1);
+            } else {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    function drawRulerPath() {
+        countAndCleanRulerVertex(); // Ta bort raderade vertex.
+
+        var coords = [];
+        for (var i = 0; i < ruler.vertexMarkers.length; i++) {
+            coords.push(ruler.vertexMarkers[i].getPosition());
+        }
+        ruler.rulerLine.setPath(coords);
+
+        var meters = google.maps.geometry.spherical.computeLength(coords);
+        setStatusbarText('Total sträcka: ' + Math.ceil(meters) + ' meter.');
+
+    }
+
     function rulerStartMeasure() {
+
         rulerStopMeasure(); // Ta bort eventuell gammal mätning.
 
         ruler.rulerLine.setMap(map);    // Visa linje.
 
         // Klick på kartan skall rita ut ny vertex (punkt) på linjen.
         ruler.clickListener = google.maps.event.addListener(map, 'click', function (event) {
-            var path = ruler.rulerLine.getPath();
-            path.push(event.latLng);
 
-            // Visa vertex med markör.
-            ruler.vertexMarkers.push(
-                new google.maps.Marker({
-                    position: event.latLng,
-                    title: '#' + path.getLength(),
-                    icon: ruler.vertexImage,
-                    map: map
-                })
-            );
+            // Lägg till ny vertex med markör.
+            var marker = new google.maps.Marker({
+                position: event.latLng,
+                icon: ruler.vertexImage,
+                draggable:true,
+                map: map
+            });
+            ruler.vertexMarkers.push(marker);
+
+            google.maps.event.addListener(marker, 'dblclick', function (event) {
+                marker.setMap(null);    // Ta bort vertex från kartan, den rensas bort från arrayen via drawRulerPath() -> countAndCleanRulerVertex()
+
+                drawRulerPath();
+            });
+
+            google.maps.event.addListener(marker, 'drag', function (event) {
+                drawRulerPath();    // Flytta befintlig vertex
+            });
+
+            drawRulerPath();
         });
     }
 
     function rulerStopMeasure() {
-        // Ta bort lyssnare på klickevent.
+        // Ta bort lyssnare på klickevent för att lägga till nya punkter.
         google.maps.event.removeListener(ruler.clickListener);
 
         // Ta bort vertex-markörer.
-        for (var i = 0; ruler.vertexMarkers.length; i++) {
+        for (var i = 0; i < ruler.vertexMarkers.length; i++) {
             ruler.vertexMarkers[i].setMap(null);
         }
+        drawRulerPath();
         ruler.vertexMarkers.length = 0;
 
         // Ta bort linje från karta.
