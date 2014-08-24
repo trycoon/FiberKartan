@@ -41,7 +41,20 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     temporaryRegionId = 0,  // Id på område som ännu inte har sparats. Är alltid ett negativt heltal.
     mapBounds = new google.maps.LatLngBounds(),
     regionInfoWindow = new google.maps.InfoWindow({}),
-    geocoder;
+    geocoder,
+    ruler = {   // Initalisera linjalen
+        rulerLine: new google.maps.Polyline({
+            strokeColor: '#000000',
+            strokeOpacity: 0.7,
+            strokeWeight: 3
+        }),
+        vertexImage: {
+            url: 'http://maps.google.com/mapfiles/kml/pal4/icon57.png',
+            size: new google.maps.Size(32, 32),
+            anchor: new google.maps.Point(16, 16)
+        },
+        vertexMarkers: []
+    };
 
     // Deklarera ny funktion i jQuery för att hämta ut querystring-parametrar. Används: $.QueryString["param"]
     (function ($) {
@@ -503,38 +516,46 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     function addMapRuler() {
         addToolToDrawManager('useRuler', 'Mät sträcka', 'http://maps.google.com/mapfiles/kml/pal5/icon5.png', function (button) {
            button.click(function () {
-               button.css('background-color', '#ebebeb');
-
-               var polyOptions = {
-                   strokeColor: '#000000',
-                   strokeOpacity: 0.7,
-                   strokeWeight: 3
-               };
-               var rulerLine = new google.maps.Polyline(polyOptions);
-               rulerLine.setMap(map);
-
-               var vertexImage = {
-                   url: 'http://maps.google.com/mapfiles/kml/pal4/icon57.png',
-                   size: new google.maps.Size(32, 32),
-                   //origin: new google.maps.Point(16, 16),
-                   anchor: new google.maps.Point(16, 16)
-               };
-
-               // Add a listener for the click event
-               google.maps.event.addListener(map, 'click', function (event) {
-                   var path = rulerLine.getPath();
-                   path.push(event.latLng);
-
-                   var marker = new google.maps.Marker({
-                       position: event.latLng,
-                       title: '#' + path.getLength(),
-                       icon: vertexImage,
-                       map: map
-                   });
-               });
-
+               button.css('background-color', '#ebebeb');   // Visa att mätverktyget är valt.
+               rulerStartMeasure();
             });
         });       
+    }
+
+    function rulerStartMeasure() {
+        rulerStopMeasure(); // Ta bort eventuell gammal mätning.
+
+        ruler.rulerLine.setMap(map);    // Visa linje.
+
+        // Klick på kartan skall rita ut ny vertex (punkt) på linjen.
+        ruler.clickListener = google.maps.event.addListener(map, 'click', function (event) {
+            var path = ruler.rulerLine.getPath();
+            path.push(event.latLng);
+
+            // Visa vertex med markör.
+            ruler.vertexMarkers.push(
+                new google.maps.Marker({
+                    position: event.latLng,
+                    title: '#' + path.getLength(),
+                    icon: ruler.vertexImage,
+                    map: map
+                })
+            );
+        });
+    }
+
+    function rulerStopMeasure() {
+        // Ta bort lyssnare på klickevent.
+        google.maps.event.removeListener(ruler.clickListener);
+
+        // Ta bort vertex-markörer.
+        for (var i = 0; ruler.vertexMarkers.length; i++) {
+            ruler.vertexMarkers[i].setMap(null);
+        }
+        ruler.vertexMarkers.length = 0;
+
+        // Ta bort linje från karta.
+        ruler.rulerLine.setMap(null);        
     }
 
     /**
