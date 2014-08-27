@@ -1,19 +1,27 @@
 ﻿/*
-The zlib/libpng License
-Copyright (c) 2012 Henrik Östman
+Copyright (c) 2012, Henrik Östman.
 
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+This file is part of FiberKartan.
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
+FiberKartan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FiberKartan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 (function (fk) {
     var map;
     var mapContent = fk.mapContent;
     var serverRoot = fk.serverRoot;
     var welcomeMessage = fk.welcomeMessage;
+    var kmlLayer;
     var markersArray = [];
     var regionsArray = [];
     var lineArray = [];
@@ -59,6 +67,175 @@ Permission is granted to anyone to use this software for any purpose, including 
                 $('.palette').fadeIn();
             }
         });
+
+        setupCheckboxesFromQuerystring();
+
+        if (typeof welcomeMessage !== 'undefined' && welcomeMessage.length > 0) {
+            showDialog('<div class="mapPopup">' + welcomeMessage + '</div>', 'Meddelande');
+        }
+
+        if (typeof mapContent !== 'undefined') {
+            createMarkerTypeLookupTable();
+            plotMapContent();
+            setupPalette();
+
+            if (mapContent.Settings.ShowTotalDigLength) {
+                $('#totalDigLength').html(calculateTotalDigLength());
+            }
+
+            $("#mapInfoIcon").click(function () {
+                showDialog(
+                'Namn: ' + mapContent.MapName + '<br />'
+                + 'Version: ' + mapContent.MapVer + '<br />'
+                + 'Skapad: ' + mapContent.Created + '<br />'
+                + 'Antal visningar: ' + mapContent.Views + '<br /><br />'
+                + 'Skapad i <a href="http://fiberkartan.se" target="_blank">Fiberkartan</a>',
+                 'Kartinformation');
+            });
+        }
+
+        var centerPos = $.QueryString["center"];
+        if (centerPos !== undefined) {
+            map.setCenter(new google.maps.LatLng(centerPos.split('x')[0], centerPos.split('x')[1]));
+
+            var centerZoom = $.QueryString["zoom"];
+            if (centerZoom !== undefined) {
+                map.setZoom(parseFloat(centerZoom));
+            }
+        }
+        else if (typeof mapContent !== 'undefined' && markersArray.length > 0) {
+            // Om vi skall visa upp någon speciell markör eller linje på kartan, detta skickas i så fall in som parameter på querystringen.
+
+            // Utmärka någon redan befintlig markör.
+            var markerId = $.QueryString["markerId"];
+
+            // Sätt ut en ny markör utifrå querystring, denna sparas aldrig.
+            var marker = $.QueryString["marker"];
+
+            // Utmärka någon redan befintlig linje.
+            var lineId = $.QueryString["lineId"];
+
+            var specialMarker;
+
+            if (markerId !== undefined) {
+                specialMarker = getMarkerById(markerId);
+                if (specialMarker !== null) {
+                    map.setCenter(specialMarker.marker.getPosition());
+                    map.setZoom(16.0);
+                    specialMarker.marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            } else if (marker !== undefined) {
+                specialMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(marker.split('x')[0], marker.split('x')[1]),
+                    icon: 'http://maps.google.com/mapfiles/kml/paddle/red-stars.png',
+                    map: map
+                });
+                map.setCenter(specialMarker.getPosition());
+                map.setZoom(16.0);
+            } else if (lineId !== undefined) {
+                var specialLine = getLineById(lineId);
+                if (specialLine !== null) {
+                    map.setCenter(specialLine.cable.getPath().getAt(0));
+                    map.setZoom(16.0);
+                    specialLine.cable.originalStrokeColor = specialLine.cable.get('strokeColor');
+                    // Blink line.
+                    setInterval(function () {
+                        if (specialLine.cable.get('strokeColor') == specialLine.cable.originalStrokeColor) {
+                            specialLine.cable.setOptions({ strokeColor: '#FFFF00' });
+                        } else {
+                            specialLine.cable.setOptions({ strokeColor: specialLine.cable.originalStrokeColor });
+                        }
+                    }, 1000);
+                }
+            } else {
+                // För kartor i allmänhet som inte anropats med några speciella direktiv på querystringen.
+                map.fitBounds(mapBounds);   // Sätt rätt zooom-nivå för att få med alla markörer.
+            }
+        }
+        // Avslutar uppsättning efter querystring.
+
+        // Anpassa karta efter önskad storlek, behövs för utskrifter.
+        $('#viewSettings').change(function (event) {
+            var body = $("body");
+            switch (this.value) {
+                case "screen": body.width("100%"); body.height("100%"); break;
+                case "a0": body.width("2384pt"); body.height("3370pt"); break;
+                case "a1": body.width("1684pt"); body.height("2384pt"); break;
+                case "a2": body.width("1190pt"); body.height("1684pt"); break;
+                case "a3": body.width("842pt"); body.height("1190pt"); break;
+                case "a4": body.width("595pt"); body.height("842pt"); break;
+            }
+            // Om pappret är i liggande storlek så skiftar vi på axlarna.
+            if ($("#viewSettingsHorizontal").is(':checked')) {
+                var tmp = body.height();
+                body.height(body.width());
+                body.width(tmp);
+            }
+            google.maps.event.trigger(map, 'resize');   // Anpassa canvas efter nya storleken.
+        });
+        $('#viewSettingsHorizontal').change(function (event) {
+            var body = $("body");
+            var tmp = body.height();
+            body.height(body.width());
+            body.width(tmp);
+
+            google.maps.event.trigger(map, 'resize');   // Anpassa canvas efter nya storleken.
+        });
+
+        // Kolla om webbläsaren är utrustad med GPS, och visar i så fall kryssruta för det valet.
+        if (navigator.geolocation) {
+            $('#myCurrentPosition').show();
+
+            $('#myCurrentPositionCheckbox').click(function () {
+                if ($(this).is(':checked')) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        var image = new google.maps.MarkerImage("/inc/img/markers/man.png",
+			                new google.maps.Size(32.0, 32.0),
+			                new google.maps.Point(0, 0),
+			                new google.maps.Point(16.0, 16.0)
+			            );
+                        var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        map.setCenter(latLng);
+                        youMarker = new google.maps.Marker({
+                            position: latLng,
+                            map: map,
+                            clickable: false,
+                            draggable: false,
+                            icon: image,
+                            zIndex: 9999,
+                            title: 'lat(' + position.coords.latitude.toFixed(7) + ') long(' + position.coords.longitude.toFixed(6) + ').'
+                        });
+                        gpsWatchId = navigator.geolocation.watchPosition(function (position) {
+                            latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                            map.setCenter(latLng);
+                            youMarker.setPosition(latLng);
+                            youMarker.setTitle('lat(' + position.coords.latitude.toFixed(7) + ') long(' + position.coords.longitude.toFixed(6) + ').');
+                        });
+                    });
+                } else {
+                    if (gpsWatchId !== undefined) {
+                        navigator.geolocation.clearWatch(gpsWatchId);
+                        gpsWatchId = undefined;
+                    }
+                    if (youMarker !== undefined) {
+                        youMarker.setMap(null);
+                        youMarker = undefined;
+                    }
+                }
+            });
+        }
+    });
+
+    function setupCheckboxesFromQuerystring() {
+
+        // Om man har laddat upp en karta med fastighetsgränser, visa kryssruta för att visa och dölja denna.
+        if (mapContent.PropertyBoundariesFile) {
+            $('#propertyBoundaries').show();
+
+            $('#show_propertyBoundaries').click(function () {
+                toggleShowPropertyBoundaries();
+            });
+        }
 
         // Sätter upp krussrutorna och kartans "state" utifrån parametrar på querystring.
         var mapType = $.QueryString["mapType"];
@@ -122,150 +299,7 @@ Permission is granted to anyone to use this software for any purpose, including 
                 $('input[name=show_regions]').removeProp('checked');
             }
         }
-
-        if (typeof welcomeMessage !== 'undefined' && welcomeMessage.length > 0) {
-            showDialog('<div class="mapPopup">' + welcomeMessage + '</div>', 'Meddelande');
-        }
-
-        if (typeof mapContent !== 'undefined') {
-            createMarkerTypeLookupTable();
-            plotMapContent();
-            setupPalette();
-
-            if (mapContent.Settings.ShowTotalDigLength) {
-                $('#totalDigLength').html(calculateTotalDigLength());
-            }
-
-            $("#mapInfoIcon").click(function () {
-                showDialog(
-                'Namn: ' + mapContent.MapName + '<br />'
-                + 'Version: ' + mapContent.MapVer + '<br />'
-                + 'Skapad: ' + mapContent.Created + '<br />'
-                + 'Antal visningar: ' + mapContent.Views + '<br /><br />'
-                + 'Skapad i <a href="http://fiberkartan.se" target="_blank">Fiberkartan</a>',
-                 'Kartinformation');
-            });
-        }
-
-        var centerPos = $.QueryString["center"];
-        if (centerPos !== undefined) {
-            map.setCenter(new google.maps.LatLng(centerPos.split('x')[0], centerPos.split('x')[1]));
-
-            var centerZoom = $.QueryString["zoom"];
-            if (centerZoom !== undefined) {
-                map.setZoom(parseFloat(centerZoom));
-            }
-        }
-        else if (typeof mapContent !== 'undefined' && markersArray.length > 0) {
-            // Om vi skall visa upp någon speciell markör eller linje på kartan, detta skickas i så fall in som parameter på querystringen.
-            var markerId = $.QueryString["markerId"];
-            var lineId = $.QueryString["lineId"];
-
-            if (markerId !== undefined) {
-                var specialMarker = getMarkerById(markerId);
-                if (specialMarker != null) {
-                    map.setCenter(specialMarker.marker.getPosition());
-                    map.setZoom(16.0);
-                    specialMarker.marker.setAnimation(google.maps.Animation.BOUNCE);
-                }
-            } else if (lineId !== undefined) {
-                var specialLine = getLineById(lineId);
-                if (specialLine != null) {
-                    map.setCenter(specialLine.cable.getPath().getAt(0));
-                    map.setZoom(16.0);
-                    specialLine.cable.originalStrokeColor = specialLine.cable.get('strokeColor');
-                    // Blink line.
-                    setInterval(function () {
-                        if (specialLine.cable.get('strokeColor') == specialLine.cable.originalStrokeColor) {
-                            specialLine.cable.setOptions({ strokeColor: '#FFFF00' });
-                        } else {
-                            specialLine.cable.setOptions({ strokeColor: specialLine.cable.originalStrokeColor });
-                        }
-                    }, 1000);
-                }
-            } else {
-                map.fitBounds(mapBounds);   // Sätt rätt zooom-nivå för att få med alla markörer.
-            }
-        }
-        // Avslutar uppsättning efter querystring.
-
-        // Anpassa karta efter önskad storlek, behövs för utskrifter.
-        $('#viewSettings').change(function (event) {
-            var body = $("body");
-            switch (this.value) {
-                case "screen": body.width("100%"); body.height("100%"); break;
-                case "a0": body.width("2384pt"); body.height("3370pt"); break;
-                case "a1": body.width("1684pt"); body.height("2384pt"); break;
-                case "a2": body.width("1190pt"); body.height("1684pt"); break;
-                case "a3": body.width("842pt"); body.height("1190pt"); break;
-                case "a4": body.width("595pt"); body.height("842pt"); break;
-            }
-            // Om pappret är i liggande storlek så skiftar vi på axlarna.
-            if ($("#viewSettingsHorizontal").is(':checked')) {
-                var tmp = body.height();
-                body.height(body.width());
-                body.width(tmp);
-            }
-            google.maps.event.trigger(map, 'resize');   // Anpassa canvas efter nya storleken.
-        });
-        $('#viewSettingsHorizontal').change(function (event) {
-            var body = $("body");
-            var tmp = body.height();
-            body.height(body.width());
-            body.width(tmp);
-
-            google.maps.event.trigger(map, 'resize');   // Anpassa canvas efter nya storleken.
-        });
-
-        // Kolla om webbläsaren är utrustad med GPS, och visar i så fall kryssruta för det valet.
-        if (navigator.geolocation) {
-            $('#myCurrentPosition').show();
-
-            $('#myCurrentPositionCheckbox').click(function () {
-                if ($(this).is(':checked')) {
-                    navigator.geolocation.getCurrentPosition(function (position) {
-                        var image = new google.maps.MarkerImage("/inc/img/markers/man.png",
-			                new google.maps.Size(32.0, 32.0),
-			                new google.maps.Point(0, 0),
-			                new google.maps.Point(16.0, 16.0)
-			            );
-                        var shadow = new google.maps.MarkerImage("/inc/img/markers/man-shadow.png",
-				            new google.maps.Size(49.0, 32.0),
-				            new google.maps.Point(0, 0),
-				            new google.maps.Point(16.0, 16.0)
-			            );
-                        var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                        map.setCenter(latLng);
-                        youMarker = new google.maps.Marker({
-                            position: latLng,
-                            map: map,
-                            clickable: false,
-                            draggable: false,
-                            icon: image,
-                            shadow: shadow,
-                            zIndex: 9999,
-                            title: 'lat(' + position.coords.latitude.toFixed(7) + ') long(' + position.coords.longitude.toFixed(6) + ').'
-                        });
-                        gpsWatchId = navigator.geolocation.watchPosition(function (position) {
-                            latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                            map.setCenter(latLng);
-                            youMarker.setPosition(latLng);
-                            youMarker.setTitle('lat(' + position.coords.latitude.toFixed(7) + ') long(' + position.coords.longitude.toFixed(6) + ').');
-                        });
-                    });
-                } else {
-                    if (gpsWatchId !== undefined) {
-                        navigator.geolocation.clearWatch(gpsWatchId);
-                        gpsWatchId = undefined;
-                    }
-                    if (youMarker !== undefined) {
-                        youMarker.setMap(null);
-                        youMarker = undefined;
-                    }
-                }
-            });
-        }
-    });
+    }
 
     function createMarkerTypeLookupTable() {
         if (mapContent.MarkerTypes != null) {
@@ -466,6 +500,27 @@ Permission is granted to anyone to use this software for any purpose, including 
         } else {
             for (var i = 0, length = regionsArray.length; i < length; i++) {
                 regionsArray[i].region.setMap(null);
+            }
+        }
+    }
+
+    function toggleShowPropertyBoundaries() {
+        if ($("#show_propertyBoundaries").is(":checked")) {
+            if (kmlLayer instanceof google.maps.KmlLayer) {
+                kmlLayer.setMap(null);  // Rensa bort eventuellt redan inladdad KML-fil.
+            }
+
+            kmlLayer = new google.maps.KmlLayer(mapContent.PropertyBoundariesFile,
+                                {
+                                    map: map,
+                                    clickable: true,
+                                    preserveViewport: false,
+                                    suppressInfoWindows: false
+                                });
+        } else {
+            if (kmlLayer instanceof google.maps.KmlLayer) {
+                kmlLayer.setMap(null);  // Rensa bort eventuellt redan inladdad KML-fil.
+                kmlLayer = null;
             }
         }
     }

@@ -9,28 +9,39 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using FiberKartan.Kml;
+using HtmlAgilityPack;
 using MightyLittleGeodesy.Positions;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 
 /*
-The zlib/libpng License
-Copyright (c) 2012 Henrik Östman
+Copyright (c) 2012, Henrik Östman.
 
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+This file is part of FiberKartan.
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
+FiberKartan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FiberKartan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace FiberKartan.Admin
 {
     public partial class ExportMap : System.Web.UI.Page
     {
+        // HTML document used for decoding and stripping HTML from descriptions and such.
+        HtmlDocument htmlDocument;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            htmlDocument = new HtmlAgilityPack.HtmlDocument();
         }
 
         protected void ExportButton_Click(object sender, EventArgs e)
@@ -350,7 +361,11 @@ namespace FiberKartan.Admin
                 // Vi lägger på prefixet "KS" för alla kopplingsskåp, annars kör vi direkt på namnet i databasen.
                 sheet.Cells[tmpRowIndex, 2].Value = entityType == MapEntityEnum.FiberBox ? ("KS" + marker.Name) : marker.Name;
 
-                sheet.Cells[tmpRowIndex, 3].Value = marker.Description;
+                if (marker.Description != string.Empty)
+                {
+                    htmlDocument.LoadHtml(marker.Description);
+                    sheet.Cells[tmpRowIndex, 3].Value = WebUtility.HtmlDecode(htmlDocument.DocumentNode.InnerText);
+                }
 
                 sheet.Cells[tmpRowIndex, 4].Value = marker.Latitude;
                 sheet.Cells[tmpRowIndex, 5].Value = marker.Longitude;
@@ -470,7 +485,13 @@ namespace FiberKartan.Admin
             {
                 sheet.Cells[tmpRowIndex, 1].Value = line.Id;
                 sheet.Cells[tmpRowIndex, 2].Value = line.Name;
-                sheet.Cells[tmpRowIndex, 3].Value = line.Description;
+
+                if (line.Description != string.Empty)
+                {
+                    htmlDocument.LoadHtml(line.Description);
+                    sheet.Cells[tmpRowIndex, 3].Value = WebUtility.HtmlDecode(htmlDocument.DocumentNode.InnerText);
+                }
+
                 sheet.Cells[tmpRowIndex, 4].Value = line.Width;
 
                 #region CalculateLineLength
@@ -555,7 +576,13 @@ namespace FiberKartan.Admin
             {
                 sheet.Cells[tmpRowIndex, 1].Value = region.Id;
                 sheet.Cells[tmpRowIndex, 2].Value = region.Name;
-                sheet.Cells[tmpRowIndex, 3].Value = region.Description;
+
+                if (region.Description != string.Empty)
+                {
+                    htmlDocument.LoadHtml(region.Description);
+                    sheet.Cells[tmpRowIndex, 3].Value = WebUtility.HtmlDecode(htmlDocument.DocumentNode.InnerText);
+                }
+
                 sheet.Cells[tmpRowIndex, 4].Value = region.Coordinates.Replace(':', ',').Replace('|', ' ');    // Kommaseparerad lista, ett kommatecken skiljer longitud och latitud, ett mellanslag skiljer koordinatpunkterna åt.
 
                 tmpRowIndex++;

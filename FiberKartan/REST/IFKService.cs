@@ -7,15 +7,22 @@ using System.ServiceModel.Web;
 using System.Text;
 
 /*
-The zlib/libpng License
-Copyright (c) 2012 Henrik Östman
+Copyright (c) 2012, Henrik Östman.
 
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+This file is part of FiberKartan.
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
+FiberKartan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FiberKartan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace FiberKartan.REST
 {
@@ -54,12 +61,12 @@ namespace FiberKartan.REST
         /// Metod som returnerar ett lager för en karta.
         /// </summary>
         /// <param name="mapId">Id på karta</param>
-        /// <param name="name">Namn på lagret som skall hämtas</param>
+        /// <param name="names">Namn på lagret som skall hämtas, kommaseparerad för flera</param>
         /// <param name="ver">[Frivilligt] Version av kartan som skall användas, om inget versionsnummer anges så antas den senaste versionen</param>
-        /// <returns>Ett kartlager</returns>
+        /// <returns>Lista med kartlager</returns>
         [OperationContract]
-        [WebGet(UriTemplate = "/Layer/{mapId}/{name}/?ver={ver}")]
-        GetLayerResponse GetLayer(string mapId, string name, string ver);
+        [WebGet(UriTemplate = "/Layer/{mapId}/{names}/?ver={ver}")]
+        GetLayerResponse GetLayer(string mapId, string names, string ver);
 
         /// <summary>
         /// Metod som returnerar beskrivningen för en markör.
@@ -169,11 +176,11 @@ namespace FiberKartan.REST
     {
         public GetLayerResponse()
         {
-            this.Layer = "{}";
+            this.Layers = "{}";
         }
 
         [DataMember]
-        public string Layer { get; set; }
+        public string Layers { get; set; }
     }
 
     [DataContract]

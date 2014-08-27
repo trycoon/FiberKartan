@@ -1,4 +1,22 @@
-﻿(function (fk) {
+﻿/*
+Copyright (c) 2012, Henrik Östman.
+
+This file is part of FiberKartan.
+
+FiberKartan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FiberKartan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
+*/
+(function (fk) {
     var map;
     var mapContent = fk.mapContent;
     var serverRoot = fk.serverRoot;
@@ -127,11 +145,6 @@
 			                new google.maps.Point(0, 0),
 			                new google.maps.Point(16.0, 16.0)
 			            );
-                        var shadow = new google.maps.MarkerImage("/inc/img/markers/man-shadow.png",
-				            new google.maps.Size(49.0, 32.0),
-				            new google.maps.Point(0, 0),
-				            new google.maps.Point(16.0, 16.0)
-			            );
                         var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         map.setCenter(latLng);
                         youMarker = new google.maps.Marker({
@@ -140,7 +153,6 @@
                             clickable: false,
                             draggable: false,
                             icon: image,
-                            shadow: shadow,
                             zIndex: 9999,
                             title: 'lat(' + position.coords.latitude.toFixed(7) + ') long(' + position.coords.longitude.toFixed(6) + ').'
                         });

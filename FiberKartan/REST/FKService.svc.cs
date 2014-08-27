@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
@@ -18,15 +19,22 @@ using FiberKartan;
 using Newtonsoft.Json;
 
 /*
-The zlib/libpng License
-Copyright (c) 2012 Henrik Östman
+Copyright (c) 2012, Henrik Östman.
 
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+This file is part of FiberKartan.
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
+FiberKartan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FiberKartan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace FiberKartan.REST
 {
@@ -394,7 +402,7 @@ namespace FiberKartan.REST
                 #region SendMail
 
                 var body = new StringBuilder("<html><head><title>Felrapport</title></head><body><h1>Felrapport</h1>");
-                body.Append(user.Name + " har rapporterat följande fel på fibernätverk <a href=\"" + ConfigurationManager.AppSettings["ServerAdress"] + "/admin/MapAdmin.aspx?mid=" + existingMap.MapTypeId + "&ver=" + existingMap.Ver + "\">\"" + existingMap.MapType.Title + "\"</a>:</p>");
+                body.Append(string.Format("<p>{0} har rapporterat följande fel på fibernätverk <a href=\"{1}/admin/MapAdmin.aspx?mid={2}&ver={3}&marker={4}\">\"{5}\"</a>:</p>", user.Name, ConfigurationManager.AppSettings["ServerAdress"], existingMap.MapTypeId, existingMap.Ver, report.Position.Lat + "x" + report.Position.Lng, existingMap.MapType.Title));
                 body.Append("Felrapport skapad: " + incidentReport.Created + "<br/>");
                 body.Append("Till serviceföretag: " + existingMap.MapType.ServiceCompany.Name + "<br/>");
                 body.Append("Position(WGS84) latitud: <strong>" + report.Position.Lat + "</strong> longitud: <strong>" + report.Position.Lng + "</strong><br/>");
@@ -446,15 +454,15 @@ namespace FiberKartan.REST
         /// Metod som returnerar ett lager för en karta.
         /// </summary>
         /// <param name="mapId">Id på karta</param>
-        /// <param name="name">Namn på lagret som skall hämtas</param>
+        /// <param name="names">Namn på lagret som skall hämtas, kommaseparerad för flera</param>
         /// <param name="ver">[Frivilligt] Version av kartan som skall användas, om inget versionsnummer anges så antas den senaste versionen</param>
-        /// <returns>Ett kartlager</returns>
-        public GetLayerResponse GetLayer(string mapId, string name, string ver)
+        /// <returns>Lista med kartlager</returns>
+        public GetLayerResponse GetLayer(string mapId, string names, string ver)
         {
             var fiberDb = new FiberDataContext();
             var response = new GetLayerResponse();
 
-            if (string.IsNullOrEmpty(mapId) || string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(mapId) || string.IsNullOrEmpty(names))
             {
                 response.ErrorCode = ErrorCode.MissingInformation;
                 response.ErrorMessage = "MapId och/eller namn på lager saknas i anrop.";
@@ -462,12 +470,10 @@ namespace FiberKartan.REST
                 return response;
             }
 
-            name = name.Trim().ToLower();
-
             if (!HttpContext.Current.User.Identity.IsAuthenticated)
             {
                 response.ErrorCode = ErrorCode.NotLoggedIn;
-                response.ErrorMessage = "Du måste vara inloggad för att hämta ett kartlager.";
+                response.ErrorMessage = "Du måste vara inloggad för att hämta kartlager.";
 
                 return response;
             }
@@ -495,18 +501,27 @@ namespace FiberKartan.REST
 
                 return response;
             }
+            
+            names = names.Trim().ToLower();
+            var layers = names.Split(',').Select(name => name.Trim()).ToArray();
 
-            Utils.Log("Hämtar kartlager \"" + name + "\" för karta med MapId=" + mapTypeId + " för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 130);
+            Utils.Log("Hämtar kartlager \"" + names + "\" för karta med MapId=" + mapTypeId + " för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 130);
 
             if (!string.IsNullOrEmpty(map.Layers))
             {
-                dynamic layers = JsonConvert.DeserializeObject(map.Layers);
-                var layer = layers[name];
+                dynamic availableLayers = JsonConvert.DeserializeObject(map.Layers);
+                var result = new ExpandoObject() as IDictionary<string, Object>;
 
-                if (layer != null)
-                {
-                    response.Layer = JsonConvert.SerializeObject(layer);
+                foreach (var requestedLayer in layers) {
+                    var layer = availableLayers[requestedLayer];
+
+                    if (layer != null)
+                    {
+                        result[requestedLayer] = layer;
+                    }
                 }
+
+                response.Layers = JsonConvert.SerializeObject(result);
             }
 
             return response;

@@ -101,6 +101,16 @@ input[disabled] + label {
     display: none;
     margin-left: 40px;
 }
+.bottomBar {
+    width: 100%;
+    overflow: hidden;    
+    color: white;
+    background-color: #333;
+    opacity: 0.6;
+}
+.bottomBar > span {
+    margin-right: 10px;
+}
 .markerLabel {
      color: red;
      background-color: white;

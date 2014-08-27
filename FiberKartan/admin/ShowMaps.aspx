@@ -85,7 +85,6 @@
                     autoOpen: false,
                     title: $(this).attr("title"),
                     close: function () { $(this).remove() },
-                    position: 'center',
                     width: 520,
                     modal: true,
                     resizable: false,

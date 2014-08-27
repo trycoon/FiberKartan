@@ -1,17 +1,24 @@
 ﻿/*
-The zlib/libpng License
-Copyright (c) 2012 Henrik Östman
+Copyright (c) 2012, Henrik Östman.
 
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+This file is part of FiberKartan.
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
+FiberKartan is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+FiberKartan is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 (function (fk) {
     // Const och enum
-    var STATETYPE = { None: 0, BindingMarkerToFiberBox: 1 };
+    var STATETYPE = { None: 0, PlaceMarker: 1, EditMarker: 2, PlaceLine: 3, EditLine: 4, PlaceRegion: 5, EditRegion: 6, BindingMarkerToFiberBox: 7, UseRuler: 8 }; //TODO: Se till att state sätts till dessa värden i alla funktioner.
     var MARKERTYPE = { HouseYes: 'HouseYes', HouseMaybe: 'HouseMaybe', HouseNo: 'HouseNo', HouseNotContacted: 'HouseNotContacted', FiberNode: 'FiberNode', FiberBox: 'FiberBox', RoadCrossing_Existing: 'RoadCrossing_Existing', RoadCrossing_ToBeMade: 'RoadCrossing_ToBeMade', Fornlamning: 'Fornlamning', Observe: 'Observe', Note: 'Note', Unknown: 'Unknown' };
     var MARKER_SETTINGS = { payedStake: 0x1, extraHouse: 0x2, wantDigHelp: 0x4, noISPsubscription: 0x8 };
 
@@ -28,13 +35,41 @@ Permission is granted to anyone to use this software for any purpose, including 
     youMarker,
     gpsWatchId,
     currentSelectedObject = null,
-    currentState = STATETYPE.None,
     temporaryMarkerId = 0,  // Id på markörer som ännu inte har sparats. Är alltid ett negativt heltal.
     temporaryLineId = 0,    // Id på grävsträcka som ännu inte har sparats. Är alltid ett negativt heltal.
     temporaryRegionId = 0,  // Id på område som ännu inte har sparats. Är alltid ett negativt heltal.
     mapBounds = new google.maps.LatLngBounds(),
     regionInfoWindow = new google.maps.InfoWindow({}),
-    geocoder;
+    geocoder,
+    ruler = {   // Initalisera linjalen
+        rulerLine: new google.maps.Polyline({
+            strokeColor: '#FF3333',
+            strokeOpacity: 0.7,
+            strokeWeight: 3
+        }),
+        vertexImage: {
+            url: 'http://maps.google.com/mapfiles/kml/pal4/icon57.png',
+            size: new google.maps.Size(32, 32),
+            anchor: new google.maps.Point(16, 16)
+        },
+        vertexMarkers: []
+    };
+
+    (function(fk) {
+        var currentState = STATETYPE.None;
+
+        fk.setState = function(state) {
+            if (STATETYPE[state]) {
+                currentState = state;
+            } else {
+                currentState = STATETYPE.None;
+            }
+        }
+
+        fk.getState = function() {
+            return currentState;
+        }
+    })(fk);
 
     // Deklarera ny funktion i jQuery för att hämta ut querystring-parametrar. Används: $.QueryString["param"]
     (function ($) {
@@ -51,7 +86,7 @@ Permission is granted to anyone to use this software for any purpose, including 
     })(jQuery);
 
     $(document).ready(function () {
-        if (!mapContent) {
+        if (typeof mapContent === 'undefined' || !mapContent) {
             showDialog('<div class="mapPopup">Kartan kunde inte hittas.</div>', 'Meddelande');
         } else {
             setupView();
@@ -64,46 +99,7 @@ Permission is granted to anyone to use this software for any purpose, including 
             $.get(serverRoot + '/REST/FKService.svc/Ping');
         }, 10000);
 
-        // Återställer state på accordion.
-        var accord_state = JSON.parse($.cookie('palette_accordion')) || { show: true, markers: true, search: false, printing: false };
-        if (accord_state.show) {
-            $("#togglePanels .showPanel").show()
-        } else {
-            $("#togglePanels .showPanel").hide();
-        }
-        if (accord_state.markers) {
-            $("#togglePanels #markerTypes").show();
-        } else {
-            $("#togglePanels #markerTypes").hide();
-        }
-        if (accord_state.search) {
-            $("#togglePanels .searchPanel").show();
-        } else {
-            $("#togglePanels .searchPanel").hide();
-        }
-        if (accord_state.printing) {
-            $("#togglePanels .viewSettingsBox").show();
-        } else {
-            $("#togglePanels .viewSettingsBox").hide();
-        }
-
-        // Sätter upp accordion.
-        $("#togglePanels")
-    .find("h3")
-    .click(function () {
-        $(this).next().slideToggle();
-
-        // Dessa går att läsa av först efter panelerna har fällts ihop.
-        setTimeout(function () {
-            accord_state.show = $("#togglePanels .showPanel").is(":visible");
-            accord_state.markers = $("#togglePanels #markerTypes").is(":visible");
-            accord_state.search = $("#togglePanels .searchPanel").is(":visible");
-            accord_state.printing = $("#togglePanels .viewSettingsBox").is(":visible");
-            $.cookie('palette_accordion', JSON.stringify(accord_state), { expires: 100 });
-        }, 600);
-
-        return false;
-    }).next();
+        setupAccordion();
 
         var mapOptions = {
             zoom: 9.0,
@@ -120,10 +116,16 @@ Permission is granted to anyone to use this software for any purpose, including 
         mapOverlay.draw = function () { };   // Måste sätta denna, men vi behöver den inte.
         mapOverlay.setMap(map);
 
+        // Skapa en statusrad längst ner på kartan.
+        map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push($('<div class="bottomBar"><span class="pointerPosition"></span><span class="bottomBarText"></span></div>')[0]);
+        google.maps.event.addListener(map, 'mousemove', function (event) {
+            showPointerPosition(event.latLng.lat(), event.latLng.lng());
+        });
+
         google.maps.event.addDomListener(document, "keydown", function (e) {
             if (e.keyCode === 27) { // Esc-knapp
                 // Om man trycker på Esc så avbryter man pågående operation (t.ex. bindning av kopplingskåp).
-                if (currentState == STATETYPE.BindingMarkerToFiberBox) {
+                if (fk.getState() === STATETYPE.BindingMarkerToFiberBox) {
                     // Vi återställer state, och skickar sedan ett event till eventuella lyssnare.
                     exitFiberboxBindingMode();
                     google.maps.event.trigger(document, "currentStateChange", e);
@@ -153,6 +155,7 @@ Permission is granted to anyone to use this software for any purpose, including 
                 }
             });
             drawingManager.setMap(map);
+
             google.maps.event.addListener(drawingManager, 'polylinecomplete', function (polyline) {
                 // Tar först bort linjen vi skapade och skapar sedan om den med addCable()-funktionen så den läggs till korrekt och får alla eventlyssnare kopplade till sig.
                 polyline.setMap(null);
@@ -169,6 +172,7 @@ Permission is granted to anyone to use this software for any purpose, including 
                     $('#totalDigLength').html(calculateTotalLineLength(0));
                 }
             });
+
             google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
                 // Tar först bort området vi skapade och skapar sedan om den med addRegion()-funktionen så den läggs till korrekt och får alla eventlyssnare kopplade till sig.
                 polygon.setMap(null);
@@ -180,6 +184,13 @@ Permission is granted to anyone to use this software for any purpose, including 
                     toggleShowRegions();
                 }
             });
+            
+            google.maps.event.addListener(drawingManager, 'drawingmode_changed', function (event) {
+
+                rulerStopMeasure(); // Ta bort linjal ifall denna används.
+            });
+
+            addMapRuler();
         }
 
         $(window).on('orientationchange', function (event) {
@@ -189,6 +200,150 @@ Permission is granted to anyone to use this software for any purpose, including 
                 $('.palette').fadeIn();
             }
         });
+
+        setupCheckboxesFromQuerystring();
+        createMarkerTypeLookupTable();
+        plotMapContent();
+        setupPalette();
+        setupShowMyPosition();
+
+        var centerPos = $.QueryString["center"];
+        if (centerPos !== undefined) {
+            map.setCenter(new google.maps.LatLng(centerPos.split('x')[0], centerPos.split('x')[1]));
+
+            var centerZoom = $.QueryString["zoom"];
+            if (centerZoom !== undefined) {
+                map.setZoom(parseFloat(centerZoom));
+            }
+        }
+        else if (markersArray.length > 0) {
+            // Om vi skall visa upp någon speciell markör eller linje på kartan, detta skickas i så fall in som parameter på querystringen.
+
+            // Utmärka någon redan befintlig markör.
+            var markerId = $.QueryString["markerId"];
+
+            // Sätt ut en ny markör utifrå querystring, denna sparas aldrig.
+            var marker = $.QueryString["marker"];
+
+            // Utmärka någon redan befintlig linje.
+            var lineId = $.QueryString["lineId"];
+
+            var specialMarker;
+
+            if (markerId !== undefined) {
+                specialMarker = getMarkerById(markerId);
+                if (specialMarker !== null) {
+                    map.setCenter(specialMarker.marker.getPosition());
+                    map.setZoom(16.0);
+                    specialMarker.marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
+            else if (marker !== undefined) {
+                specialMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(marker.split('x')[0], marker.split('x')[1]),
+                    icon: 'http://maps.google.com/mapfiles/kml/paddle/red-stars.png',
+                    map: map                    
+                });
+                map.setCenter(specialMarker.getPosition());
+                map.setZoom(16.0);
+            } else if (lineId !== undefined) {
+                var specialLine = getLineById(lineId);
+                if (specialLine !== null) {
+                    map.setCenter(specialLine.cable.getPath().getAt(0));
+                    map.setZoom(16.0);
+                    specialLine.cable.originalStrokeColor = specialLine.cable.get('strokeColor');
+                    // Blink line.
+                    setInterval(function () {
+                        if (specialLine.cable.get('strokeColor') === specialLine.cable.originalStrokeColor) {
+                            specialLine.cable.setOptions({ strokeColor: '#FFFF00' });
+                        } else {
+                            specialLine.cable.setOptions({ strokeColor: specialLine.cable.originalStrokeColor });
+                        }
+                    }, 1000);
+                }
+            } else {
+                // För kartor i allmänhet som inte anropats med några speciella direktiv på querystringen.
+                map.fitBounds(mapBounds);   // Sätt rätt zooom-nivå för att få med alla markörer.
+            }
+        }
+
+        // Initialiserar editor EN gång här, istället för varje markör, linje och region.
+        tinyMCE.init({
+            mode: "none",
+            language: "sv",
+            width: "100%",
+            entity_encoding: "raw",
+            theme: "advanced",
+            plugins: "autolink,lists,style,advlink,inlinepopups,noneditable,wordcount,media,table",
+
+            // Theme options
+            theme_advanced_buttons1: "bold,italic,underline,strikethrough,bullist,numlist,|,undo,redo,|,link,unlink,charmap,image,media,|,delete_row",
+            theme_advanced_buttons2: "",
+            theme_advanced_buttons3: "",
+            theme_advanced_buttons4: "",
+            theme_advanced_toolbar_location: "top",
+            theme_advanced_toolbar_align: "left",
+            theme_advanced_statusbar_location: "bottom",
+            theme_advanced_resizing: false,
+            content_css: "/inc/css/base.css?ver=1.7"
+        });        
+
+        if (mapContent.Settings.HasWritePrivileges) {
+            setupContextMenues();            
+        }
+
+        if ($("#saveButton").length > 0) {
+            $("#saveButton").click(function (event) {
+                event.preventDefault()
+                saveChanges();
+            });
+        }
+    }
+
+    function setupAccordion() {
+        // Återställer state på accordion.
+        var accord_state = JSON.parse($.cookie('palette_accordion')) || { show: true, markers: true, search: false, printing: false };
+        if (accord_state.show) {
+            $("#togglePanels .showPanel").show()
+        } else {
+            $("#togglePanels .showPanel").hide();
+        }
+        if (accord_state.markers) {
+            $("#togglePanels #markerTypes").show();
+        } else {
+            $("#togglePanels #markerTypes").hide();
+        }
+        if (accord_state.search) {
+            $("#togglePanels .searchPanel").show();
+        } else {
+            $("#togglePanels .searchPanel").hide();
+        }
+        if (accord_state.printing) {
+            $("#togglePanels .viewSettingsBox").show();
+        } else {
+            $("#togglePanels .viewSettingsBox").hide();
+        }
+
+        // Sätter upp accordion.
+        $("#togglePanels")
+        .find("h3")
+        .click(function () {
+            $(this).next().slideToggle();
+
+            // Dessa går att läsa av först efter panelerna har fällts ihop.
+            setTimeout(function () {
+                accord_state.show = $("#togglePanels .showPanel").is(":visible");
+                accord_state.markers = $("#togglePanels #markerTypes").is(":visible");
+                accord_state.search = $("#togglePanels .searchPanel").is(":visible");
+                accord_state.printing = $("#togglePanels .viewSettingsBox").is(":visible");
+                $.cookie('palette_accordion', JSON.stringify(accord_state), { expires: 100 });
+            }, 600);
+
+            return false;
+        }).next();
+    }
+
+    function setupCheckboxesFromQuerystring() {
 
         // Om man har laddat upp en karta med fastighetsgränser, visa kryssruta för att visa och dölja denna.
         if (mapContent.PropertyBoundariesFile) {
@@ -261,80 +416,9 @@ Permission is granted to anyone to use this software for any purpose, including 
                 $('input[name=show_regions]').removeProp('checked');
             }
         }
+    }
 
-        if (typeof mapContent !== 'undefined') {
-            createMarkerTypeLookupTable();
-            plotMapContent();
-            setupPalette();
-        }
-
-        var centerPos = $.QueryString["center"];
-        if (centerPos !== undefined) {
-            map.setCenter(new google.maps.LatLng(centerPos.split('x')[0], centerPos.split('x')[1]));
-
-            var centerZoom = $.QueryString["zoom"];
-            if (centerZoom !== undefined) {
-                map.setZoom(parseFloat(centerZoom));
-            }
-        }
-        else if (typeof mapContent !== 'undefined' && markersArray.length > 0) {
-            // Om vi skall visa upp någon speciell markör eller linje på kartan, detta skickas i så fall in som parameter på querystringen.
-            var markerId = $.QueryString["markerId"];
-            var lineId = $.QueryString["lineId"];
-
-            if (markerId !== undefined) {
-                var specialMarker = getMarkerById(markerId);
-                if (specialMarker != null) {
-                    map.setCenter(specialMarker.marker.getPosition());
-                    map.setZoom(16.0);
-                    specialMarker.marker.setAnimation(google.maps.Animation.BOUNCE);
-                }
-            } else if (lineId !== undefined) {
-                var specialLine = getLineById(lineId);
-                if (specialLine != null) {
-                    map.setCenter(specialLine.cable.getPath().getAt(0));
-                    map.setZoom(16.0);
-                    specialLine.cable.originalStrokeColor = specialLine.cable.get('strokeColor');
-                    // Blink line.
-                    setInterval(function () {
-                        if (specialLine.cable.get('strokeColor') == specialLine.cable.originalStrokeColor) {
-                            specialLine.cable.setOptions({ strokeColor: '#FFFF00' });
-                        } else {
-                            specialLine.cable.setOptions({ strokeColor: specialLine.cable.originalStrokeColor });
-                        }
-                    }, 1000);
-                }
-            } else {
-                map.fitBounds(mapBounds);   // Sätt rätt zooom-nivå för att få med alla markörer.
-            }
-        }
-        // Avslutar uppsättning efter querystring.
-
-        // Initialiserar editor EN gång här, istället för varje på markör, linje och region.
-        tinyMCE.init({
-            mode: "none",
-            language: "sv",
-            width: "100%",
-            entity_encoding: "raw",
-            theme: "advanced",
-            plugins: "autolink,lists,style,advlink,inlinepopups,noneditable,wordcount,media,table",
-
-            // Theme options
-            theme_advanced_buttons1: "bold,italic,underline,strikethrough,bullist,numlist,|,undo,redo,|,link,unlink,charmap,image,media,|,delete_row",
-            theme_advanced_buttons2: "",
-            theme_advanced_buttons3: "",
-            theme_advanced_buttons4: "",
-            theme_advanced_toolbar_location: "top",
-            theme_advanced_toolbar_align: "left",
-            theme_advanced_statusbar_location: "bottom",
-            theme_advanced_resizing: false,
-            content_css: "/inc/css/base.css?ver=1.7"
-        });
-
-        /*google.maps.event.addListener(map, 'mousemove', function (event) {
-        window.status=event.latLng.lat() + ', ' + event.latLng.lng();
-        });*/
-
+    function setupShowMyPosition() {
         // Kolla om webbläsaren är utrustad med GPS, och visar i så fall kryssruta för det valet.
         if (navigator.geolocation) {
             $('#myCurrentPosition').show();
@@ -346,12 +430,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 			            new google.maps.Size(32.0, 32.0),
 			            new google.maps.Point(0, 0),
 			            new google.maps.Point(16.0, 16.0)
-			        );
-                        var shadow = new google.maps.MarkerImage("/inc/img/markers/man-shadow.png",
-				        new google.maps.Size(49.0, 32.0),
-				        new google.maps.Point(0, 0),
-				        new google.maps.Point(16.0, 16.0)
-			        );
+			        );                       
                         var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         map.setCenter(latLng);
                         youMarker = new google.maps.Marker({
@@ -360,7 +439,6 @@ Permission is granted to anyone to use this software for any purpose, including 
                             clickable: false,
                             draggable: false,
                             icon: image,
-                            shadow: shadow,
                             zIndex: 9999,
                             title: 'lat(' + position.coords.latitude.toFixed(7) + ') long(' + position.coords.longitude.toFixed(6) + ').'
                         });
@@ -383,106 +461,242 @@ Permission is granted to anyone to use this software for any purpose, including 
                 }
             });
         }
+    }
 
-        if (mapContent.Settings.HasWritePrivileges) {
+    function setupContextMenues() {
+        $.contextMenu({
+            selector: '#contextMenuLinePlaceholder',
+            trigger: 'none',
+            build: function ($trigger, e) {
+                // this callback is executed every time the menu is to be shown
+                // its results are destroyed every time the menu is hidden
+                // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+                return {
+                    callback: function (key, options) {
+                        var menuInfo = this.data('menuInfo');
 
-            $.contextMenu({
-                selector: '#contextMenuLinePlaceholder',
-                trigger: 'none',
-                build: function ($trigger, e) {
-                    // this callback is executed every time the menu is to be shown
-                    // its results are destroyed every time the menu is hidden
-                    // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
-                    return {
-                        callback: function (key, options) {
-                            var menuInfo = this.data('menuInfo');
-
-                            switch (key) {
-                                case "removeVertex":
-                                    if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
-                                        var line = getLineById(menuInfo.id);
-                                        var linePath = line.cable.getPath();
-                                        // Ifall färre än två punkter på linjen blir kvar så tar vi bort hela linjen.
-                                        if (linePath.length > 2) {
-                                            linePath.removeAt(menuInfo.vertex);
-                                        } else {
-                                            removeLineById(menuInfo.id);
-                                        }
+                        switch (key) {
+                            case "removeVertex":
+                                if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
+                                    var line = getLineById(menuInfo.id);
+                                    var linePath = line.cable.getPath();
+                                    // Ifall färre än två punkter på linjen blir kvar så tar vi bort hela linjen.
+                                    if (linePath.length > 2) {
+                                        linePath.removeAt(menuInfo.vertex);
+                                    } else {
+                                        removeLineById(menuInfo.id);
                                     }
-                                    break;
-                                case "addVertex":
-                                    var linePath = getLineById(menuInfo.id).cable.getPath();
-                                    // Räkna ut i vilken ordning av punkterna som den nya punkten skall läggas till.
-                                    var insertOrder = getPointInsertOrder(linePath, menuInfo.latLng);
-                                    // Lägg till nya punkten på linjen.
-                                    linePath.insertAt(insertOrder, menuInfo.latLng);
-                                    break;
-                                case "removeLine":
-                                    removeLineById(menuInfo.id);
-                                    break;
-                            }
-                        },
-                        items: {
-                            "addVertex": { name: "Lägg till punkt", icon: "add" },
-                            "removeVertex": { name: "Ta bort punkt", icon: "cut" },
-                            "sep1": "---------",
-                            "removeLine": { name: "Ta bort linje", icon: "delete" }
+                                }
+                                break;
+                            case "addVertex":
+                                var linePath = getLineById(menuInfo.id).cable.getPath();
+                                // Räkna ut i vilken ordning av punkterna som den nya punkten skall läggas till.
+                                var insertOrder = getPointInsertOrder(linePath, menuInfo.latLng);
+                                // Lägg till nya punkten på linjen.
+                                linePath.insertAt(insertOrder, menuInfo.latLng);
+                                break;
+                            case "removeLine":
+                                removeLineById(menuInfo.id);
+                                break;
                         }
-                    };
-                }
-            });
+                    },
+                    items: {
+                        "addVertex": { name: "Lägg till punkt", icon: "add" },
+                        "removeVertex": { name: "Ta bort punkt", icon: "cut" },
+                        "sep1": "---------",
+                        "removeLine": { name: "Ta bort linje", icon: "delete" }
+                    }
+                };
+            }
+        });
 
-            $.contextMenu({
-                selector: '#contextMenuRegionPlaceholder',
-                trigger: 'none',
-                build: function ($trigger, e) {
-                    // this callback is executed every time the menu is to be shown
-                    // its results are destroyed every time the menu is hidden
-                    // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
-                    return {
-                        callback: function (key, options) {
-                            var menuInfo = this.data('menuInfo');
+        $.contextMenu({
+            selector: '#contextMenuRegionPlaceholder',
+            trigger: 'none',
+            build: function ($trigger, e) {
+                // this callback is executed every time the menu is to be shown
+                // its results are destroyed every time the menu is hidden
+                // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+                return {
+                    callback: function (key, options) {
+                        var menuInfo = this.data('menuInfo');
 
-                            switch (key) {
-                                case "removeVertex":
-                                    if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
-                                        var region = getRegionById(menuInfo.id);
-                                        var regionPath = region.region.getPath();
-                                        // Ifall färre än tre punkter på området blir kvar så tar vi bort hela området.
-                                        if (regionPath.length > 3) {
-                                            regionPath.removeAt(menuInfo.vertex);
-                                        } else {
-                                            removeRegionById(menuInfo.id);
-                                        }
+                        switch (key) {
+                            case "removeVertex":
+                                if (menuInfo.vertex != null) {  // Kollar ifall vi verkligen klickat på en punkt.
+                                    var region = getRegionById(menuInfo.id);
+                                    var regionPath = region.region.getPath();
+                                    // Ifall färre än tre punkter på området blir kvar så tar vi bort hela området.
+                                    if (regionPath.length > 3) {
+                                        regionPath.removeAt(menuInfo.vertex);
+                                    } else {
+                                        removeRegionById(menuInfo.id);
                                     }
-                                    break;
-                                case "addVertex":
-                                    var regionPath = getRegionById(menuInfo.id).region.getPath();
-                                    regionPath.insertAt(regionPath.length, menuInfo.latLng);
-                                    break;
-                                case "removeRegion":
-                                    removeRegionById(menuInfo.id);
-                                    break;
-                            }
-                        },
-                        items: {
-                            "addVertex": { name: "Lägg till punkt", icon: "add" },
-                            "removeVertex": { name: "Ta bort punkt", icon: "cut" },
-                            "sep1": "---------",
-                            "removeRegion": { name: "Ta bort område", icon: "delete" }
+                                }
+                                break;
+                            case "addVertex":
+                                var regionPath = getRegionById(menuInfo.id).region.getPath();
+                                regionPath.insertAt(regionPath.length, menuInfo.latLng);
+                                break;
+                            case "removeRegion":
+                                removeRegionById(menuInfo.id);
+                                break;
                         }
-                    };
-                }
+                    },
+                    items: {
+                        "addVertex": { name: "Lägg till punkt", icon: "add" },
+                        "removeVertex": { name: "Ta bort punkt", icon: "cut" },
+                        "sep1": "---------",
+                        "removeRegion": { name: "Ta bort område", icon: "delete" }
+                    }
+                };
+            }
+        });
+    }
+
+    function addMapRuler() {
+        addToolToDrawManager('useRuler', 'Mät sträcka', 'http://maps.google.com/mapfiles/kml/pal5/icon5.png', function (button) {
+           button.click(function () {
+               button.css('background-color', '#ebebeb');   // Visa att mätverktyget är valt.
+               rulerStartMeasure();
             });
+        });       
+    }
+
+    function countAndCleanRulerVertex() {
+        count = 0;
+        for (var i = ruler.vertexMarkers.length - 1; i >= 0; i--) {
+            if (ruler.vertexMarkers[i].getMap() === null) {
+                google.maps.event.clearInstanceListeners(ruler.vertexMarkers[i]); // Ta bort alla eventlyssnare.
+                ruler.vertexMarkers.splice(i, 1);
+            } else {
+                count++;
+            }
         }
 
-        if ($("#saveButton").length > 0) {
-            $("#saveButton").click(function (event) {
-                event.preventDefault()
-                saveChanges();
+        return count;
+    }
+
+    function drawRulerPath() {
+        countAndCleanRulerVertex(); // Ta bort raderade vertex.
+
+        var coords = [];
+        for (var i = 0; i < ruler.vertexMarkers.length; i++) {
+            coords.push(ruler.vertexMarkers[i].getPosition());
+        }
+        ruler.rulerLine.setPath(coords);
+
+        var meters = google.maps.geometry.spherical.computeLength(coords);
+        setStatusbarText('Total sträcka: ' + Math.ceil(meters) + ' meter.');
+
+    }
+
+    function rulerStartMeasure() {
+
+        rulerStopMeasure(); // Ta bort eventuell gammal mätning.
+        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.None);    // Avbryt ifall vi håller på att rita något annat.
+        map.setOptions({ draggableCursor: 'crosshair' });   // Byt utseende på markören för att påvisa att vi är i mätläge.
+
+        ruler.rulerLine.setMap(map);    // Visa linje.
+
+        // Klick på kartan skall rita ut ny vertex (punkt) på linjen.
+        ruler.clickListener = google.maps.event.addListener(map, 'click', function (event) {
+
+            // Lägg till ny vertex med markör.
+            var marker = new google.maps.Marker({
+                position: event.latLng,
+                icon: ruler.vertexImage,
+                draggable:true,
+                map: map
             });
+            ruler.vertexMarkers.push(marker);
+
+            google.maps.event.addListener(marker, 'dblclick', function (event) {
+                marker.setMap(null);    // Ta bort vertex från kartan, den rensas bort från arrayen via drawRulerPath() -> countAndCleanRulerVertex()
+
+                drawRulerPath();
+            });
+
+            google.maps.event.addListener(marker, 'drag', function (event) {
+                drawRulerPath();    // Flytta befintlig vertex
+            });
+
+            drawRulerPath();
+        });
+    }
+
+    function rulerStopMeasure() {
+        // Ta bort lyssnare på klickevent för att lägga till nya punkter.
+        google.maps.event.removeListener(ruler.clickListener);
+
+        map.setOptions({ draggableCursor: null });  // Sätt tillbaka utseende på pekarmarkör till standard.
+
+        // Ta bort vertex-markörer.
+        for (var i = 0; i < ruler.vertexMarkers.length; i++) {
+            ruler.vertexMarkers[i].setMap(null);
+        }
+        drawRulerPath();
+        ruler.vertexMarkers.length = 0;
+
+        // Ta bort linje från karta.
+        ruler.rulerLine.setMap(null);
+
+        setStatusbarText(''); // Töm statuslisten.
+    }
+
+    /**
+     * Adds a custom button to the Draw Manager toolbar.
+     * @param {string} buttonClass DOM class to use on button.
+     * @param {string} title Title of button.
+     * @param {string} imgSrc Uri to button image.
+     * @param {function} callback Callback to be executed when button has been created and added, new button is provided as a parameter.
+     * @param {number} imageMapHeight [optional] If image is an imagemap then specify its height.
+     * @param {number} imageMapTop [optional] If image is an imagemap then specify the number of pixels from the top to the image we shall render.
+     */
+    function addToolToDrawManager(buttonClass, title, imgSrc, callback, imageMapHeight, imageMapTop) {
+        if (!imageMapHeight) {
+            imageMapHeight = 16;
+        }
+        if (!imageMapTop) {
+            imageMapTop = 0;
+        }
+
+        var newButton = $('<div style="float: left; line-height: 0;"><div class="' + buttonClass + '" style="direction: ltr; overflow: hidden; text-align: left; position: relative; color: rgb(51, 51, 51); font-family: Arial,sans-serif; -moz-user-select: none; font-size: 13px; background: none repeat scroll 0% 0% rgb(255, 255, 255); padding: 4px; border-width: 1px 1px 1px 0px; border-style: solid solid solid none; border-color: rgb(113, 123, 135) rgb(113, 123, 135) rgb(113, 123, 135) -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4); font-weight: normal;" title="' + title + '"><span style="display: inline-block;"><div style="width: 16px; height: 16px; overflow: hidden; position: relative;"><img style="position: absolute; left: 0px; top: ' + imageMapTop + 'px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px; width: 16px; height: ' + imageMapHeight + 'px;" src="' + imgSrc + '" draggable="false"></div></span></div></div>');
+        // Om vi inte hittar ritverktygen så beror det på att Googles script ännu inte har renderat dessa, vänta på att load-eventet triggas och försök igen.
+        if ($('.gmnoprint').find("[title='Sluta rita']").length == 0) {
+            google.maps.event.addDomListener(window, 'load', function () {
+                var drawManagerToolbar = $('.gmnoprint').find("[title='Sluta rita']").parent().parent();
+                drawManagerToolbar.append(newButton);
+
+                if (callback) {
+                    callback(newButton);
+                }
+            });
+        } else {
+            var drawManagerToolbar = $('.gmnoprint').find("[title='Sluta rita']").parent().parent();
+            drawManagerToolbar.append(newButton);
+
+            if (callback) {
+                setTimeout( // Se till att vi returnerar asynkront även då Google har satt upp ritverktygen.
+                    callback(newButton),
+                1);
+            }
         }
     }
+
+    /**
+     * Uppdaterar positionen för pekaren i statusraden längst ner på sidan.
+     * @param {number} lat
+     * @param {number} long
+     */
+    function showPointerPosition(lat, long) {
+        $('.pointerPosition').html('Pos lat: ' + lat.toFixed(7) + ', long: ' + long.toFixed(6));
+    }
+
+    function setStatusbarText(text) {
+        $('.bottomBarText').text(text);
+    }
+
     function createMarkerTypeLookupTable() {
         if (mapContent.MarkerTypes != null) {
             for (var i = 0, length = mapContent.MarkerTypes.length; i < length; i++) {
@@ -524,6 +738,7 @@ Permission is granted to anyone to use this software for any purpose, including 
     function removeLineById(id) {
         for (var i = 0, length = lineArray.length; i < length; i++) {
             if (lineArray[i].id == id) {
+                google.maps.event.clearInstanceListeners(lineArray[i].cable);    // Ta bort alla eventlyssnare.
                 lineArray[i].cable.setMap(null);
                 lineArray[i].cable = null;
                 lineArray.splice(i, 1); // Ta bort linje.
@@ -544,6 +759,7 @@ Permission is granted to anyone to use this software for any purpose, including 
     function removeRegionById(id) {
         for (var i = 0, length = regionsArray.length; i < length; i++) {
             if (regionsArray[i].id == id) {
+                google.maps.event.clearInstanceListeners(regionsArray[i].region);    // Ta bort alla eventlyssnare.
                 regionsArray[i].region.setMap(null);
                 regionsArray[i].region = null;
                 regionsArray.splice(i, 1); // Ta bort område.
@@ -552,7 +768,7 @@ Permission is granted to anyone to use this software for any purpose, including 
         }
     }
     function enterFiberboxBindingMode() {
-        currentState = STATETYPE.BindingMarkerToFiberBox;
+        fk.setState(STATETYPE.BindingMarkerToFiberBox);
         $('#mapForm').append('<div class="blackMask"></div>');  // Visa mask, för att få focus på det väsentliga.
         $('.palette').fadeOut("slow") // Dölj palett som bara skulle vara i vägen.
 
@@ -577,7 +793,7 @@ Permission is granted to anyone to use this software for any purpose, including 
         });
     }
     function exitFiberboxBindingMode() {
-        currentState = STATETYPE.None;
+        fk.setState(STATETYPE.None);
         currentSelectedObject = null;
         $('.blackMask').remove();
         $('.tempBindingFiberbox').remove();
@@ -726,7 +942,8 @@ Permission is granted to anyone to use this software for any purpose, including 
 
             // Möjlighet att dra ut nya markörer från paletten till kartan.
             if ($("#markerTypes").length > 0) {
-                $("#markerTypes img").draggable({ helper: 'clone',
+                $("#markerTypes img").draggable({
+                    helper: 'clone',
                     start: function (e) {
                         $(this).data("imgDragOffsetX", ((e.originalEvent.clientX - $(this).offset().left) > e.target.width / 2) ? 1 - (e.originalEvent.clientX - $(this).offset().left - e.target.width / 2) : (e.target.width / 2 - (e.originalEvent.clientX - $(this).offset().left)));
                         $(this).data("imgDragOffsetY", e.target.height - (e.originalEvent.clientY - $(this).offset().top));
@@ -1056,6 +1273,9 @@ Permission is granted to anyone to use this software for any purpose, including 
             google.maps.event.addListener(marker, 'click', function (event) {
                 editMarker(this);
             });
+            google.maps.event.addListener(marker, 'drag', function (event) {
+                showPointerPosition(event.latLng.lat(), event.latLng.lng());
+            });
 
             markersArray.push({ id: id, uid: uid, name: name, desc: null, markerType: markerType, settings: settings, optionalInfo: optionalInfo, marker: marker });
         }
@@ -1175,7 +1395,6 @@ Permission is granted to anyone to use this software for any purpose, including 
                                 }
                                 $(this).remove();
                             },
-                            position: 'center',
                             width: 430,
                             modal: true,
                             resizable: false,
@@ -1277,6 +1496,7 @@ Permission is granted to anyone to use this software for any purpose, including 
                                 $("#deleteButton").click(function (event) {
                                     for (var i = 0, length = markersArray.length; i < length; i++) {
                                         if (markersArray[i].id == clickedMarker.id) {
+                                            google.maps.event.clearInstanceListeners(clickedMarker);    // Ta bort alla eventlyssnare.
                                             clickedMarker.marker.setMap(null);
                                             clickedMarker.marker = null;
                                             clickedMarker = null;
@@ -1332,7 +1552,7 @@ Permission is granted to anyone to use this software for any purpose, including 
                     currentSelectedObject = this;    // Och gör detta object till den valda.
                     currentSelectedObject.setEditable(true);    // Tillåt att flytta på linjens vertices.
                 }
-                // Vid andra klicket på linjen (linjen är redan vald).
+                    // Vid andra klicket på linjen (linjen är redan vald).
                 else {
                     editCable(this);
                 }
@@ -1389,7 +1609,6 @@ Permission is granted to anyone to use this software for any purpose, including 
                     }
                     $(this).remove();
                 },
-                position: 'center',
                 width: 430,
                 modal: true,
                 resizable: false,
@@ -1453,6 +1672,10 @@ Permission is granted to anyone to use this software for any purpose, including 
             id: id
         });
 
+        google.maps.event.addListener(polygon, 'mousemove', function (event) {
+            showPointerPosition(event.latLng.lat(), event.latLng.lng());
+        });
+
         if (mapContent.Settings.HasWritePrivileges) {
             google.maps.event.addListener(polygon, 'click', function (event) {
                 // Vid första klicket på området (polygonen väljs).
@@ -1466,7 +1689,7 @@ Permission is granted to anyone to use this software for any purpose, including 
                     currentSelectedObject = this;    // Och gör detta object till den valda.
                     currentSelectedObject.setEditable(true);    // Tillåt att flytta på polygonens vertices.
                 }
-                // Vid andra klicket på området (polygonen är redan vald).
+                    // Vid andra klicket på området (polygonen är redan vald).
                 else {
                     editRegion(this);
                 }
@@ -1525,7 +1748,6 @@ Permission is granted to anyone to use this software for any purpose, including 
                     }
                     $(this).remove();
                 },
-                position: 'center',
                 width: 430,
                 modal: true,
                 resizable: false,
