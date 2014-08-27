@@ -402,7 +402,7 @@ namespace FiberKartan.REST
                 #region SendMail
 
                 var body = new StringBuilder("<html><head><title>Felrapport</title></head><body><h1>Felrapport</h1>");
-                body.Append(user.Name + " har rapporterat följande fel på fibernätverk <a href=\"" + ConfigurationManager.AppSettings["ServerAdress"] + "/admin/MapAdmin.aspx?mid=" + existingMap.MapTypeId + "&ver=" + existingMap.Ver + "\">\"" + existingMap.MapType.Title + "\"</a>:</p>");
+                body.Append(string.Format("<p>{0} har rapporterat följande fel på fibernätverk <a href=\"{1}/admin/MapAdmin.aspx?mid={2}&ver={3}&marker={4}\">\"{5}\"</a>:</p>", user.Name, ConfigurationManager.AppSettings["ServerAdress"], existingMap.MapTypeId, existingMap.Ver, report.Position.Lat + "x" + report.Position.Lng, existingMap.MapType.Title));
                 body.Append("Felrapport skapad: " + incidentReport.Created + "<br/>");
                 body.Append("Till serviceföretag: " + existingMap.MapType.ServiceCompany.Name + "<br/>");
                 body.Append("Position(WGS84) latitud: <strong>" + report.Position.Lat + "</strong> longitud: <strong>" + report.Position.Lng + "</strong><br/>");

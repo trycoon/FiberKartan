@@ -18,7 +18,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 (function (fk) {
     // Const och enum
-    var STATETYPE = { None: 0, BindingMarkerToFiberBox: 1 };
+    var STATETYPE = { None: 0, PlaceMarker: 1, EditMarker: 2, PlaceLine: 3, EditLine: 4, PlaceRegion: 5, EditRegion: 6, BindingMarkerToFiberBox: 7, UseRuler: 8 }; //TODO: Se till att state sätts till dessa värden i alla funktioner.
     var MARKERTYPE = { HouseYes: 'HouseYes', HouseMaybe: 'HouseMaybe', HouseNo: 'HouseNo', HouseNotContacted: 'HouseNotContacted', FiberNode: 'FiberNode', FiberBox: 'FiberBox', RoadCrossing_Existing: 'RoadCrossing_Existing', RoadCrossing_ToBeMade: 'RoadCrossing_ToBeMade', Fornlamning: 'Fornlamning', Observe: 'Observe', Note: 'Note', Unknown: 'Unknown' };
     var MARKER_SETTINGS = { payedStake: 0x1, extraHouse: 0x2, wantDigHelp: 0x4, noISPsubscription: 0x8 };
 
@@ -35,7 +35,6 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     youMarker,
     gpsWatchId,
     currentSelectedObject = null,
-    currentState = STATETYPE.None,
     temporaryMarkerId = 0,  // Id på markörer som ännu inte har sparats. Är alltid ett negativt heltal.
     temporaryLineId = 0,    // Id på grävsträcka som ännu inte har sparats. Är alltid ett negativt heltal.
     temporaryRegionId = 0,  // Id på område som ännu inte har sparats. Är alltid ett negativt heltal.
@@ -56,6 +55,22 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         vertexMarkers: []
     };
 
+    (function(fk) {
+        var currentState = STATETYPE.None;
+
+        fk.setState = function(state) {
+            if (STATETYPE[state]) {
+                currentState = state;
+            } else {
+                currentState = STATETYPE.None;
+            }
+        }
+
+        fk.getState = function() {
+            return currentState;
+        }
+    })(fk);
+
     // Deklarera ny funktion i jQuery för att hämta ut querystring-parametrar. Används: $.QueryString["param"]
     (function ($) {
         $.QueryString = (function (a) {
@@ -71,7 +86,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     })(jQuery);
 
     $(document).ready(function () {
-        if (!mapContent) {
+        if (typeof mapContent === 'undefined' || !mapContent) {
             showDialog('<div class="mapPopup">Kartan kunde inte hittas.</div>', 'Meddelande');
         } else {
             setupView();
@@ -110,7 +125,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         google.maps.event.addDomListener(document, "keydown", function (e) {
             if (e.keyCode === 27) { // Esc-knapp
                 // Om man trycker på Esc så avbryter man pågående operation (t.ex. bindning av kopplingskåp).
-                if (currentState == STATETYPE.BindingMarkerToFiberBox) {
+                if (fk.getState() === STATETYPE.BindingMarkerToFiberBox) {
                     // Vi återställer state, och skickar sedan ett event till eventuella lyssnare.
                     exitFiberboxBindingMode();
                     google.maps.event.trigger(document, "currentStateChange", e);
@@ -140,6 +155,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 }
             });
             drawingManager.setMap(map);
+
             google.maps.event.addListener(drawingManager, 'polylinecomplete', function (polyline) {
                 // Tar först bort linjen vi skapade och skapar sedan om den med addCable()-funktionen så den läggs till korrekt och får alla eventlyssnare kopplade till sig.
                 polyline.setMap(null);
@@ -156,6 +172,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                     $('#totalDigLength').html(calculateTotalLineLength(0));
                 }
             });
+
             google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
                 // Tar först bort området vi skapade och skapar sedan om den med addRegion()-funktionen så den läggs till korrekt och får alla eventlyssnare kopplade till sig.
                 polygon.setMap(null);
@@ -166,6 +183,11 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                     $('input[name=show_regions]').prop('checked', true);
                     toggleShowRegions();
                 }
+            });
+            
+            google.maps.event.addListener(drawingManager, 'drawingmode_changed', function (event) {
+
+                rulerStopMeasure(); // Ta bort linjal ifall denna används.
             });
 
             addMapRuler();
@@ -194,27 +216,46 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 map.setZoom(parseFloat(centerZoom));
             }
         }
-        else if (typeof mapContent !== 'undefined' && markersArray.length > 0) {
+        else if (markersArray.length > 0) {
             // Om vi skall visa upp någon speciell markör eller linje på kartan, detta skickas i så fall in som parameter på querystringen.
+
+            // Utmärka någon redan befintlig markör.
             var markerId = $.QueryString["markerId"];
+
+            // Sätt ut en ny markör utifrå querystring, denna sparas aldrig.
+            var marker = $.QueryString["marker"];
+
+            // Utmärka någon redan befintlig linje.
             var lineId = $.QueryString["lineId"];
 
+            var specialMarker;
+
             if (markerId !== undefined) {
-                var specialMarker = getMarkerById(markerId);
-                if (specialMarker != null) {
+                specialMarker = getMarkerById(markerId);
+                if (specialMarker !== null) {
                     map.setCenter(specialMarker.marker.getPosition());
                     map.setZoom(16.0);
                     specialMarker.marker.setAnimation(google.maps.Animation.BOUNCE);
                 }
-            } else if (lineId !== undefined) {
+            }
+            else if (marker !== undefined) {
+                specialMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(marker.split('x')[0], marker.split('x')[1]),
+                    icon: 'http://maps.google.com/mapfiles/kml/paddle/red-stars.png',
+                    map: map                    
+                });
+                map.setCenter(specialMarker.getPosition());
+                map.setZoom(16.0);
+            }
+            else if (lineId !== undefined) {
                 var specialLine = getLineById(lineId);
-                if (specialLine != null) {
+                if (specialLine !== null) {
                     map.setCenter(specialLine.cable.getPath().getAt(0));
                     map.setZoom(16.0);
                     specialLine.cable.originalStrokeColor = specialLine.cable.get('strokeColor');
                     // Blink line.
                     setInterval(function () {
-                        if (specialLine.cable.get('strokeColor') == specialLine.cable.originalStrokeColor) {
+                        if (specialLine.cable.get('strokeColor') === specialLine.cable.originalStrokeColor) {
                             specialLine.cable.setOptions({ strokeColor: '#FFFF00' });
                         } else {
                             specialLine.cable.setOptions({ strokeColor: specialLine.cable.originalStrokeColor });
@@ -222,11 +263,12 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                     }, 1000);
                 }
             } else {
+                // För kartor i allmänhet som inte anropats med några speciella direktiv på querystringen.
                 map.fitBounds(mapBounds);   // Sätt rätt zooom-nivå för att få med alla markörer.
             }
         }
 
-        // Initialiserar editor EN gång här, istället för varje på markör, linje och region.
+        // Initialiserar editor EN gång här, istället för varje markör, linje och region.
         tinyMCE.init({
             mode: "none",
             language: "sv",
@@ -553,6 +595,8 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     function rulerStartMeasure() {
 
         rulerStopMeasure(); // Ta bort eventuell gammal mätning.
+        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.None);    // Avbryt ifall vi håller på att rita något annat.
+        map.setOptions({ draggableCursor: 'crosshair' });   // Byt utseende på markören för att påvisa att vi är i mätläge.
 
         ruler.rulerLine.setMap(map);    // Visa linje.
 
@@ -586,6 +630,8 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         // Ta bort lyssnare på klickevent för att lägga till nya punkter.
         google.maps.event.removeListener(ruler.clickListener);
 
+        map.setOptions({ draggableCursor: null });  // Sätt tillbaka utseende på pekarmarkör till standard.
+
         // Ta bort vertex-markörer.
         for (var i = 0; i < ruler.vertexMarkers.length; i++) {
             ruler.vertexMarkers[i].setMap(null);
@@ -594,7 +640,9 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         ruler.vertexMarkers.length = 0;
 
         // Ta bort linje från karta.
-        ruler.rulerLine.setMap(null);        
+        ruler.rulerLine.setMap(null);
+
+        setStatusbarText(''); // Töm statuslisten.
     }
 
     /**
@@ -635,8 +683,6 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 1);
             }
         }
-
-
     }
 
     /**
@@ -723,7 +769,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         }
     }
     function enterFiberboxBindingMode() {
-        currentState = STATETYPE.BindingMarkerToFiberBox;
+        fk.setState(STATETYPE.BindingMarkerToFiberBox);
         $('#mapForm').append('<div class="blackMask"></div>');  // Visa mask, för att få focus på det väsentliga.
         $('.palette').fadeOut("slow") // Dölj palett som bara skulle vara i vägen.
 
@@ -748,7 +794,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         });
     }
     function exitFiberboxBindingMode() {
-        currentState = STATETYPE.None;
+        fk.setState(STATETYPE.None);
         currentSelectedObject = null;
         $('.blackMask').remove();
         $('.tempBindingFiberbox').remove();
