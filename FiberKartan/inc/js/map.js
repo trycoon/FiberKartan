@@ -21,6 +21,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     var mapContent = fk.mapContent;
     var serverRoot = fk.serverRoot;
     var welcomeMessage = fk.welcomeMessage;
+    var kmlLayer;
     var markersArray = [];
     var regionsArray = [];
     var lineArray = [];
@@ -67,68 +68,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             }
         });
 
-        // Sätter upp krussrutorna och kartans "state" utifrån parametrar på querystring.
-        var mapType = $.QueryString["mapType"];
-        if (mapType === "ROADMAP") {
-            map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-        }
-
-        var showHouseYes = $.QueryString["houseyes"];
-        if (showHouseYes !== undefined) {
-            if (showHouseYes == "true") {
-                $('input[name=show_house_to_install]').prop('checked', true);
-            } else {
-                $('input[name=show_house_to_install]').removeProp('checked');
-            }
-        }
-        var showHouseNo = $.QueryString["houseno"];
-        if (showHouseNo !== undefined) {
-            if (showHouseNo == "true") {
-                $('input[name=show_house_no_dice]').prop('checked', true);
-            } else {
-                $('input[name=show_house_no_dice]').removeProp('checked');
-            }
-        }
-        var showNetwork = $.QueryString["network"];
-        if (showNetwork !== undefined) {
-            if (showNetwork == "true") {
-                $('input[name=show_network]').prop('checked', true);
-            } else {
-                $('input[name=show_network]').removeProp('checked');
-            }
-        }
-        var showFiberNodes = $.QueryString["fibernodes"];
-        if (showFiberNodes !== undefined) {
-            if (showFiberNodes == "true") {
-                $('input[name=show_fibernodes]').prop('checked', true);
-            } else {
-                $('input[name=show_fibernodes]').removeProp('checked');
-            }
-        }
-        var showFiberBoxes = $.QueryString["fiberboxes"];
-        if (showFiberBoxes !== undefined) {
-            if (showFiberBoxes == "true") {
-                $('input[name=show_fiberboxes]').prop('checked', true);
-            } else {
-                $('input[name=show_fiberboxes]').removeProp('checked');
-            }
-        }
-        var showCrossings = $.QueryString["crossings"];
-        if (showCrossings !== undefined) {
-            if (showCrossings == "true") {
-                $('input[name=show_crossings]').prop('checked', true);
-            } else {
-                $('input[name=show_crossings]').removeProp('checked');
-            }
-        }
-        var showRegions = $.QueryString["regions"];
-        if (showRegions !== undefined) {
-            if (showRegions == "true") {
-                $('input[name=show_regions]').prop('checked', true);
-            } else {
-                $('input[name=show_regions]').removeProp('checked');
-            }
-        }
+        setupCheckboxesFromQuerystring();
 
         if (typeof welcomeMessage !== 'undefined' && welcomeMessage.length > 0) {
             showDialog('<div class="mapPopup">' + welcomeMessage + '</div>', 'Meddelande');
@@ -165,19 +105,36 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         }
         else if (typeof mapContent !== 'undefined' && markersArray.length > 0) {
             // Om vi skall visa upp någon speciell markör eller linje på kartan, detta skickas i så fall in som parameter på querystringen.
+
+            // Utmärka någon redan befintlig markör.
             var markerId = $.QueryString["markerId"];
+
+            // Sätt ut en ny markör utifrå querystring, denna sparas aldrig.
+            var marker = $.QueryString["marker"];
+
+            // Utmärka någon redan befintlig linje.
             var lineId = $.QueryString["lineId"];
 
+            var specialMarker;
+
             if (markerId !== undefined) {
-                var specialMarker = getMarkerById(markerId);
-                if (specialMarker != null) {
+                specialMarker = getMarkerById(markerId);
+                if (specialMarker !== null) {
                     map.setCenter(specialMarker.marker.getPosition());
                     map.setZoom(16.0);
                     specialMarker.marker.setAnimation(google.maps.Animation.BOUNCE);
                 }
+            } else if (marker !== undefined) {
+                specialMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(marker.split('x')[0], marker.split('x')[1]),
+                    icon: 'http://maps.google.com/mapfiles/kml/paddle/red-stars.png',
+                    map: map
+                });
+                map.setCenter(specialMarker.getPosition());
+                map.setZoom(16.0);
             } else if (lineId !== undefined) {
                 var specialLine = getLineById(lineId);
-                if (specialLine != null) {
+                if (specialLine !== null) {
                     map.setCenter(specialLine.cable.getPath().getAt(0));
                     map.setZoom(16.0);
                     specialLine.cable.originalStrokeColor = specialLine.cable.get('strokeColor');
@@ -191,6 +148,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                     }, 1000);
                 }
             } else {
+                // För kartor i allmänhet som inte anropats med några speciella direktiv på querystringen.
                 map.fitBounds(mapBounds);   // Sätt rätt zooom-nivå för att få med alla markörer.
             }
         }
@@ -267,6 +225,81 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             });
         }
     });
+
+    function setupCheckboxesFromQuerystring() {
+
+        // Om man har laddat upp en karta med fastighetsgränser, visa kryssruta för att visa och dölja denna.
+        if (mapContent.PropertyBoundariesFile) {
+            $('#propertyBoundaries').show();
+
+            $('#show_propertyBoundaries').click(function () {
+                toggleShowPropertyBoundaries();
+            });
+        }
+
+        // Sätter upp krussrutorna och kartans "state" utifrån parametrar på querystring.
+        var mapType = $.QueryString["mapType"];
+        if (mapType === "ROADMAP") {
+            map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+        }
+
+        var showHouseYes = $.QueryString["houseyes"];
+        if (showHouseYes !== undefined) {
+            if (showHouseYes == "true") {
+                $('input[name=show_house_to_install]').prop('checked', true);
+            } else {
+                $('input[name=show_house_to_install]').removeProp('checked');
+            }
+        }
+        var showHouseNo = $.QueryString["houseno"];
+        if (showHouseNo !== undefined) {
+            if (showHouseNo == "true") {
+                $('input[name=show_house_no_dice]').prop('checked', true);
+            } else {
+                $('input[name=show_house_no_dice]').removeProp('checked');
+            }
+        }
+        var showNetwork = $.QueryString["network"];
+        if (showNetwork !== undefined) {
+            if (showNetwork == "true") {
+                $('input[name=show_network]').prop('checked', true);
+            } else {
+                $('input[name=show_network]').removeProp('checked');
+            }
+        }
+        var showFiberNodes = $.QueryString["fibernodes"];
+        if (showFiberNodes !== undefined) {
+            if (showFiberNodes == "true") {
+                $('input[name=show_fibernodes]').prop('checked', true);
+            } else {
+                $('input[name=show_fibernodes]').removeProp('checked');
+            }
+        }
+        var showFiberBoxes = $.QueryString["fiberboxes"];
+        if (showFiberBoxes !== undefined) {
+            if (showFiberBoxes == "true") {
+                $('input[name=show_fiberboxes]').prop('checked', true);
+            } else {
+                $('input[name=show_fiberboxes]').removeProp('checked');
+            }
+        }
+        var showCrossings = $.QueryString["crossings"];
+        if (showCrossings !== undefined) {
+            if (showCrossings == "true") {
+                $('input[name=show_crossings]').prop('checked', true);
+            } else {
+                $('input[name=show_crossings]').removeProp('checked');
+            }
+        }
+        var showRegions = $.QueryString["regions"];
+        if (showRegions !== undefined) {
+            if (showRegions == "true") {
+                $('input[name=show_regions]').prop('checked', true);
+            } else {
+                $('input[name=show_regions]').removeProp('checked');
+            }
+        }
+    }
 
     function createMarkerTypeLookupTable() {
         if (mapContent.MarkerTypes != null) {
@@ -467,6 +500,27 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         } else {
             for (var i = 0, length = regionsArray.length; i < length; i++) {
                 regionsArray[i].region.setMap(null);
+            }
+        }
+    }
+
+    function toggleShowPropertyBoundaries() {
+        if ($("#show_propertyBoundaries").is(":checked")) {
+            if (kmlLayer instanceof google.maps.KmlLayer) {
+                kmlLayer.setMap(null);  // Rensa bort eventuellt redan inladdad KML-fil.
+            }
+
+            kmlLayer = new google.maps.KmlLayer(mapContent.PropertyBoundariesFile,
+                                {
+                                    map: map,
+                                    clickable: true,
+                                    preserveViewport: false,
+                                    suppressInfoWindows: false
+                                });
+        } else {
+            if (kmlLayer instanceof google.maps.KmlLayer) {
+                kmlLayer.setMap(null);  // Rensa bort eventuellt redan inladdad KML-fil.
+                kmlLayer = null;
             }
         }
     }

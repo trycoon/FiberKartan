@@ -64,6 +64,10 @@
                         <div>
                             <span id="myCurrentPosition"><input id="myCurrentPositionCheckbox" name="myCurrentPositionCheckbox" type="checkbox" value="myCurrentPositionCheckbox" /><label for="myCurrentPositionCheckbox">Min nuvarande position (kräver GPS)</label></span>
                         </div>
+                        <div id="propertyBoundaries">
+                            <input id="show_propertyBoundaries" name="show_propertyBoundaries" type="checkbox" value="show_propertyBoundaries" />
+                            <label for="show_propertyBoundaries">Visa fastighetsgränser</label>
+                        </div>
                 </fieldset>
                 <div class="viewSettingsBox">
                     Anpassa f&ouml;nster efter

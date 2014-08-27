@@ -246,8 +246,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 });
                 map.setCenter(specialMarker.getPosition());
                 map.setZoom(16.0);
-            }
-            else if (lineId !== undefined) {
+            } else if (lineId !== undefined) {
                 var specialLine = getLineById(lineId);
                 if (specialLine !== null) {
                     map.setCenter(specialLine.cable.getPath().getAt(0));

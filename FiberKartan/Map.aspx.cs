@@ -86,6 +86,12 @@ namespace FiberKartan
                 mapContent.Created = map.Created.ToString();
                 mapContent.Views = map.Views;
 
+                var hasPropertyBoundaries = map.MapType.MapFiles.Any();
+                if (hasPropertyBoundaries)
+                {
+                    mapContent.PropertyBoundariesFile = ConfigurationManager.AppSettings["ServerAdress"] + "/FileTransferHandler.ashx?map=" + map.MapType.MapFiles.First().Id;
+                }
+
                 // Visar olika mycket med information på kartan utifrån inställningarna på kartan som är lagrade i databasen.
                 var viewSettings = ((MapViewSettings)map.MapType.ViewSettings);
 
