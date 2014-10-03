@@ -49,6 +49,11 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 
     $(document).ready(function () {
 
+        if (typeof mapContent === 'undefined' || !mapContent) {
+            showDialog('<div class="mapPopup">Kartan kunde inte hittas.</div>', 'Meddelande');
+            return;
+        }
+
         var mapOptions = {
             zoom: 9.0,
             center: new google.maps.LatLng(mapContent.DefaultLatitude > 0 ? mapContent.DefaultLatitude : 57.47614, mapContent.DefaultLongitude > 0 ? mapContent.DefaultLongitude : 18.45059), // Fallback till mitt på Gotland.
