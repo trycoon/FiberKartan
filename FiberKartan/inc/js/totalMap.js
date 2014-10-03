@@ -33,7 +33,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     // Deklarera ny funktion i jQuery för att hämta ut querystring-parametrar. Används: $.QueryString["param"]
     (function ($) {
         $.QueryString = (function (a) {
-            if (a == "") return {};
+            if (a === "") return {};
             var b = {};
             for (var i = 0; i < a.length; ++i) {
                 var p = a[i].split('=');
@@ -54,14 +54,14 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
         $(window).on('orientationchange', function (event) {
-            if (window.orientation == 0) {
+            if (window.orientation === 0) {
                 $('.palette').fadeOut();
             } else {
                 $('.palette').fadeIn();
             }
         });
 
-        if ($.QueryString["houseyes"] == "true") {
+        if ($.QueryString["houseyes"] === "true") {
             houseyes = true;
             $('input[name=show_houses]').prop('checked', true);
         } else {
@@ -82,7 +82,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             toggleShowHouses();
             toggleShowCrossings();
 
-            $('#totalDigLength').html(calculateTotalDigLength());
+            $('#totalDigLength').html(calculateTotalDigLength().toLocaleString());    // toLocaleString() fixar tusen avgränsare.
 
             $("#mapInfoIcon").click(function () {
                 showDialog(
@@ -213,12 +213,12 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     function toggleShowHouses() {
         if (houseyes) {
             for (var i = 0, length = markersArray.length; i < length; i++) {
-                if (markersArray[i].markerType.Name == MARKERTYPE.HouseYes)
+                if (markersArray[i].markerType.Name === MARKERTYPE.HouseYes)
                     markersArray[i].marker.setVisible(true);
             }
         } else {
             for (var i = 0, length = markersArray.length; i < length; i++) {
-                if (markersArray[i].markerType.Name == MARKERTYPE.HouseYes)
+                if (markersArray[i].markerType.Name === MARKERTYPE.HouseYes)
                     markersArray[i].marker.setVisible(false);
             }
         }
@@ -227,12 +227,12 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     function toggleShowCrossings() {
         if ($("#show_crossings").is(":checked")) {
             for (var i = 0, length = markersArray.length; i < length; i++) {
-                if (markersArray[i].markerType.Name == MARKERTYPE.RoadCrossing_Existing || markersArray[i].markerType.Name == MARKERTYPE.RoadCrossing_ToBeMade)
+                if (markersArray[i].markerType.Name === MARKERTYPE.RoadCrossing_Existing || markersArray[i].markerType.Name === MARKERTYPE.RoadCrossing_ToBeMade)
                     markersArray[i].marker.setVisible(true);
             }
         } else {
             for (var i = 0, length = markersArray.length; i < length; i++) {
-                if (markersArray[i].markerType.Name == MARKERTYPE.RoadCrossing_Existing || markersArray[i].markerType.Name == MARKERTYPE.RoadCrossing_ToBeMade)
+                if (markersArray[i].markerType.Name === MARKERTYPE.RoadCrossing_Existing || markersArray[i].markerType.Name === MARKERTYPE.RoadCrossing_ToBeMade)
                     markersArray[i].marker.setVisible(false);
             }
         }
@@ -292,6 +292,6 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             lineLength += google.maps.geometry.spherical.computeLength(lineArray[i].cable.getPath());
         }
 
-        return lineLength.toFixed();
+        return Math.ceil(lineLength);
     }
 })(fk);

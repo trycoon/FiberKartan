@@ -23,7 +23,7 @@ $(document).ready(function () {
     }
 
     $('#mergeVersion').change(function () {
-        if ($(this).val() == "0") {
+        if ($(this).val() === "0") {
             $('#includeOldLines').attr("disabled", "disabled");
             $('#includeOldMarkers').attr("disabled", "disabled");
         } else {

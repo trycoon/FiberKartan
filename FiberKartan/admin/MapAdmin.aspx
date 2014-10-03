@@ -9,11 +9,11 @@
     <head runat="server">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
         <meta charset="utf-8" >        
-        <meta name="viewport" content="width=device-width" >
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
         <%: System.Web.Optimization.Styles.Render("~/inc/css/adminCss") %>
         <link rel="Stylesheet" type="text/css" href="/inc/css/map_print.css?ver=1.1" media="print" />        
-        <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry,drawing"></script>
+        <script src="http://maps.google.com/maps/api/js?v=3&region=SE&libraries=geometry,drawing,places"></script>
         <script>var fk = fk || {};</script>
     </head>
     <body>
@@ -95,8 +95,14 @@
                         <img title="Dra ut markör för att lägga till, info-ruta." src="../inc/img/markers/Note.png" data-markerType="Note" />
                     </div>
                     <h3><a href="#">Sök</a></h3>
-                    <div class="searchPanel hidden">                        
-                        <input id="searchBox" maxlength="100" /><input id="clearSearchBox" class="button" value="Rensa" />
+                    <div class="searchPanel hidden">
+                        Sök på&nbsp;<select id="searchmode">
+                            <option value="name">Markörnamn</option>
+                            <option value="address">Belägenhetsadress</option>
+                            <option value="position">GPS-position</option>
+                        </select><br/>              
+                        <input id="searchBox" maxlength="100" placeholder="" />
+                        <input id="emptySearch" type="button" class="button" value="Töm" />
                     </div>
                     <h3><a href="#">Utskrift</a></h3>
                     <div class="viewSettingsBox hidden">

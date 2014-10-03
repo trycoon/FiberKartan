@@ -10,13 +10,13 @@
     <head runat="server">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
         <meta charset="utf-8" >        
-        <meta name="viewport" content="width=device-width" >
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
         <meta name="description" content="FiberKartan - Projekteringsverktyg för socken och byanät" >
         <meta name="keywords" content="fiberkarta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg" >
         <%: System.Web.Optimization.Styles.Render("~/inc/css/userCss") %>
         <link rel="Stylesheet" type="text/css" href="/inc/css/map_print.css?ver=1.1" media="print" />
-        <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry,drawing"></script>
+        <script src="http://maps.google.com/maps/api/js?v=3&libraries=geometry,drawing"></script>
         <script>var fk = fk || {};</script>
     </head>
     <body>
