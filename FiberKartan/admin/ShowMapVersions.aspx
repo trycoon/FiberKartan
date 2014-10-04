@@ -31,6 +31,10 @@
                     <ItemStyle Wrap="False" />
                 </asp:BoundField>
                 <asp:BoundField DataField="Creator" HeaderText="Skapad av" SortExpression="Creator" />
+                <asp:BoundField DataField="Published" HeaderText="Publicerad" ReadOnly="True" SortExpression="Published" Visible="false"
+                    ItemStyle-Width="114px">
+                    <ItemStyle Wrap="False" />
+                </asp:BoundField>
                 <asp:BoundField DataField="Views" HeaderText="Antal visningar" ReadOnly="True" SortExpression="Views"
                     ItemStyle-Width="58px" />
                 <asp:TemplateField ItemStyle-Width="60px" ItemStyle-HorizontalAlign="Center">
@@ -62,7 +66,7 @@
             <SortedDescendingHeaderStyle BackColor="#575357" />
         </asp:GridView>
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:FiberDBConnectionString %>"
-            SelectCommand="SELECT m.[MapTypeId], m.[Ver], m.[Created], m.[Views], (SELECT u.[Name] FROM [User] u WHERE u.[Id] = m.[CreatorId]) as Creator, (SELECT mtar.[AccessRight] FROM [MapTypeAccessRight] mtar INNER JOIN [MapType] mt ON mt.[Id]=mtar.[MapTypeId] WHERE mt.[Id] = m.[MapTypeId] AND mtar.[UserId] = @userId) as AccessRight FROM [Map] m WHERE (m.[MapTypeId] = @MapTypeId) ORDER BY m.[Ver]"
+            SelectCommand="SELECT m.[MapTypeId], m.[Ver], m.[Created], m.[Views], (SELECT u.[Name] FROM [User] u WHERE u.[Id] = m.[CreatorId]) as Creator, m.[Published], (SELECT mtar.[AccessRight] FROM [MapTypeAccessRight] mtar INNER JOIN [MapType] mt ON mt.[Id]=mtar.[MapTypeId] WHERE mt.[Id] = m.[MapTypeId] AND mtar.[UserId] = @userId) as AccessRight FROM [Map] m WHERE (m.[MapTypeId] = @MapTypeId) ORDER BY m.[Ver]"
             OnSelecting="SqlDataSource_Selecting">
             <SelectParameters>
                 <asp:QueryStringParameter Name="MapTypeId" QueryStringField="mid" Type="Int32" />

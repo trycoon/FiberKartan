@@ -55,18 +55,14 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         vertexMarkers: []
     };
 
-    (function(fk) {
+    (function (fk) {
         var currentState = STATETYPE.None;
 
-        fk.setState = function(state) {
-            if (STATETYPE[state]) {
-                currentState = state;
-            } else {
-                currentState = STATETYPE.None;
-            }
+        fk.setState = function (state) {
+            currentState = state;
         }
 
-        fk.getState = function() {
+        fk.getState = function () {
             return currentState;
         }
     })(fk);
@@ -127,7 +123,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             showPointerPosition(event.latLng.lat(), event.latLng.lng());
         });
 
-        google.maps.event.addDomListener(document, "keydown", function (e) {
+       $(document).keydown(function (e) {
             if (e.keyCode === 27) { // Esc-knapp
                 // Om man trycker på Esc så avbryter man pågående operation (t.ex. bindning av kopplingskåp).
                 if (fk.getState() === STATETYPE.BindingMarkerToFiberBox) {
@@ -189,7 +185,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                     toggleShowRegions();
                 }
             });
-            
+
             google.maps.event.addListener(drawingManager, 'drawingmode_changed', function (event) {
 
                 rulerStopMeasure(); // Ta bort linjal ifall denna används.
@@ -247,7 +243,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 specialMarker = new google.maps.Marker({
                     position: new google.maps.LatLng(marker.split('x')[0], marker.split('x')[1]),
                     icon: 'http://maps.google.com/mapfiles/kml/paddle/red-stars.png',
-                    map: map                    
+                    map: map
                 });
                 map.setCenter(specialMarker.getPosition());
                 map.setZoom(16.0);
@@ -291,10 +287,10 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             theme_advanced_statusbar_location: "bottom",
             theme_advanced_resizing: false,
             content_css: "/inc/css/base.css?ver=1.7"
-        });        
+        });
 
         if (mapContent.Settings.HasWritePrivileges) {
-            setupContextMenues();            
+            setupContextMenues();
         }
 
         if ($("#saveButton").length > 0) {
@@ -435,7 +431,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 			            new google.maps.Size(32.0, 32.0),
 			            new google.maps.Point(0, 0),
 			            new google.maps.Point(16.0, 16.0)
-			        );                       
+			        );
                         var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         map.setCenter(latLng);
                         youMarker = new google.maps.Marker({
@@ -561,11 +557,11 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 
     function addMapRuler() {
         addToolToDrawManager('useRuler', 'Mät sträcka', 'http://maps.google.com/mapfiles/kml/pal5/icon5.png', function (button) {
-           button.click(function () {
-               button.css('background-color', '#ebebeb');   // Visa att mätverktyget är valt.
-               rulerStartMeasure();
+            button.click(function () {
+                button.css('background-color', '#ebebeb');   // Visa att mätverktyget är valt.
+                rulerStartMeasure();
             });
-        });       
+        });
     }
 
     function countAndCleanRulerVertex() {
@@ -611,7 +607,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             var marker = new google.maps.Marker({
                 position: event.latLng,
                 icon: ruler.vertexImage,
-                draggable:true,
+                draggable: true,
                 map: map
             });
             ruler.vertexMarkers.push(marker);
@@ -665,12 +661,12 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         if (!imageMapTop) {
             imageMapTop = 0;
         }
-        
+
         var pollForButton;
 
         var newButton = $('<div style="float: left; line-height: 0;"><div class="' + buttonClass + '" style="direction: ltr; overflow: hidden; text-align: left; position: relative; color: rgb(51, 51, 51); font-family: Arial,sans-serif; -moz-user-select: none; font-size: 13px; background: none repeat scroll 0% 0% rgb(255, 255, 255); padding: 4px; border-width: 1px 1px 1px 0px; border-style: solid solid solid none; border-color: rgb(113, 123, 135) rgb(113, 123, 135) rgb(113, 123, 135) -moz-use-text-color; -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; border-image: none; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4); font-weight: normal;" title="' + title + '"><span style="display: inline-block;"><div style="width: 16px; height: 16px; overflow: hidden; position: relative;"><img style="position: absolute; left: 0px; top: ' + imageMapTop + 'px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px; width: 16px; height: ' + imageMapHeight + 'px;" src="' + imgSrc + '" draggable="false"></div></span></div></div>');
         // Om vi inte hittar ritverktygen så beror det på att Googles script ännu inte har renderat dessa, polla kontinuerligt i väntan på att denna har laddats in av Google.
-        if ($('.gmnoprint').find("[title='Sluta rita']").length === 0) {            
+        if ($('.gmnoprint').find("[title='Sluta rita']").length === 0) {
             pollForButton = setInterval(function () {
                 if ($('.gmnoprint').find("[title='Sluta rita']").length > 0) {  // Kolla om knappen lagts till ännu.
                     clearInterval(pollForButton);
@@ -898,7 +894,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 
                     try {
                         switch ($("#searchmode").val()) {
-                            case 'name':                                
+                            case 'name':
                                 for (var i = 0, length = markersArray.length; i < length; i++) {
                                     // Lite specialfix för kopplingsskåp, man vill kunna söka upp dom med prefixet "KS" istället för bara ett nummer, här lägger vi till prefixet just för denna lista.
                                     if (markersArray[i].markerType.Name === MARKERTYPE.FiberBox) {
@@ -911,7 +907,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                                         }
                                     }
                                 }
-                                
+
                                 result(choices);
                                 break;
 
@@ -936,7 +932,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                                                     }
                                                 }
                                             });
-                                    
+
                                         }
                                     }
 
@@ -993,7 +989,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                             });
 
                             infowindow.open(map);
-                            
+
                         });
                     }
                 }
@@ -1296,66 +1292,66 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             }
 
             // Ta reda på vilka markörer som skall renderas med en inforuta med nummer för kopplingsskåp.
-            /*if (markerType.Name === MARKERTYPE.FiberBox ||
+            if (markerType.Name === MARKERTYPE.FiberBox ||
             markerType.Name === MARKERTYPE.HouseYes ||
             markerType.Name === MARKERTYPE.HouseMaybe ||
             markerType.Name === MARKERTYPE.HouseNo ||
             markerType.Name === MARKERTYPE.HouseNotContacted) {
-            var labelText;
-                
-            if (markerType.Name === MARKERTYPE.FiberBox) {
-            if (id < 0) {   // Detta är ett kabelskåp som vi nu lägger till, hitta ett unikt id/namn för denna. Det behöver inte alltid vara det sista numret i serien, det kan finnas luckor som måste fyllas igen.
-            name = getNextAvailableFiberBoxId();
-            }
+                var labelText;
 
-            labelText = name;
-            } else {
-            if (optionalInfo === null || optionalInfo.KS === 0) {
-            labelText = "?";
-            } else {
-            labelText = optionalInfo.KS;
-            }
-            }
+                if (markerType.Name === MARKERTYPE.FiberBox) {
+                    if (id < 0) {   // Detta är ett kabelskåp som vi nu lägger till, hitta ett unikt id/namn för denna. Det behöver inte alltid vara det sista numret i serien, det kan finnas luckor som måste fyllas igen.
+                        name = getNextAvailableFiberBoxId();
+                    }
 
-            marker = new MarkerWithLabel({
-            position: location,
-            map: map,
-            clickable: mapContent.Settings.HasWritePrivileges,
-            draggable: mapContent.Settings.HasWritePrivileges,
-            icon: markerType.Icon,
-            zIndex: zIndex,
-            labelContent: labelText,
-            labelAnchor: new google.maps.Point(25, 32),
-            labelTitle: (markerType.Name === MARKERTYPE.FiberBox ? "Kopplingsskåpets nummer" : "Klicka på denna för att binda markören till ett kopplingsskåp"),
-            labelClass: (markerType.Name === MARKERTYPE.FiberBox ? "markerLabel fiberboxLabel" : "markerLabel"),
-            labelInBackground: false,
-            labelVisible: false,
-            labelClickHandler: (markerType.Name === MARKERTYPE.HouseYes ||
-            markerType.Name === MARKERTYPE.HouseMaybe ||
-            markerType.Name === MARKERTYPE.HouseNo ||
-            markerType.Name === MARKERTYPE.HouseNotContacted) ?
-            function (e) {
-            if (mapContent.Settings.HasWritePrivileges) {
-            // Om man klickar på bubblan som visar vilket kopplingsskåp markören skall tillhöra så går man in i bindningsläget, nu skall man klicka på det kopplingsskåp som man vill binda markören till.
-            currentSelectedObject = id; // Sparar denna så vi vet vilken markör som skall kopplas.
-            enterFiberboxBindingMode();
+                    labelText = name;
+                } else {
+                    if (optionalInfo === null || optionalInfo.KS === 0) {
+                        labelText = "?";
+                    } else {
+                        labelText = optionalInfo.KS;
+                    }
+                }
+
+                marker = new MarkerWithLabel({
+                    position: location,
+                    map: map,
+                    clickable: mapContent.Settings.HasWritePrivileges,
+                    draggable: mapContent.Settings.HasWritePrivileges,
+                    icon: markerType.Icon,
+                    zIndex: zIndex,
+                    labelContent: labelText,
+                    labelAnchor: new google.maps.Point(25, 32),
+                    labelTitle: (markerType.Name === MARKERTYPE.FiberBox ? "Kopplingsskåpets nummer" : "Klicka på denna för att binda markören till ett kopplingsskåp"),
+                    labelClass: (markerType.Name === MARKERTYPE.FiberBox ? "markerLabel fiberboxLabel" : "markerLabel"),
+                    labelInBackground: false,
+                    labelVisible: false,
+                    labelClickHandler: (markerType.Name === MARKERTYPE.HouseYes ||
+                    markerType.Name === MARKERTYPE.HouseMaybe ||
+                    markerType.Name === MARKERTYPE.HouseNo ||
+                    markerType.Name === MARKERTYPE.HouseNotContacted) ?
+                    function (e) {
+                        if (mapContent.Settings.HasWritePrivileges) {
+                            // Om man klickar på bubblan som visar vilket kopplingsskåp markören skall tillhöra så går man in i bindningsläget, nu skall man klicka på det kopplingsskåp som man vill binda markören till.
+                            currentSelectedObject = id; // Sparar denna så vi vet vilken markör som skall kopplas.
+                            enterFiberboxBindingMode();
+                        }
+                    } : undefined,
+                    // Sparar ner denna också, vi behöver den när vi editerar markören.
+                    id: id
+                });
+            } else {
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    clickable: mapContent.Settings.HasWritePrivileges,
+                    draggable: mapContent.Settings.HasWritePrivileges,
+                    icon: markerType.Icon,
+                    zIndex: zIndex,
+                    // Sparar ner denna också, vi behöver den när vi editerar markören.
+                    id: id
+                });
             }
-            } : undefined,
-            // Sparar ner denna också, vi behöver den när vi editerar markören.
-            id: id
-            });
-            } else {*/
-            marker = new google.maps.Marker({
-                position: location,
-                map: map,
-                clickable: mapContent.Settings.HasWritePrivileges,
-                draggable: mapContent.Settings.HasWritePrivileges,
-                icon: markerType.Icon,
-                zIndex: zIndex,
-                // Sparar ner denna också, vi behöver den när vi editerar markören.
-                id: id
-            });
-            //}
 
             marker.setTitle(getMarkerTitle(marker, name, markerType));
             mapBounds.extend(location);
@@ -2212,7 +2208,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 result.phonenumber = place.formatted_phone_number;
                 //result.photos = place.photos;
                 result.website = place.website;
-                 
+
                 callback(result);
 
             } else {

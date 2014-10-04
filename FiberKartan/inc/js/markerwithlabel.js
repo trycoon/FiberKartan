@@ -1,8 +1,8 @@
 /**
  * @name MarkerWithLabel for V3
- * @version 1.1.7 [January 9, 2012]
+ * @version 1.1.10 [April 8, 2014]
  * @author Gary Little (inspired by code from Marc Ridey of Google).
- * @copyright Copyright 2010 Gary Little [gary at luxcentral.com]
+ * @copyright Copyright 2012 Gary Little [gary at luxcentral.com]
  * @fileoverview MarkerWithLabel extends the Google Maps JavaScript API V3
  *  <code>google.maps.Marker</code> class.
  *  <p>
@@ -16,7 +16,7 @@
  *  original position by pressing the <code>Esc</code> key. This doesn't work if you drag the marker
  *  itself because this feature is not (yet) supported in the <code>google.maps.Marker</code> class.
  *
- * Modified to fit my purpose, cut away code that is not used. Henrik Östman, 2012-11-26
+ * Modified to fit my purpose, cut away code that is not used. Henrik Östman, 2014-10-04
  */
 
 /*!
@@ -38,6 +38,21 @@
 /*global document,google */
 
 /**
+ * @param {Function} childCtor Child class.
+ * @param {Function} parentCtor Parent class.
+ * @private
+ */
+function inherits(childCtor, parentCtor) {
+    /* @constructor */
+    function tempCtor() { }
+    tempCtor.prototype = parentCtor.prototype;
+    childCtor.superClass_ = parentCtor.prototype;
+    childCtor.prototype = new tempCtor();
+    /* @override */
+    childCtor.prototype.constructor = childCtor;
+}
+
+/**
  * This constructor creates a label and associates it with a marker.
  * It is for the private use of the MarkerWithLabel class.
  * @constructor
@@ -47,47 +62,47 @@
  * @private
  */
 function MarkerLabel_(marker, crossURL, handCursorURL) {
-  this.marker_ = marker;
-  this.handCursorURL_ = marker.handCursorURL;
+    this.marker_ = marker;
+    this.handCursorURL_ = marker.handCursorURL;
 
-  this.labelDiv_ = document.createElement("div");
-  this.labelDiv_.style.cssText = "position: absolute; overflow: hidden;";
+    this.labelDiv_ = document.createElement("div");
+    this.labelDiv_.style.cssText = "position: absolute; overflow: hidden;";
 
-  // Set up the DIV for handling mouse events in the label. This DIV forms a transparent veil
-  // in the "overlayMouseTarget" pane, a veil that covers just the label. This is done so that
-  // events can be captured even if the label is in the shadow of a google.maps.InfoWindow.
-  // Code is included here to ensure the veil is always exactly the same size as the label.
-  this.eventDiv_ = document.createElement("div");
-  this.eventDiv_.style.cssText = this.labelDiv_.style.cssText;
+    // Set up the DIV for handling mouse events in the label. This DIV forms a transparent veil
+    // in the "overlayMouseTarget" pane, a veil that covers just the label. This is done so that
+    // events can be captured even if the label is in the shadow of a google.maps.InfoWindow.
+    // Code is included here to ensure the veil is always exactly the same size as the label.
+    this.eventDiv_ = document.createElement("div");
+    this.eventDiv_.style.cssText = this.labelDiv_.style.cssText;
 
-  // This is needed for proper behavior on MSIE:
-  this.eventDiv_.setAttribute("onselectstart", "return false;");
-  this.eventDiv_.setAttribute("ondragstart", "return false;");
+    // This is needed for proper behavior on MSIE:
+    this.eventDiv_.setAttribute("onselectstart", "return false;");
+    this.eventDiv_.setAttribute("ondragstart", "return false;");
 
-  // Get the DIV for the "X" to be displayed when the marker is raised.
-  this.crossDiv_ = MarkerLabel_.getSharedCross(crossURL);
+    // Get the DIV for the "X" to be displayed when the marker is raised.
+    this.crossDiv_ = MarkerLabel_.getSharedCross(crossURL);
 }
 
-// MarkerLabel_ inherits from OverlayView:
-MarkerLabel_.prototype = new google.maps.OverlayView();
+inherits(MarkerLabel_, google.maps.OverlayView);
 
 /**
  * Returns the DIV for the cross used when dragging a marker when the
  * raiseOnDrag parameter set to true. One cross is shared with all markers.
+ * @param {string} crossURL The URL of the cross image =.
  * @private
  */
 MarkerLabel_.getSharedCross = function (crossURL) {
-  var div;
-  if (typeof MarkerLabel_.getSharedCross.crossDiv === "undefined") {
-    div = document.createElement("img");
-    div.style.cssText = "position: absolute; z-index: 1000002; display: none;";
-    // Hopefully Google never changes the standard "X" attributes:
-    div.style.marginLeft = "-8px";
-    div.style.marginTop = "-9px";
-    div.src = crossURL;
-    MarkerLabel_.getSharedCross.crossDiv = div;
-  }
-  return MarkerLabel_.getSharedCross.crossDiv;
+    var div;
+    if (typeof MarkerLabel_.getSharedCross.crossDiv === "undefined") {
+        div = document.createElement("img");
+        div.style.cssText = "position: absolute; z-index: 1000002; display: none;";
+        // Hopefully Google never changes the standard "X" attributes:
+        div.style.marginLeft = "-8px";
+        div.style.marginTop = "-9px";
+        div.src = crossURL;
+        MarkerLabel_.getSharedCross.crossDiv = div;
+    }
+    return MarkerLabel_.getSharedCross.crossDiv;
 };
 
 /**
@@ -143,7 +158,7 @@ MarkerLabel_.prototype.onAdd = function () {
                 try {
                     var handler = me.marker_.get("labelClickHandler");
                     handler(e);
-                } catch (error) {}
+                } catch (error) { }
                 //google.maps.event.trigger(me.marker_, "click", e);
                 cAbortEvent(e); // Prevent click from being passed on to map
             }
@@ -206,7 +221,7 @@ MarkerLabel_.prototype.onAdd = function () {
     google.maps.event.addListener(this.marker_, "labelstyle_changed", function () {
         me.setStyles();
     })
-  ];
+    ];
 };
 
 /**
@@ -216,14 +231,14 @@ MarkerLabel_.prototype.onAdd = function () {
  * @private
  */
 MarkerLabel_.prototype.onRemove = function () {
-  var i;
-  this.labelDiv_.parentNode.removeChild(this.labelDiv_);
-  this.eventDiv_.parentNode.removeChild(this.eventDiv_);
+    var i;
+    this.labelDiv_.parentNode.removeChild(this.labelDiv_);
+    this.eventDiv_.parentNode.removeChild(this.eventDiv_);
 
-  // Remove event listeners:
-  for (i = 0; i < this.listeners_.length; i++) {
-    google.maps.event.removeListener(this.listeners_[i]);
-  }
+    // Remove event listeners:
+    for (i = 0; i < this.listeners_.length; i++) {
+        google.maps.event.removeListener(this.listeners_[i]);
+    }
 };
 
 /**
@@ -231,9 +246,9 @@ MarkerLabel_.prototype.onRemove = function () {
  * @private
  */
 MarkerLabel_.prototype.draw = function () {
-  this.setContent();
-  this.setTitle();
-  this.setStyles();
+    this.setContent();
+    this.setTitle();
+    this.setStyles();
 };
 
 /**
@@ -242,16 +257,16 @@ MarkerLabel_.prototype.draw = function () {
  * @private
  */
 MarkerLabel_.prototype.setContent = function () {
-  var content = this.marker_.get("labelContent");
-  if (typeof content.nodeType === "undefined") {
-    this.labelDiv_.innerHTML = content;
-    this.eventDiv_.innerHTML = this.labelDiv_.innerHTML;
-  } else {
-    this.labelDiv_.innerHTML = ""; // Remove current content
-    this.labelDiv_.appendChild(content);
-    content = content.cloneNode(true);
-    this.eventDiv_.appendChild(content);
-  }
+    var content = this.marker_.get("labelContent");
+    if (typeof content.nodeType === "undefined") {
+        this.labelDiv_.innerHTML = content;
+        this.eventDiv_.innerHTML = this.labelDiv_.innerHTML;
+    } else {
+        this.labelDiv_.innerHTML = ""; // Remove current content
+        this.labelDiv_.appendChild(content);
+        content = content.cloneNode(true);
+        this.eventDiv_.appendChild(content);
+    }
 };
 
 /**
@@ -259,8 +274,8 @@ MarkerLabel_.prototype.setContent = function () {
  * @private
  */
 MarkerLabel_.prototype.setTitle = function () {
-  var labelTitle = this.marker_.get("labelTitle");
-  this.eventDiv_.title = labelTitle || "";
+    var labelTitle = this.marker_.get("labelTitle");
+    this.eventDiv_.title = labelTitle || "";
 };
 
 /**
@@ -269,24 +284,24 @@ MarkerLabel_.prototype.setTitle = function () {
  * @private
  */
 MarkerLabel_.prototype.setStyles = function () {
-  var i, labelStyle;
+    var i, labelStyle;
 
-  // Apply style values from the style sheet defined in the labelClass parameter:
-  this.labelDiv_.className = this.marker_.get("labelClass");
-  this.eventDiv_.className = this.labelDiv_.className;
+    // Apply style values from the style sheet defined in the labelClass parameter:
+    this.labelDiv_.className = this.marker_.get("labelClass");
+    this.eventDiv_.className = this.labelDiv_.className;
 
-  // Clear existing inline style values:
-  this.labelDiv_.style.cssText = "";
-  this.eventDiv_.style.cssText = "";
-  // Apply style values defined in the labelStyle parameter:
-  labelStyle = this.marker_.get("labelStyle");
-  for (i in labelStyle) {
-    if (labelStyle.hasOwnProperty(i)) {
-      this.labelDiv_.style[i] = labelStyle[i];
-      this.eventDiv_.style[i] = labelStyle[i];
+    // Clear existing inline style values:
+    this.labelDiv_.style.cssText = "";
+    this.eventDiv_.style.cssText = "";
+    // Apply style values defined in the labelStyle parameter:
+    labelStyle = this.marker_.get("labelStyle");
+    for (i in labelStyle) {
+        if (labelStyle.hasOwnProperty(i)) {
+            this.labelDiv_.style[i] = labelStyle[i];
+            this.eventDiv_.style[i] = labelStyle[i];
+        }
     }
-  }
-  this.setMandatoryStyles();
+    this.setMandatoryStyles();
 };
 
 /**
@@ -295,21 +310,23 @@ MarkerLabel_.prototype.setStyles = function () {
  * @private
  */
 MarkerLabel_.prototype.setMandatoryStyles = function () {
-  this.labelDiv_.style.position = "absolute";
-  this.labelDiv_.style.overflow = "hidden";
-  // Make sure the opacity setting causes the desired effect on MSIE:
-  if (typeof this.labelDiv_.style.opacity !== "undefined" && this.labelDiv_.style.opacity !== "") {
-    this.labelDiv_.style.filter = "alpha(opacity=" + (this.labelDiv_.style.opacity * 100) + ")";
-  }
+    this.labelDiv_.style.position = "absolute";
+    this.labelDiv_.style.overflow = "hidden";
+    // Make sure the opacity setting causes the desired effect on MSIE:
+    if (typeof this.labelDiv_.style.opacity !== "undefined" && this.labelDiv_.style.opacity !== "") {
+        this.labelDiv_.style.MsFilter = "\"progid:DXImageTransform.Microsoft.Alpha(opacity=" + (this.labelDiv_.style.opacity * 100) + ")\"";
+        this.labelDiv_.style.filter = "alpha(opacity=" + (this.labelDiv_.style.opacity * 100) + ")";
+    }
 
-  this.eventDiv_.style.position = this.labelDiv_.style.position;
-  this.eventDiv_.style.overflow = this.labelDiv_.style.overflow;
-  this.eventDiv_.style.opacity = 0.01; // Don't use 0; DIV won't be clickable on MSIE
-  this.eventDiv_.style.filter = "alpha(opacity=1)"; // For MSIE
+    this.eventDiv_.style.position = this.labelDiv_.style.position;
+    this.eventDiv_.style.overflow = this.labelDiv_.style.overflow;
+    this.eventDiv_.style.opacity = 0.01; // Don't use 0; DIV won't be clickable on MSIE
+    this.eventDiv_.style.MsFilter = "\"progid:DXImageTransform.Microsoft.Alpha(opacity=1)\"";
+    this.eventDiv_.style.filter = "alpha(opacity=1)"; // For MSIE
 
-  this.setAnchor();
-  this.setPosition(); // This also updates z-index, if necessary.
-  this.setVisible();
+    this.setAnchor();
+    this.setPosition(); // This also updates z-index, if necessary.
+    this.setVisible();
 };
 
 /**
@@ -317,11 +334,11 @@ MarkerLabel_.prototype.setMandatoryStyles = function () {
  * @private
  */
 MarkerLabel_.prototype.setAnchor = function () {
-  var anchor = this.marker_.get("labelAnchor");
-  this.labelDiv_.style.marginLeft = -anchor.x + "px";
-  this.labelDiv_.style.marginTop = -anchor.y + "px";
-  this.eventDiv_.style.marginLeft = -anchor.x + "px";
-  this.eventDiv_.style.marginTop = -anchor.y + "px";
+    var anchor = this.marker_.get("labelAnchor");
+    this.labelDiv_.style.marginLeft = -anchor.x + "px";
+    this.labelDiv_.style.marginTop = -anchor.y + "px";
+    this.eventDiv_.style.marginLeft = -anchor.x + "px";
+    this.eventDiv_.style.marginTop = -anchor.y + "px";
 };
 
 /**
@@ -329,16 +346,16 @@ MarkerLabel_.prototype.setAnchor = function () {
  * @private
  */
 MarkerLabel_.prototype.setPosition = function (yOffset) {
-  var position = this.getProjection().fromLatLngToDivPixel(this.marker_.getPosition());
-  if (typeof yOffset === "undefined") {
-    yOffset = 0;
-  }
-  this.labelDiv_.style.left = Math.round(position.x) + "px";
-  this.labelDiv_.style.top = Math.round(position.y - yOffset) + "px";
-  this.eventDiv_.style.left = this.labelDiv_.style.left;
-  this.eventDiv_.style.top = this.labelDiv_.style.top;
+    var position = this.getProjection().fromLatLngToDivPixel(this.marker_.getPosition());
+    if (typeof yOffset === "undefined") {
+        yOffset = 0;
+    }
+    this.labelDiv_.style.left = Math.round(position.x) + "px";
+    this.labelDiv_.style.top = Math.round(position.y - yOffset) + "px";
+    this.eventDiv_.style.left = this.labelDiv_.style.left;
+    this.eventDiv_.style.top = this.labelDiv_.style.top;
 
-  this.setZIndex();
+    this.setZIndex();
 };
 
 /**
@@ -348,14 +365,14 @@ MarkerLabel_.prototype.setPosition = function (yOffset) {
  * @private
  */
 MarkerLabel_.prototype.setZIndex = function () {
-  var zAdjust = (this.marker_.get("labelInBackground") ? -1 : +1);
-  if (typeof this.marker_.getZIndex() === "undefined") {
-    this.labelDiv_.style.zIndex = parseInt(this.labelDiv_.style.top, 10) + zAdjust;
-    this.eventDiv_.style.zIndex = this.labelDiv_.style.zIndex;
-  } else {
-    this.labelDiv_.style.zIndex = this.marker_.getZIndex() + zAdjust;
-    this.eventDiv_.style.zIndex = this.labelDiv_.style.zIndex;
-  }
+    var zAdjust = (this.marker_.get("labelInBackground") ? -1 : +1);
+    if (typeof this.marker_.getZIndex() === "undefined") {
+        this.labelDiv_.style.zIndex = parseInt(this.labelDiv_.style.top, 10) + zAdjust;
+        this.eventDiv_.style.zIndex = this.labelDiv_.style.zIndex;
+    } else {
+        this.labelDiv_.style.zIndex = this.marker_.getZIndex() + zAdjust;
+        this.eventDiv_.style.zIndex = this.labelDiv_.style.zIndex;
+    }
 };
 
 /**
@@ -364,12 +381,12 @@ MarkerLabel_.prototype.setZIndex = function () {
  * @private
  */
 MarkerLabel_.prototype.setVisible = function () {
-  if (this.marker_.get("labelVisible")) {
-    this.labelDiv_.style.display = this.marker_.getVisible() ? "block" : "none";
-  } else {
-    this.labelDiv_.style.display = "none";
-  }
-  this.eventDiv_.style.display = this.labelDiv_.style.display;
+    if (this.marker_.get("labelVisible")) {
+        this.labelDiv_.style.display = this.marker_.getVisible() ? "block" : "none";
+    } else {
+        this.labelDiv_.style.display = "none";
+    }
+    this.eventDiv_.style.display = this.labelDiv_.style.display;
 };
 
 /**
@@ -427,55 +444,54 @@ MarkerLabel_.prototype.setVisible = function () {
  * @param {MarkerWithLabelOptions} [opt_options] The optional parameters.
  */
 function MarkerWithLabel(opt_options) {
-  opt_options = opt_options || {};
-  opt_options.labelClickHandler = opt_options.labelClickHandler || function (e) {};
-  opt_options.labelContent = opt_options.labelContent || "";
-  opt_options.labelTitle = opt_options.labelTitle || "";
-  opt_options.labelAnchor = opt_options.labelAnchor || new google.maps.Point(0, 0);
-  opt_options.labelClass = opt_options.labelClass || "markerLabels";
-  opt_options.labelStyle = opt_options.labelStyle || {};
-  opt_options.labelInBackground = opt_options.labelInBackground || false;
-  if (typeof opt_options.labelVisible === "undefined") {
-    opt_options.labelVisible = true;
-  }
-  if (typeof opt_options.raiseOnDrag === "undefined") {
-    opt_options.raiseOnDrag = true;
-  }
-  if (typeof opt_options.clickable === "undefined") {
-    opt_options.clickable = true;
-  }
-  if (typeof opt_options.draggable === "undefined") {
-    opt_options.draggable = false;
-  }
-  if (typeof opt_options.optimized === "undefined") {
-    opt_options.optimized = false;
-  }
-  opt_options.crossImage = opt_options.crossImage || "http" + (document.location.protocol === "https:" ? "s" : "") + "://maps.gstatic.com/intl/en_us/mapfiles/drag_cross_67_16.png";
-  opt_options.handCursor = opt_options.handCursor || "http" + (document.location.protocol === "https:" ? "s" : "") + "://maps.gstatic.com/intl/en_us/mapfiles/closedhand_8_8.cur";
-  opt_options.optimized = false; // Optimized rendering is not supported
+    opt_options = opt_options || {};
+    opt_options.labelClickHandler = opt_options.labelClickHandler || function (e) { };
+    opt_options.labelContent = opt_options.labelContent || "";
+    opt_options.labelTitle = opt_options.labelTitle || "";
+    opt_options.labelAnchor = opt_options.labelAnchor || new google.maps.Point(0, 0);
+    opt_options.labelClass = opt_options.labelClass || "markerLabels";
+    opt_options.labelStyle = opt_options.labelStyle || {};
+    opt_options.labelInBackground = opt_options.labelInBackground || false;
+    if (typeof opt_options.labelVisible === "undefined") {
+        opt_options.labelVisible = true;
+    }
+    if (typeof opt_options.raiseOnDrag === "undefined") {
+        opt_options.raiseOnDrag = true;
+    }
+    if (typeof opt_options.clickable === "undefined") {
+        opt_options.clickable = true;
+    }
+    if (typeof opt_options.draggable === "undefined") {
+        opt_options.draggable = false;
+    }
+    if (typeof opt_options.optimized === "undefined") {
+        opt_options.optimized = false;
+    }
+    opt_options.crossImage = opt_options.crossImage || "http" + (document.location.protocol === "https:" ? "s" : "") + "://maps.gstatic.com/intl/en_us/mapfiles/drag_cross_67_16.png";
+    opt_options.handCursor = opt_options.handCursor || "http" + (document.location.protocol === "https:" ? "s" : "") + "://maps.gstatic.com/intl/en_us/mapfiles/closedhand_8_8.cur";
+    opt_options.optimized = false; // Optimized rendering is not supported
 
-  this.label = new MarkerLabel_(this, opt_options.crossImage, opt_options.handCursor); // Bind the label to the marker
+    this.label = new MarkerLabel_(this, opt_options.crossImage, opt_options.handCursor); // Bind the label to the marker
 
-  // Call the parent constructor. It calls Marker.setValues to initialize, so all
-  // the new parameters are conveniently saved and can be accessed with get/set.
-  // Marker.set triggers a property changed event (called "propertyname_changed")
-  // that the marker label listens for in order to react to state changes.
-  google.maps.Marker.apply(this, arguments);
+    // Call the parent constructor. It calls Marker.setValues to initialize, so all
+    // the new parameters are conveniently saved and can be accessed with get/set.
+    // Marker.set triggers a property changed event (called "propertyname_changed")
+    // that the marker label listens for in order to react to state changes.
+    google.maps.Marker.apply(this, arguments);
 }
 
-// MarkerWithLabel inherits from <code>Marker</code>:
-MarkerWithLabel.prototype = new google.maps.Marker();
+inherits(MarkerWithLabel, google.maps.Marker);
 
 /**
  * Overrides the standard Marker setMap function.
- * @param {Map} marker The map to which the marker is to be added.
+ * @param {Map} theMap The map to which the marker is to be added.
  * @private
  */
 MarkerWithLabel.prototype.setMap = function (theMap) {
 
-  // Call the inherited function...
-  google.maps.Marker.prototype.setMap.apply(this, arguments);
+    // Call the inherited function...
+    google.maps.Marker.prototype.setMap.apply(this, arguments);
 
-  // ... then deal with the label:
-  this.label.setMap(theMap);
+    // ... then deal with the label:
+    this.label.setMap(theMap);
 };

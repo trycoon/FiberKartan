@@ -59,7 +59,7 @@
                                 <label for="show_fiberboxes">Kopplingsskåp</label>
                             </div>
                             <div id="subOption_fiberboxbindings" class="subSubOption">
-                                <input id="show_fiberboxbindings" name="show_fiberboxbindings" type="checkbox" value="show_fiberboxbindings" disabled="disabled" title="Funktionen är tyvärr inaktiverad i väntan på att Google fixar en bugg i deras karttjänst." />
+                                <input id="show_fiberboxbindings" name="show_fiberboxbindings" type="checkbox" value="show_fiberboxbindings" />
                                 <label for="show_fiberboxbindings">Kopplingsskåpsnumrering</label>
                             </div>
                         </div>
