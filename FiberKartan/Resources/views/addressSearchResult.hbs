@@ -1,0 +1,15 @@
+﻿<div>
+    <p>
+        <strong>Namn:</strong> {{name}}<br>
+        <strong>Adress:</strong> {{{address}}}<br>
+        {{#if phonenumber}}
+        <strong>Telefonnummer:</strong> {{phonenumber}}<br>
+        {{/if}}
+        {{#if website}}
+        <strong>Hemsida:</strong> <a href="{{website}}" target="_blank">{{website}}</a><br>
+        {{/if}}
+        {{#if location}}
+        <strong>Position:</strong> {{#gpsposition location}}{{/gpsposition}}<br>
+        {{/if}}
+    </p>
+</div>

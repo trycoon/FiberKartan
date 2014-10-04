@@ -33,7 +33,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     // Deklarera ny funktion i jQuery för att hämta ut querystring-parametrar. Används: $.QueryString["param"]
     (function ($) {
         $.QueryString = (function (a) {
-            if (a == "") return {};
+            if (a === "") return {};
             var b = {};
             for (var i = 0; i < a.length; ++i) {
                 var p = a[i].split('=');
@@ -45,6 +45,11 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     })(jQuery);
 
     $(document).ready(function () {
+
+        if (typeof mapContent === 'undefined' || !mapContent) {
+            showDialog('<div class="mapPopup">Kartan kunde inte hittas.</div>', 'Meddelande');
+            return;
+        }
 
         var mapOptions = {
             zoom: 9.0,
@@ -123,7 +128,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         if (markerType != undefined) {  // Lägg bara till markörer som vi definierat.
             var estate;
 
-            if (markerType.Name == MARKERTYPE.HouseYes || markerType.Name == MARKERTYPE.HouseMaybe || markerType.Name == MARKERTYPE.HouseNotContacted || markerType.Name == MARKERTYPE.HouseNo) {
+            if (markerType.Name === MARKERTYPE.HouseYes || markerType.Name === MARKERTYPE.HouseMaybe || markerType.Name === MARKERTYPE.HouseNotContacted || markerType.Name === MARKERTYPE.HouseNo) {
                 estate = markerInfo.Name;
             }
 

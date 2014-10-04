@@ -3,10 +3,6 @@
     height: 100%; 
     margin: 0px; 
     padding: 0px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
 }
 html { font: 12px/14px Arial,Helvetica,sans-serif; }
 body { margin: 0; font-size: 1em; line-height: 1.4; }
@@ -33,7 +29,7 @@ textarea
     background: #ccc;
     color: black;
     padding: 0.2em 0;
-    }
+}
 input 
 {
     vertical-align: middle;
@@ -91,7 +87,14 @@ input[disabled] + label {
     -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
     box-shadow: 10px 10px 5px rgba(0,0,0,0.5);
     -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=7, Direction=135, Color='#000000')";
-    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 .palette .subOption {
     display: none;
@@ -254,12 +257,12 @@ form
 }
 #searchBox 
 {
-    margin: 10px 10px 5px 10px;
-    width: 160px;
+    margin: 10px 5px 10px 0;
+    width: 195px;
 }
-#clearSearchBox 
+#searchmode 
 {
-    width: 60px;
+    width: 155px;
 }
 .palette_footer
 {

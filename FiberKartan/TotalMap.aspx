@@ -8,13 +8,13 @@
     <head runat="server">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
         <meta charset="utf-8" >        
-        <meta name="viewport" content="width=device-width" >
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
         <meta name="description" content="FiberKartan - Projekteringsverktyg för socken och byanät" >
         <meta name="keywords" content="fiberkarta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg" >
         <%: System.Web.Optimization.Styles.Render("~/inc/css/userCss") %>
         <link rel="Stylesheet" type="text/css" href="/inc/css/map_print.css?ver=1.1" media="print" />
-        <script src="http://maps.google.com/maps/api/js?v=3&sensor=false&libraries=geometry"></script>
+        <script src="http://maps.google.com/maps/api/js?v=3&libraries=geometry"></script>
         <script>var fk = fk || {};</script>
     </head>
     <body>
@@ -23,7 +23,7 @@
             <div id="mainPalette" class="palette" runat="server">
                 <div class="paletteheader" title="Dra här för att flytta paletten.">Regional karta</div>
                 <asp:Panel id="connectionStatisticsPanel" runat="server"> 
-                    Fastigheter:&nbsp;<strong><asp:Literal ID="NrHouses" runat="server"></asp:Literal></strong>st                    
+                    Fastigheter:&nbsp;<strong><asp:Literal ID="NrHouses" runat="server"></asp:Literal></strong>&nbsp;st                    
                 </asp:Panel>
                 <asp:Panel id="totalDigLengthStatisticsPanel" runat="server"> 
                     Uppskattad schaktl&auml;ngd: <strong><span id="totalDigLength"></span></strong>&nbsp;meter                    

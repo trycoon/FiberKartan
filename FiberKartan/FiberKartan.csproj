@@ -704,6 +704,7 @@
     <Content Include="Resources\views\marker.hbs" />
     <Content Include="Resources\views\incidentForm.hbs" />
     <None Include="Properties\PublishProfiles\FiberKartan.pubxml" />
+    <Content Include="Resources\views\addressSearchResult.hbs" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
