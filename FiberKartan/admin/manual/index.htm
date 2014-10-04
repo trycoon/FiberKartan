@@ -39,14 +39,14 @@
                 <li>Tillgänglig för flera personer - Flera personer kan granska och arbeta med kartan samtidigt (jmf. med papperskartor där bara en person har tillgång till kartan).</li>
                 <li>Tillgänglig överallt (där det finns tillgång till Internet) - Eftersom FiberKartan är en hemsida så behöver man inte installera något program (jmf. Google Earth) på datorn för att arbeta med kartorna, vilket gör att du kan nå dom från jobbet, Internetkafféer, osv.</li>
                 <li>Automatisk uträkning av sträckan - Man slipper klicka på varje linje och sitta med en miniräknare för att summera den totala grävsträckan(jmf. Google Maps/Google Earth). FiberKartan gör det automatiskt.</li>
-                <li>Bra exporteringsmöjligheter - Man kan exportera en given kartversion till en KML-fil (som kan importeras i Google Maps/Earth och andra GIS-program), man kan exportera markörerna till ett excellark som förutom markörens namn även innehåller dess GPS-position.</li>
+                <li>Bra exporteringsmöjligheter - Man kan exportera en given kartversion till en KML-fil (som kan importeras i Google Maps/Earth och andra GIS-program), man kan exportera markörerna till ett Excel-ark som förutom markörens namn även innehåller dess GPS-position.</li>
                 <li>GRATIS - Som fiberförening så har vi nog med utgifter, detta enkla verktyg kostar inget och fungerar kanske tillräckligt bra till fiberprojektering för att ni skall slippa köpa in ett dyrt professionellt program.</li>
             </ul>            
         </section>
 
         <h2>Systemkrav</h2>
         <section id="sys_specs">
-            FiberKartan har utvecklats och testats främst för de allra senaste webbläsarna (med HTML5 och CSS3 stöd). Så för bästa stabilitet, upplevelse och prestanda så rekommenderar jag att ni kör de senaste versionerna av <a href="https://www.google.com/chrome/index.html?hl=sv#eula">Chrome</a> eller <a href="http://www.mozilla.org/sv-SE/firefox/fx/">Firefox</a>. FiberKartan bör fungera med den senaste versionen av <a href="http://www.apple.com/se/safari/download/">Safari</a>, men den testas bara av sporadiskt när jag får tid!
+            FiberKartan har utvecklats och testats främst för de allra senaste webbläsarna (med HTML5 och CSS3 stöd). Så för bästa stabilitet, upplevelse och prestanda så rekommenderar jag att ni kör de senaste versionerna av <a href="https://www.google.com/chrome/index.html?hl=sv#eula">Chrome</a> eller <a href="http://www.mozilla.org/sv-SE/firefox/fx/">Firefox</a>. FiberKartan bör fungera med den senaste versionen av <a href="http://www.apple.com/se/safari/download/">Safari (för Mac)</a>, men den testas bara av sporadiskt när jag får tid!
         </section>
 
         <h2>Förslag till arbetsflöde</h2>
@@ -81,7 +81,7 @@
             Kartan börjar nu ta form, ni har kontaktat större delen av fastighetsägarna, ni har ritatat ut en möjlig fiberdragning och haft en första avstämning med markägarna, och ni har placerat ut vart ni tror att ni skall ha era noder.
             Det är nu dags att begära in offerter från gräventreprenörer och fiberentreprenörer(svetsar och blåser fiber, bistår med material), förutom dokumentet som utgör offertförfrågan så brukar dom vilja ha en karta över den tänkta dragningen och kanske även en lista över de fastigheter som skall ha fiber.
             Gå till <a href="#list_map_versions">listan över kartans alla versioner</a> och klicka på "Länk" längst till vänster på den senaste versionen av kartan, denna länk skickar ni med i offerförfrågan till entreprenörerna.
-            Länken tar dom till den publika vyn för er karta, där kan de se den tänkta dragningen, sträckans längd, fastigheterna och noderna. Eftersom länken går till en specifik version av kartan så kan ni i projektgruppen under tiden uppdatera kartan och spara nya versionen utan att det påverkar offererings underlaget.
+            Länken tar dom till den publika vyn för er karta, där kan de se den tänkta dragningen, sträckans längd, fastigheterna och noderna. Eftersom länken går till en specifik version av kartan så kan ni i projektgruppen under tiden uppdatera kartan och spara nya versionen utan att det påverkar offereringsunderlaget.
             Om de vill ha en lista över fastigheterna så kan ni få fram den genom att trycka på <a href="#export_map">"Exportera"-knappen</a> och välja att exportera den senaste versionen av kartan till en Excel-fil, denna innehåller en lista på alla fastighetsbeteckningar och fastigheternas GPS-position.
             </p>
             <p>
@@ -95,7 +95,7 @@
             Det är viktigt nu att alla förändringar som görs synkas med grävare och fiberentreprenören, för att säkerställa att dom inte missar någon förändring av kartan så kan de <a href="#subscribe_map_changes">prenumerera</a> på förändringar av kartan. På så sätt får dom e-post skickade till sig varje gång en förändring av kartan görs.
             </p>
             <p>
-            När dammet har lagt sig och fibernätverket är klart så kan man behålla kartan i dokumentationssyfte, man kan justera linjer och kopplingsskåps markörer efter hur de egentligen hamnade så att kommunen, markägare, Trafikverket, m.fl. kan se vart kablarna ligger.
+            När dammet har lagt sig och fibernätverket är klart så kan man behålla kartan i dokumentationssyfte, man kan justera linjer och kopplingsskåps markörer efter hur de egentligen hamnade så att kommunen, markägare, Trafikverket, m.fl. kan se vart kablarna ligger. Detta kan ni göra genom att <a href="#advanced">importera GPS-inmätningar</a> ni fått från era grävare.
             Nätet skall såklart även dokumenteras på <a href="http://ledningskollen.se" target="_blank">Ledningskollen</a>.
             </p>
         </section>
@@ -140,7 +140,7 @@
         <section id="list_maps">
             <p>
                 <a class="image" href="img/MapList.jpg" target="_blank" title="Lista på tillgängliga kartor"><img src="img/tn_MapList.jpg" alt="" /></a>
-                Den första sidan man kommer till då man loggat in är sidan över dina tillgängliga kartor. Listan innehåller alla kartor som du skapat och alla kartor som andra har givit dig rättigheter till att administrera. Första gången du loggar in kommer förmodligen listan att vara tom, varpå <a href="#create_map">skapa en ny karta</a> förmodligen blir din första åtgärd.
+                Den första sidan man kommer till då man loggat in är sidan över dina tillgängliga kartor. Listan innehåller alla kartor som du skapat och alla kartor som andra har givit dig rättigheter till att administrera. Första gången du loggar in kommer förmodligen listan att vara tom, var på <a href="#create_map">skapa en ny karta</a> förmodligen blir din första åtgärd.
                 Uppe till höger på sidan visas när du senast loggade in, vilken person som du är inloggad som, och en länk för att logga ut dig ur systemet. Listans kolumner kan sorteras i stigande och fallande ordning genom att man klickar på rubriken för den kolumn som man vill sortera listan efter.
                 Namnet på kartan och namnet på personen som skapade kartan visas i listan, knappen <a href="#list_map_versions">"Visa versioner"</a> tar dig till en sida med en lista över alla versioner av kartan som har skapats. Det finns en knapp för att <a href="#import_map">Importera</a> en karta från en fil. För att redigera grundinställningarna för kartan, de uppgifter du angav när du först skapade kartan, tryck på "Redigera"-knappen.
                 För varje karta finns även möjlighet att <a href="#subscribe_map_changes">prenumerera på ändringar</a> och <a href="#share_map">att dela kartan med andra</a>.
@@ -326,9 +326,8 @@
                 För att lägga till en markör, tryck ner musknappen på önskad markör och dra ut den till önskad plats på kartan.
                 Håll muspekaren svävande över markören i paletten för att få en beskrivning av vad den representerar.</li>
 
-                <li><strong>Sök</strong> &mdash; Här har man möjlighet att söka efter fastighetsbeteckningen eller namnet på en markör man redan lagt till på kartan.
-                Har du namngivit dina markörer på ett bra sätt så kan du enkelt med denna funktion hitta dom på kartan igen.
-                Börja skriva på den önskade markörens namn så presenterar systemet alla träffar den kan hitta med denna början.</li>
+                <li><strong>Sök</strong> &mdash; Här har man möjlighet att söka efter namnet(fastighetsbeteckningen) på en markör man redan lagt till på kartan, har du namngivit dina markörer på ett bra sätt så kan du enkelt med denna funktion hitta dom på kartan igen.
+                Man kan även söka på belägenhetsadress eller på GPS-position. Börja skriva i sökrutan så försöker systemet löpande hitta matchande träffar.</li>
 
                 <li><strong>Utskrift</strong> &mdash; Funktioner för att skriva ut aktuell kartbild.</li>
             </ul>
@@ -340,6 +339,13 @@
             </p>
             <p>
             <strong>För att alla ändringar man har gjort på kartan skall sparas så måste man trycka på "Spara"-knappen!</strong> När detta är gjort så kommer informationen att sparas ner till servern, sidan kommer att laddas om och du kommer tillbaka till det läge du var när du klickade på Spara-knappen. Omladdningen av sidan är till för att bekräfta att förändringarna du har gjort verkligen blev sparade.
+            </p>
+
+            <h3>Mäta en sträcka</h3>
+            <p>
+                Ibland kan det vara praktiskt att kunna mäta en sträcka på kartan, för detta ändamål så finns det ett linjal-verktyg som du hittar i verktygspaletten längst upp på kartsidan.
+                Klicka på linjalen och klicka sedan på kartan där du vill placera ut dina mätpunkter, vill du ta bort en mätpunkt så dubbelklickar du bara på den. Man kan även dra i mätpunkterna för att justera sträckan.
+                I statuslisten längst ner på kartsidan så kan ni se den Totala sträckan.
             </p>
 
             <h3>Lägg till, redigera, och ta bort markörer</h3>
@@ -414,7 +420,7 @@
             För att göra det synligt på kartan så kan man "binda" fastigheter till kopplingsskåp, det visas då visuellt på kartan vilket skåp det är tänkt att fastigheten skall anslutas till och när man exporterar kartan till en Excel-fil finns där en kolumn som anger kopplingsskåpets nummer.
             </p>
             <p>
-            Börja med att klicka i "Fibernätverk" i paletten på kartan i den administrativa vyn, rutan "Kopplingsskåpsnumrering" därunder tänds då upp, klicka i denna också. Nu visas en rund cirkel i vänstra hörnet på varje markör av fastighets- och kopplingsskåpstyp.
+            Börja med att klicka i "Fibernätverk" i paletten på kartan i den administrativa vyn, klicka sedan på "Kopplingsskåp", rutan "Kopplingsskåpsnumrering" därunder tänds då upp, klicka i denna också. Nu visas en rund cirkel i vänstra hörnet på varje markör av fastighets- och kopplingsskåpstyp.
             För kopplingsskåp står där en siffra, det är numret på skåpet, för fastigheter visas ett frågetecken vilket innebär att fastigheten inte är bunden till något skåp.
             För att binda en fastighet till ett skåp så klickar man på den runda cirkeln på fastigheten, kartan tonas då ner och endast de närliggande kopplingsskåpen visas, klicka sedan på önskat kopplingsskåp som fastigheten skall anslutas till.
             Den runda cirkeln på fastigheten skall nu innehålla samma nummer som det valda skåpet. Repetera dessa steg för alla fastigheter, om ni vill ändra på en befintligt bindning så är det bara att klicka på cirkeln för fastigheten och välja ett annat skåp.
@@ -427,7 +433,7 @@
         <section id="advanced">            
             <h3>Uppdatera fibersträckan med en GPS-inmätt KML-fil</h3>            
             <p>
-            I vår förening så har vi begärt att gräventreprenören skall mäta in med GPS vart fiberkablarna blev förlagda vid grävning, ofta förekommer det att man avviker av olika anledningar från den tänkta grävsträckan under grävtillfället.
+            I vår förening så har vi begärt att gräventreprenören skall mäta in med GPS vart fiberkablarna blev förlagda vid grävning, ofta förekommer det att man avviker av olika anledningar från den tänkta grävsträckan under grävningen.
             Som ledningsägare är det viktigt att vi vet vart kablarna är förlagda så att vi inte riskerar att gräva av dom i framtiden.
             I vårt fall fick vi den inmätta fibersträckan som en AutoCAD DXF-fil, eftersom få personer i styrelsen har tillgång till proffesionell CAD-programvara och flertalet markägare var intresserade av att få veta vart kablarna blev förlagda på deras marker så var vi tvungna att få över inmätningen till ett mer lätthanterligt format.
             Genom ett par programvaror och steg lyckades jag att få in fibersträckan i vår befintliga karta på FiberKartan.se, nu är det lätt för alla att ta del av <a href="http://fiberkartan.se/7?network=true" target="_blank">hur fibern blev förlagd</a>.
@@ -441,7 +447,7 @@
                 <li>Exportera hela kartan till en KML-fil.</li>
                 <li>Ladda ner och installera <a href="http://www.google.com/earth/index.html" target="_blank">Google Earth</a>.</li>
                 <li>Öppna KML-filen i Google Earth, välj att exportera bara mappen som innehåller fibersträckan till en KML-fil.</li>
-                <li>På dina önskade karta på FiberKartan.se, välj importera och välj den nyss exporterade KML-filen, välj att sammanfoga informationen med den senaste versionen av kartan och klicka ur "Inkludera gamla linjer". Tryck på "Importera"-knappen.</li>
+                <li>På din önskade karta på FiberKartan.se, välj importera och välj den nyss exporterade KML-filen, välj att sammanfoga informationen med den senaste versionen av kartan och klicka ur "Inkludera gamla linjer". Tryck på "Importera"-knappen.</li>
                 <li>Nu bör ni ha en karta som innehåller facit över hur fibern blev förlagd.</li>
             </ol>
 

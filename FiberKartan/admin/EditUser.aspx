@@ -20,7 +20,7 @@
         <asp:Panel ID="AdminPanel" class="whiteText marginTop10px" Visible="false" runat="server">
             <fieldset>
                 <legend>Adminpanel</legend>
-                <asp:CheckBox ID="IsDisabled" Text="Spärrad" runat="server"></asp:CheckBox>
+                <asp:CheckBox ID="IsDisabled" Text="Spärrad" ToolTip="Förhindrar inloggning" runat="server"></asp:CheckBox>
                 <p>
                     Konto skapat:
                     <asp:Literal ID="CreatedDate" runat="server"></asp:Literal></p>
