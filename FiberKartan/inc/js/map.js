@@ -622,7 +622,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 
         google.maps.event.addListener(polygon, 'click', function (event) {
             // Laddar upp beskrivning om vi inte redan har gjort det.
-            if (polygon.content === null) {
+            if (!polygon.content) {
                 // Hämtar upp beskrivningen dynamiskt, det kostar för mycket bandbredd att ladda upp alla beskrivningar från början.
                 $.get(serverRoot + '/REST/FKService.svc/RegionDescription/' + this.id, function (regionDescription) {
                     polygon.content = '<strong>' + htmlEncode(name) + '</strong><br/><div style="font-size:small">' + regionDescription.Desc + '</div>';
