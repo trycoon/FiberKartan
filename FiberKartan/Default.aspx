@@ -10,9 +10,9 @@
         <meta charset="utf-8" />        
         <meta name="viewport" content="width=device-width" />
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" />
-        <meta name="description" content="Projekteringsverktyg för fiber och bredbandsnätverk för socken och byanät" />
-        <meta name="keywords" content="fiberkarta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg,gis,karta" />
-        <title>FiberKartan - Projekteringsverktyg för socken- och byanät</title>
+        <meta name="description" content="Projekteringsverktyg för fiber till socken och byanät" />
+        <meta name="keywords" content="fiber,karta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg,gis" />
+        <title>FiberKartan - Projekteringsverktyg för fiber till socken och byanät</title>
         <link rel="stylesheet" type="text/css" href="/inc/css/firstpage.css?ver=1.0" media="screen" />
         <link rel="stylesheet" type="text/css" href="/inc/js/fancybox/jquery.fancybox.css?ver=1.0" media="screen" />
     </head>
@@ -20,7 +20,7 @@
         <form id="default" runat="server" onsubmit="return false;" enableviewstate="false">
             <article>
                 <header>
-                    <h1 class="text-center">FiberKartan - Projekteringsverktyg för socken- och byanät</h1>
+                    <h1 class="text-center">FiberKartan - Projekteringsverktyg för fiber till socken och byanät</h1>
                 </header>
                 <p>
                     Verktyget är framtaget för fiberföreningar som följer socken- eller byanätsmodellen och som på ett enkelt sätt vill projektera för hur fiberkabel skall dras i området och vilka fastigheter som skall anslutas till fibernätverket.

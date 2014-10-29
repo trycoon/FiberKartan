@@ -20,6 +20,7 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 Övrigt:
 
 - Lägg till möjlighet att användaren skall få ett meddelande med viktig information vid nästa inloggning. T.ex. nyheter i den nya versionen.
+- Fixa så att misslyckade importeringar åter skriver till denna tabell i databasen.
 
 - Skriv om så att markörer, linjer, och regioner sparas i map-tabellen istället för i egna tabeller.
 - Lägg till stöd för att kunna spara eller spara och publicera kartor, på så sätt kan man ha arbetskopior som inte visas ut på den publika vyn.
