@@ -1878,7 +1878,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             foundFreeId = true;
             for (var i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.FiberBox) {
-                    if (markersArray[i].name === possibleFreeId) {
+                    if (markersArray[i].name == possibleFreeId) {
                         possibleFreeId++;
                         foundFreeId = false;
                         break;

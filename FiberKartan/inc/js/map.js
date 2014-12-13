@@ -579,7 +579,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             google.maps.event.addListener(marker, 'click', function (event) {
                 if (optionalInfo !== null && optionalInfo.ShowPublic) {
                     // Laddar upp beskrivning om vi skall visa den och om vi inte redan har gjort det.
-                    if (marker.desc === null) {
+                    if (!marker.desc) {
                         // Hämtar upp beskrivningen dynamiskt, det kostar för mycket bandbredd att ladda upp alla beskrivningar från början.
                         $.get(serverRoot + '/REST/FKService.svc/MarkerDescription/' + marker.id, function (markerDescription) {
                             marker.desc = markerDescription.Desc;  // Sparar undan orginalbeskrivningen.
