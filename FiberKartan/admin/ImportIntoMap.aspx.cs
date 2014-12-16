@@ -115,7 +115,8 @@ namespace FiberKartan.Admin
                         throw new ApplicationException("Filen är tom, inget kan importeras.");
                     }
 
-                    if (file.ContentType.ToLower() != "application/vnd.google-earth.kml+xml")
+                    // Grundläggande kontroll av vad det är för filer som vi laddar upp. Vi tillåter "application/octet-stream" för de system som inte har MIME-typen för KML registrerad.
+                    if (file.ContentType.ToLower() != "application/vnd.google-earth.kml+xml" && file.ContentType.ToLower() != "application/octet-stream")
                     {
                         Utils.Log("Fil som laddades upp stöds inte av systemet. Filnamn=\"" + file.FileName + "\", ContentLength=" + file.ContentLength + ", ContentType=\"" + file.ContentType + "\".", System.Diagnostics.EventLogEntryType.Warning, 105);
                         throw new ApplicationException("Denna filtyp stöds inte.");
