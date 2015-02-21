@@ -717,17 +717,17 @@ namespace FiberKartan.Kml
                         throw new ApplicationException("Filen är tom, inget kan importeras.");
                     }
 
-                    if (file.ContentType.ToLower() == "application/vnd.google-earth.kml+xml")
+                    if (file.ContentType.ToLower() == "application/vnd.google-earth.kml+xml" || file.ContentType.ToLower() == "application/octet-stream")
                     {
                         kmlFile = KmlFile.Load(file.InputStream);
                     }
                     else if (file.ContentType.ToLower() == "application/vnd.google-earth.kmz")
                     {
                         kmlFile = KmlFile.LoadFromKmz(KmzFile.Open(file.InputStream));
-                    }
+                    } 
                     else
                     {
-                        Utils.Log("Fil som laddades upp stöds inte av systemet. Filnamn=\"" + file.FileName + "\", ContentLength=" + file.ContentLength + ", ContentType=\"" + file.ContentType + "\".", System.Diagnostics.EventLogEntryType.Warning, 105);
+                        Utils.Log("Fil för fastighetsgräns som laddades upp stöds inte av systemet. Användare=" + HttpContext.Current.User.Identity.Name + ", Filnamn=\"" + file.FileName + "\", ContentLength=" + file.ContentLength + ", ContentType=\"" + file.ContentType + "\".", System.Diagnostics.EventLogEntryType.Warning, 105);
                         throw new ApplicationException("Denna filtyp stöds inte.");
                     }
                 }

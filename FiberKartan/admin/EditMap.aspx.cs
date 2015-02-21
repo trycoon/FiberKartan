@@ -332,6 +332,7 @@ namespace FiberKartan.Admin
                 Utils.Log("Raderar existerande karta(mapTypeId=" + mapType.Id + ", title=" + mapType.Title + ") by user=" + HttpContext.Current.User.Identity.Name, System.Diagnostics.EventLogEntryType.Information, 120);
 
                 fiberDb.DeleteMapType(mapType.Id);
+                fiberDb.CommandTimeout = 2 * 60;    // 2 Minutes.
 
                 fiberDb.SubmitChanges();
 
