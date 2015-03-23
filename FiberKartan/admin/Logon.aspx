@@ -17,7 +17,7 @@
                 <h1><asp:Literal ID="title" runat="server" Text="Ange inloggningsuppgifter" /></h1>
                 <p>
                     <label ID="usernameLabel" class="block" runat="server" for="username">E-postadress</label>
-                    <asp:TextBox ID="username" runat="server" MaxLength="50" AutoCompleteType="Email" type="email" />
+                    <asp:TextBox ID="username" runat="server" MaxLength="50" type="email" />
                 </p>
                 <p>
                     <label ID="passwordLabel" class="block" runat="server" for="password">Lösenord</label>
