@@ -412,6 +412,7 @@ namespace FiberKartan.REST
                 using (var mail = new MailMessage()
                 {
                     From = new MailAddress("noreply@fiberkartan.se", "FiberKartan"),
+                    Sender = new MailAddress(user.Username, user.Name),
                     ReplyTo = new MailAddress(user.Username, user.Name),
                     Subject = "Felrapport-Fiberkartan",
                     IsBodyHtml = true,

@@ -64,7 +64,7 @@
             // Startar ping-funktion.
             setInterval(function () {
                 $.get("../REST/FKService.svc/Ping");
-            }, 10000);
+            }, 5000);
 	    </script>
     </body>
 </html>

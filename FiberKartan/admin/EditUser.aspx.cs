@@ -218,13 +218,15 @@ namespace FiberKartan.Admin
 
                             using (var mail = new MailMessage()
                             {
-                                From = new MailAddress(currentUser.Username),
+                                From = new MailAddress("noreply@fiberkartan.se", "FiberKartan"),
+                                Sender = new MailAddress(currentUser.Username, currentUser.Name),
+                                ReplyTo = new MailAddress(currentUser.Username, currentUser.Name),
                                 Subject = "Välkommen till FiberKartan",
                                 IsBodyHtml = true,
                                 DeliveryNotificationOptions = DeliveryNotificationOptions.OnSuccess,
                             })
                             {
-                                mail.Bcc.Add(new MailAddress(newUser.Username));
+                                mail.To.Add(new MailAddress(newUser.Username));
 
                                 // HTML-innehåll måste kodas så här
                                 mail.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(body.ToString(), Encoding.UTF8, MediaTypeNames.Text.Html));

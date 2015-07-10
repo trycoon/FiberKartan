@@ -177,8 +177,10 @@ namespace FiberKartan
             this.ClientScript.RegisterStartupScript(typeof(Page), "mapContent", "fk.mapContent=" + JsonConvert.SerializeObject(cachedMap.MapContent) + "; ", true);
             this.ClientScript.RegisterStartupScript(typeof(Page), "serverRoot", "fk.serverRoot='" + ConfigurationManager.AppSettings.Get("ServerAdress") + "'; ", true);
 
-            Response.Cache.SetLastModified(cachedMap.LastUpdateTime);
-            Response.Cache.SetETag(cachedMap.ToString());
+            // Prevent caching.
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            Response.Cache.SetExpires(DateTime.Now.Subtract(TimeSpan.FromHours(10)));
         }
     }
 

@@ -51,12 +51,17 @@
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
 
-            // Startar ping-funktion.
+            // Skick initial ping för att visa att vi är anslutna.
+            setTimeout(function () {
+                $.get("../REST/FKService.svc/Ping");
+            }, 400);
+
+            // Startar ping-funktion för att visa att vi fortfarande är anslutna.
             setInterval(function () {
                 $.get("../REST/FKService.svc/Ping").fail(function () {
                     //TODO: Visa nått här för användaren, att tjänsten är nere. 
                 });
-            }, 10000);
+            }, 5000);
         </script>
         <asp:ContentPlaceHolder ID="footer" runat="server">
         </asp:ContentPlaceHolder>

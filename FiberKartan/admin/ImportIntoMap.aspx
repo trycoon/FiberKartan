@@ -18,7 +18,7 @@
                 <legend>Källa</legend>
                 <div class="fileUpload">
                     <p class="center">
-                        Välj den KML-fil som innehåller fastigheter, grävsträckor, och områden som skall
+                        Välj den <strong>KML-fil</strong> som innehåller fastigheter, grävsträckor, och områden som skall
                         importeras.
                     </p>
                     <p class="dropZoneText center" style="display: none;">

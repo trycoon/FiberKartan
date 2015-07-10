@@ -8,7 +8,6 @@ Buggar:
 
 [Låg] Om man har valt att dölja paletten under kartinställningar så reagerar programmet inte längre på querystring parametrar som "houseyes=false" eftersom den gör denna kontroll mot paletten(som inte finns), state borde sparas i en separat variabel istället.
 
-
 Optimeringar:
 
 - Skapa image-sprites av bilderna!
@@ -23,10 +22,8 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Fixa så att misslyckade importeringar åter skriver till denna tabell i databasen.
 
 - Skriv om så att markörer, linjer, och regioner sparas i map-tabellen istället för i egna tabeller.
-- Lägg till stöd för att kunna spara eller spara och publicera kartor, på så sätt kan man ha arbetskopior som inte visas ut på den publika vyn.
 - All inline HTML bör renderas av Handlebars.js.
 - Lägg till möjlighet att ha dynamiska egenskaper på markörer. För varje karta skall man kunna via en sida själv sätta upp vilka kryssrutor och textfält som finns på respektive markör. Egenskaperna skall följa med vid export av kartan.
-- Skapa script för att konvertera nuvarande databas till det nya formatet.
 
 - Fixa så att man via checkbox kan visa och dölja även fornlämningar och info-markörer.
 - Lägg till markörerna Fiberbrunn och MobilMast?

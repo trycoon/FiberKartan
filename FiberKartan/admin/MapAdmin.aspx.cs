@@ -73,12 +73,12 @@ namespace FiberKartan.Admin
             var accessRights = Utils.GetMapAccessRights(mapId);
             if (accessRights.HasFlag(MapAccessRights.Write))
             {
-                saveButton.Visible = true;
+                saveButton.Visible = saveAndPublishButton.Visible = true;
                 markerTypes.Visible = true;
                 mapContent.Settings.HasWritePrivileges = true;
             } else
             {
-                saveButton.Visible = false;
+                saveButton.Visible = saveAndPublishButton.Visible = false;
                 markerTypes.Visible = false;
             }
 
@@ -105,12 +105,6 @@ namespace FiberKartan.Admin
                 {
                     mapContent.PropertyBoundariesFile = ConfigurationManager.AppSettings["ServerAdress"] + "/FileTransferHandler.ashx?map=" + map.MapType.MapFiles.First().Id;
                 }
-
-                // Visar olika mycket med information på kartan utifrån inställningarna på kartan som är lagrade i databasen.
-                var viewSettings = ((MapViewSettings)map.MapType.ViewSettings);
-                mainPalette.Visible = viewSettings.HasFlag(MapViewSettings.ShowPalette);
-                connectionStatisticsPanel.Visible = viewSettings.HasFlag(MapViewSettings.ShowConnectionStatistics);
-                totalDigLengthStatisticsPanel.Visible = viewSettings.HasFlag(MapViewSettings.ShowTotalDigLengthStatistics);
 
                 #region Skapa komplext objekt med alla markörer, fibersträckor, områden, m.m.
 
@@ -146,7 +140,6 @@ namespace FiberKartan.Admin
                     mapContent.Cables.Add(new MapEntities.Cable() { Id = dbLine.Id, Uid = dbLine.Uid, Name = dbLine.Name, LineColor = dbLine.LineColor, Width = dbLine.Width, Coordinates = dbLine.Coordinates, Type = dbLine.Type });
                 }
 
-                mapContent.Settings.ShowTotalDigLength = viewSettings.HasFlag(MapViewSettings.ShowTotalDigLengthStatistics);
                 #endregion Skapa komplext objekt med alla markörer, fibersträckor, områden, m.m.
 
                 #region Statistik
