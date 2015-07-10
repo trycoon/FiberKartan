@@ -27,6 +27,10 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 
 - Fixa så att man via checkbox kan visa och dölja även fornlämningar och info-markörer.
 - Lägg till markörerna Fiberbrunn och MobilMast?
+- Lägg till möjlighet att klippa av linje och skarva.
+- Automatsparning var 5:e minut ifall något har ändrats.
+- Om något har ändrats så skall man få en varning då man försöker lämna sidan utan att ha sparat.
+- Lägg till Undo-funktion på kartan.
 
 - Exportera karta skall öppnas som ett eget fönster och inte som en modal ruta.
 
