@@ -152,7 +152,7 @@ namespace FiberKartan.Admin
                             mapType.ServiceCompanyId = int.Parse(ServiceCompany.SelectedValue);
                         }
                     }
-                    
+
                     // Sparar ner kommun.
                     mapType.MunicipalityCode = Municipality.SelectedValue;
 
@@ -176,11 +176,19 @@ namespace FiberKartan.Admin
                     if (OnlyShowYesHouses.Checked)
                         viewSettings |= MapViewSettings.OnlyShowHouseYesOnPublicMap;
 
+                    var oldViewSettings = mapType.ViewSettings; // Store old settings to variable before we change them. (used by cache code)
                     mapType.ViewSettings = (int)viewSettings;
 
                     Utils.Log("Sparar kartinställningar(mapTypeId=" + mapTypeId + ", title=" + mapType.Title + ") för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 107);
 
                     fiberDb.SubmitChanges();
+
+                    // Om denna karta har visats i regionsvyn(TotalMap.aspx), men nu inte längre gör det, så måste cachen för denna tömmas så att kartan inte fortsätter att visas ifrån cachen.
+                    if (((MapViewSettings)oldViewSettings).HasFlag(MapViewSettings.AllowViewAggregatedMaps) && !((MapViewSettings)mapType.ViewSettings).HasFlag(MapViewSettings.AllowViewAggregatedMaps))
+                    {
+                        HttpContext.Current.Cache.Remove("CachedTotalMap_" + mapType.Municipality.Code);
+                        HttpContext.Current.Cache.Remove("CachedTotalMap_null"); // Hela Sverige.
+                    }
 
                     Response.Redirect("ShowMaps.aspx", false);
                     Context.ApplicationInstance.CompleteRequest();
@@ -329,6 +337,13 @@ namespace FiberKartan.Admin
 
             try
             {
+                // Om denna karta har visats i regionsvyn(TotalMap.aspx), så måste cachen för denna tömmas så att kartan inte fortsätter att visas ifrån cachen.
+                if (((MapViewSettings)mapType.ViewSettings).HasFlag(MapViewSettings.AllowViewAggregatedMaps))
+                {
+                    HttpContext.Current.Cache.Remove("CachedTotalMap_" + mapType.Municipality.Code);
+                    HttpContext.Current.Cache.Remove("CachedTotalMap_null"); // Hela Sverige.
+                }
+
                 Utils.Log("Raderar existerande karta(mapTypeId=" + mapType.Id + ", title=" + mapType.Title + ") by user=" + HttpContext.Current.User.Identity.Name, System.Diagnostics.EventLogEntryType.Information, 120);
 
                 fiberDb.DeleteMapType(mapType.Id);

@@ -162,7 +162,7 @@ namespace FiberKartan
                     // Kolla en gång till innan vi lägger in den i cachen, om steget ovanför tog lång tid att exekvera så kan någon annan tråd ha hunnit före sedan den första if-satsen.
                     if (HttpContext.Current.Cache.Get("CachedTotalMap_" + municipalityCode) == null)
                     {
-                        HttpContext.Current.Cache.Insert("CachedTotalMap_" + municipalityCode, cachedMap, null, DateTime.Now.AddDays(1), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Default, null);
+                        HttpContext.Current.Cache.Insert("CachedTotalMap_" + municipalityCode, cachedMap, null, DateTime.Now.AddDays(5), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Default, null);
                     }
                 }
             }
