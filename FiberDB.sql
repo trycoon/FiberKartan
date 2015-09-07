@@ -227,7 +227,7 @@ BEGIN
 		[CreatorId] [int] NOT NULL,
 		[Views] [int] NOT NULL DEFAULT 0,
 		[Published] [datetime] NULL,
-		[Layers] [nvarchar](max) NOT NULL DEFAULT '{}',
+		[Layers] [nvarchar](max) NOT NULL DEFAULT '[]',
 	 CONSTRAINT [PK_Map] PRIMARY KEY CLUSTERED 
 	(
 		[MapTypeId] ASC,
