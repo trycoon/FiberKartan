@@ -49,6 +49,6 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Uppdatera startsidan så att den blir mer sökbar och responsiv. Lägg in länkar och sitemap till regionskartorna.
 - Stöd olika lager av kartan.
 
-
-
+- Möjlighet att stänga av autonumreringen av skåp, så att man kan sätta dom själva.
+- Använda namn på kartan (eller ett nytt url-vänligt systemnamn) för att länka till kartor istället för nummer. Typ. http://fiberkartan.se/horsne_bara istället för http://fiberkartan.se/7
 

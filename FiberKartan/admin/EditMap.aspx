@@ -8,8 +8,8 @@
     <div id="editMapForm">
         <asp:Panel ID="editMapPanel" runat="server">
             <label for="MapTitle">
-                Namn / Sidtitel</label><asp:TextBox ID="MapTitle" ToolTip="Namn på kartan, visas även som sidtitel på webbläsarens fönster."
-                    MaxLength="255" autocomplete="off" TextMode="SingleLine" runat="server"></asp:TextBox><br />
+                Namn / Sidtitel</label><asp:TextBox ID="MapTitle" ToolTip="Namn på kartan, visas även som sidtitel på webbläsarens fönster (max 30 tkn)."
+                    MaxLength="30" autocomplete="off" TextMode="SingleLine" runat="server"></asp:TextBox><br />
             <br />
             <label for="WelcomeMessage" title="Frivilligt välkomstmeddelande. Visas i ett fönster när man besöker kartan.">
                 Välkomstmeddelande</label><asp:TextBox ID="WelcomeMessage" TextMode="MultiLine" runat="server"></asp:TextBox><br />

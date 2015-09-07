@@ -132,8 +132,8 @@ namespace FiberKartan.Admin
                         MapTitle.Text = MapTitle.Text.Trim();
                     if (string.IsNullOrEmpty(MapTitle.Text))
                         throw new ApplicationException("En titel för kartan måste anges.");
-                    if (MapTitle.Text.Length > 255)
-                        throw new ApplicationException("En titel får innehålla max 255 tecken.");
+                    if (MapTitle.Text.Length > 30)
+                        throw new ApplicationException("En titel får innehålla max 30 tecken.");
                     mapType.Title = MapTitle.Text;
 
                     if (!string.IsNullOrEmpty(WelcomeMessage.Text))
