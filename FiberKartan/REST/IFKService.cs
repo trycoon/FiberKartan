@@ -37,22 +37,32 @@ namespace FiberKartan.REST
         /// <summary>
         /// Metod som sparar ner ändringar av en karta.
         /// </summary>
-        /// <param name="mapContent">Kartans innehåll(markörer, kabelsträckor, osv)</param>
-        /// <param name="publish">Om satt till sann så publiceras kartan också.</param>
+        /// <param name="mapContent">Kartans lager(markörer, kabelsträckor, osv)</param>
+        /// <param name="mapTypeId">Id på karta</param>
         /// <returns>Returkod och id på nya markörer, sträckor, osv.</returns>
         [OperationContract]
-        [WebInvoke(UriTemplate = "/SaveMap",
+        [WebInvoke(UriTemplate = "/map/{mapTypeId}",
          Method = "POST",
          RequestFormat = WebMessageFormat.Json,
-         BodyStyle=WebMessageBodyStyle.WrappedRequest)]
-        SaveMapResponse SaveMap(MapContent mapContent, bool publish = false);
+         BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        SaveMapResponse SaveMap(SaveMap mapContent, string mapTypeId);
+
+        /// <summary>
+        /// Metod som returnerar en karta.
+        /// </summary>
+        /// <param name="mapTypeId">Id på karta</param>
+        /// <param name="version">[Frivilligt] Version av kartan som skall hämtas, om inget versionsnummer anges så antas den senaste versionen</param>
+        /// <returns>Karta</returns>
+        [OperationContract]
+        [WebGet(UriTemplate = "/map/{mapTypeId}?ver={version}")]
+        ViewMap GetMap(string mapTypeId, string version);
 
         /// <summary>
         /// Metod som används för att rapportera fel på ett fibernätverk.
         /// </summary>
         /// <param name="report">Felrapport</param>
         [OperationContract]
-        [WebInvoke(UriTemplate = "/ReportIncident",
+        [WebInvoke(UriTemplate = "/reportIncident",
          Method = "POST",
          RequestFormat = WebMessageFormat.Json)]
         Response ReportIncident(IncidentReport report);
@@ -60,248 +70,254 @@ namespace FiberKartan.REST
         /// <summary>
         /// Metod som returnerar ett lager för en karta.
         /// </summary>
-        /// <param name="mapId">Id på karta</param>
-        /// <param name="names">Namn på lagret som skall hämtas, kommaseparerad för flera</param>
+        /// <param name="mapTypeId">Id på karta</param>
+        /// <param name="ids">Id på lagret som skall hämtas, kommaseparerad för flera</param>
         /// <param name="ver">[Frivilligt] Version av kartan som skall användas, om inget versionsnummer anges så antas den senaste versionen</param>
         /// <returns>Lista med kartlager</returns>
         [OperationContract]
-        [WebGet(UriTemplate = "/Layer/{mapId}/{names}/?ver={ver}")]
-        GetLayerResponse GetLayer(string mapId, string names, string ver);
-
-        /// <summary>
-        /// Metod som returnerar beskrivningen för en markör.
-        /// </summary>
-        /// <param name="id">Markörens id</param>
-        /// <returns>Markörens beskrivning, kan vara null om ingen finns</returns>
-        [OperationContract]
-        [WebGet(UriTemplate = "/MarkerDescription/{id}")]
-        MarkerDescription MarkerDescription(string id);
-
-        /// <summary>
-        /// Metod som returnerar beskrivningen för en linje.
-        /// </summary>
-        /// <param name="id">Linjens id</param>
-        /// <returns>Linjens beskrivning, kan vara null om ingen finns</returns>
-        [OperationContract]
-        [WebGet(UriTemplate = "/LineDescription/{id}")]
-        LineDescription LineDescription(string id);
-
-        /// <summary>
-        /// Metod som returnerar beskrivningen för ett område.
-        /// </summary>
-        /// <param name="id">Områdets id</param>
-        /// <returns>Områdets beskrivning, kan vara null om ingen finns</returns>
-        [OperationContract]
-        [WebGet(UriTemplate = "/RegionDescription/{id}")]
-        RegionDescription RegionDescription(string id);
+        [WebGet(UriTemplate = "/map/{mapTypeId}/layers/{ids}?ver={version}")]
+        GetLayersResponse GetLayers(string mapTypeId, string ids, string version);
 
         /// <summary>
         /// Metod som används för att kontinuerligt anropa servern för att på så sätt påvisa att klienten ännu är ansluten.
         /// </summary>
         /// <returns>Ett dymmy-svar</returns>
         [OperationContract]
-        [WebGet(UriTemplate = "/Ping")]
+        [WebGet(UriTemplate = "/ping")]
         PingResponse Ping();
     }
 
-    #region RequestDataTypes
-    [DataContract]
-    public class MapContent
-    {
-        [DataMember]
-        public int MapTypeId { get; set; }
-
-        [DataMember]
-        public int Ver { get; set; }
-
-        [DataMember]
-        public List<Marker> Markers { get; set; }
-
-        [DataMember]
-        public List<Cable> Cables { get; set; }
-
-        [DataMember]
-        public List<Region> Regions { get; set; }
-    }
-
+    #region Requests
     [DataContract]
     public class IncidentReport
     {
-        [DataMember]
+        [DataMember(Name = "mapTypeId")]
         public int MapTypeId { get; set; }
 
-        [DataMember]
-        public int Ver { get; set; }
+        [DataMember(Name = "version")]
+        public int Version { get; set; }
 
-        [DataMember]
+        [DataMember(Name = "position")]
         public Coordinate Position { get; set; }
 
-        [DataMember]
+        [DataMember(Name = "estate")]
         public string Estate { get; set; }
 
-        [DataMember]
+        [DataMember(Name = "description")]
         public string Description { get; set; }
     }
-    #endregion RequestDataTypes
 
-    #region ResponseDataTypes
-    [DataContract]
-    public class Response
+    [DataContract(Name = "saveMap")]
+    public class SaveMap
     {
-        [DataMember]
-        public ErrorCode ErrorCode { get; set; }
+        [DataMember(Name = "publish")]
+        public bool Publish { get; set; }
 
-        [DataMember]
-        public string ErrorMessage { get; set; }
+        [DataMember(Name = "mapTypeId")]
+        public int MapTypeId { get; set; }
+
+        [DataMember(Name = "previousVersion")]
+        public int PreviousVersion { get; set; }
+
+        [DataMember(Name = "layers")]
+        public List<Layer> Layers { get; set; }
     }
+    #endregion Requests
 
-    [DataContract]
-    public class SaveMapResponse : Response
-    {
-        [DataMember]
-        public int NewVersionNumber { get; set; }
-
-        [DataMember]
-        public List<Marker> AddedMarkers { get; set; }
-
-        [DataMember]
-        public List<Cable> AddedCables { get; set; }
-
-        [DataMember]
-        public List<Region> AddedRegions { get; set; }
-    }
-
-    [DataContract]
-    public class GetLayerResponse : Response
-    {
-        public GetLayerResponse()
-        {
-            this.Layers = "{}";
-        }
-
-        [DataMember]
-        public string Layers { get; set; }
-    }
-
+    #region Responses
     [DataContract]
     public class PingResponse
     {
-        [DataMember]
+        [DataMember(Name = "message")]
         public string Message { get; set; }
     }
-    #endregion ResponseDataTypes
 
-    #region ModelDataTypes
     [DataContract]
-    public class Marker
+    public class Response
     {
-        [DataMember]
-        public int Id { get; set; }
+        [DataMember(Name = "errorcode", EmitDefaultValue = false)]
+        public ErrorCode ErrorCode { get; set; }
 
-        [DataMember]
-        public int Uid { get; set; }
+        [DataMember(Name = "errormessage", EmitDefaultValue = false)]
+        public string ErrorMessage { get; set; }
+    }
 
-        [DataMember]
+    [DataContract(Name = "saveMapResponse")]
+    public class SaveMapResponse : Response
+    {
+        [DataMember(Name = "newVersion")]
+        public int NewVersionNumber { get; set; }
+    }
+
+    [DataContract(Name = "viewMap")]
+    public class ViewMap
+    {
+        [DataMember(Name = "mapTypeId")]
+        public int MapTypeId { get; set; }
+
+        [DataMember(Name = "version")]
+        public int Version { get; set; }
+
+        [DataMember(Name = "previousVersion")]
+        public int PreviousVersion { get; set; }
+
+        [DataMember(Name = "created")]
+        public DateTime Created { get; set; }
+
+        [DataMember(Name = "published", EmitDefaultValue = false)]
+        public DateTime Published { get; set; }
+
+        [DataMember(Name = "views")]
+        public int Views { get; set; }
+
+        [DataMember(Name = "layers")]
+        public List<LayerInfo> Layers { get; set; }
+    }
+
+    [DataContract(Name = "layerInfo")]
+    public class LayerInfo
+    {
+        [DataMember(Name = "id")]
+        public String Id { get; set; }
+
+        [DataMember(Name = "name")]
         public string Name { get; set; }
-
-        [DataMember]
-        public string Desc { get; set; }
-
-        [DataMember]
-        public int MarkId { get; set; }
-
-        [DataMember]
-        public string Lat { get; set; }
-
-        [DataMember]
-        public string Lng { get; set; }
-
-        [DataMember]
-        public int Settings { get; set; }
-
-        [DataMember]
-        public string OptionalInfo { get; set; }
     }
 
     [DataContract]
-    public class Cable
+    public class GetLayersResponse : Response
     {
-        [DataMember]
-        public int Id { get; set; }
+        public GetLayersResponse()
+        {
+            this.Layers = new List<Layer>();
+        }
 
-        [DataMember]
-        public int Uid { get; set; }
-
-        [DataMember]
-        public string Name { get; set; }
-
-        [DataMember]
-        public string Desc { get; set; }
-
-        [DataMember]
-        public string Color { get; set; }
-
-        [DataMember]
-        public string Width { get; set; }
-
-        [DataMember]
-        public List<Coordinate> Coord { get; set; }
-
-        [DataMember]
-        public int Type { get; set; }
+        [DataMember(Name = "layers")]
+        public List<Layer> Layers { get; set; }
     }
 
-    [DataContract]
-    public class Region
+    [DataContract(Name = "layer")]
+    public class Layer
     {
-        [DataMember]
-        public int Id { get; set; }
+        [DataMember(Name = "id")]
+        public String Id { get; set; }
 
-        [DataMember]
-        public int Uid { get; set; }
-
-        [DataMember]
+        [DataMember(Name = "name")]
         public string Name { get; set; }
 
-        [DataMember]
-        public string Desc { get; set; }
+        [DataMember(Name = "readonly")]
+        public bool Readonly { get; set; }
 
-        [DataMember]
-        public string BorderColor { get; set; }
+        [DataMember(Name = "markers", EmitDefaultValue = false)]
+        public List<Marker> Markers { get; set; }
 
-        [DataMember]
-        public string FillColor { get; set; }
+        [DataMember(Name = "lines", EmitDefaultValue = false)]
+        public List<Line> Lines { get; set; }
 
-        [DataMember]
-        public List<Coordinate> Coord { get; set; }
+        [DataMember(Name = "polygons", EmitDefaultValue = false)]
+        public List<Polygon> Polygons { get; set; }
+
+        public override bool Equals(System.Object obj)
+        {
+            Layer l = obj as Layer;
+            if ((object)l == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return base.Equals(obj) && Id == l.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 
-    [DataContract]
+    [DataContract(Name = "coord")]
     public class Coordinate
     {
-        [DataMember]
-        public string Lat { get; set; }
+        [DataMember(Name = "lat")]
+        public string Latitude { get; set; }
 
-        [DataMember]
-        public string Lng { get; set; }
-    }
-    
-    public class MarkerDescription
-    {
-        [DataMember]
-        public string Desc { get; set; }
+        [DataMember(Name = "lng")]
+        public string Longitude { get; set; }
     }
 
-    public class LineDescription
+    [DataContract(Name = "marker")]
+    public class Marker
     {
-        [DataMember]
-        public string Desc { get; set; }
+        [DataMember(Name = "id")]
+        public int Id { get; set; }
+
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "desc", EmitDefaultValue = false)]
+        public string Description { get; set; }
+
+        [DataMember(Name = "type")]
+        public string Type { get; set; }
+
+        [DataMember(Name = "lat")]
+        public string Latitude { get; set; }
+
+        [DataMember(Name = "lng")]
+        public string Longitude { get; set; }
+
+        [DataMember(Name = "settings", EmitDefaultValue = false)]
+        public string Settings { get; set; }
     }
 
-    public class RegionDescription
+    [DataContract(Name = "line")]
+    public class Line
     {
-        [DataMember]
-        public string Desc { get; set; }
+        [DataMember(Name = "id")]
+        public int Id { get; set; }
+
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "desc", EmitDefaultValue = false)]
+        public string Description { get; set; }
+
+        [DataMember(Name = "color", EmitDefaultValue = false)]
+        public string Color { get; set; }
+
+        [DataMember(Name = "width", EmitDefaultValue = false)]
+        public string Width { get; set; }
+
+        [DataMember(Name = "coord")]
+        public List<Coordinate> Coord { get; set; }
+
+        [DataMember(Name = "settings", EmitDefaultValue = false)]
+        public string Settings { get; set; }
     }
-    #endregion ModelDataTypes
+
+    [DataContract(Name = "polygon")]
+    public class Polygon
+    {
+        [DataMember(Name = "id")]
+        public int Id { get; set; }
+
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "desc", EmitDefaultValue = false)]
+        public string Description { get; set; }
+
+        [DataMember(Name = "border", EmitDefaultValue = false)]
+        public string BorderColor { get; set; }
+
+        [DataMember(Name = "fill", EmitDefaultValue = false)]
+        public string FillColor { get; set; }
+
+        [DataMember(Name = "coord")]
+        public List<Coordinate> Coord { get; set; }
+
+        [DataMember(Name = "settings", EmitDefaultValue = false)]
+        public string Settings { get; set; }
+    }
+    #endregion Responses
 }
