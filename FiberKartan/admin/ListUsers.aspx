@@ -24,10 +24,10 @@
                 <ItemTemplate><%# (Boolean.Parse(Eval("IsDeleted").ToString())) ? "X" : "" %></ItemTemplate>
             </asp:TemplateField>
             <asp:BoundField DataField="Description" HeaderText="Förening/företag" SortExpression="Description" />
-            <asp:BoundField DataField="Created" HeaderText="Skapad" ReadOnly="True" SortExpression="Created">
+            <asp:BoundField DataField="Created" HeaderText="Skapad" ReadOnly="True" SortExpression="Created" ItemStyle-HorizontalAlign="Center">
                 <ItemStyle Wrap="False" />
             </asp:BoundField>
-            <asp:BoundField DataField="LastActivity" HeaderText="Senast ansluten" ReadOnly="True" SortExpression="LastActivity">
+            <asp:BoundField DataField="LastActivity" HeaderText="Senast ansluten" ReadOnly="True" SortExpression="LastActivity" ItemStyle-HorizontalAlign="Center">
                 <ItemStyle Wrap="False" />
             </asp:BoundField>
             <asp:BoundField DataField="Online" HeaderText="Ansluten" SortExpression="Online">

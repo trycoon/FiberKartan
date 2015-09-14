@@ -73,12 +73,14 @@ namespace FiberKartan.Admin
             var accessRights = Utils.GetMapAccessRights(mapId);
             if (accessRights.HasFlag(MapAccessRights.Write))
             {
-                saveButton.Visible = saveAndPublishButton.Visible = true;
+                //saveButton.Visible = saveAndPublishButton.Visible = true;
+                saveButton.Visible = true;
                 markerTypes.Visible = true;
                 mapContent.Settings.HasWritePrivileges = true;
             } else
             {
-                saveButton.Visible = saveAndPublishButton.Visible = false;
+                //saveButton.Visible = saveAndPublishButton.Visible = false;
+                saveButton.Visible = false;
                 markerTypes.Visible = false;
             }
 

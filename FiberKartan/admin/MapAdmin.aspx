@@ -124,7 +124,7 @@
                 <div class="palette_footer">
                     <asp:HyperLink id="backButton" runat="server" CssClass="button" Text="Tillbaka" title="Tillbaka till versionsväljaren" />
                     <input id="saveButton" type="button" runat="server" value="Spara" title="Spara ändringar" class="button green" />
-                    <input id="saveAndPublishButton" type="button" runat="server" value="Publicera" title="Spara ändringar och publicerar kartan" class="button green" />
+                    <!--<input id="saveAndPublishButton" type="button" runat="server" value="Publicera" title="Spara ändringar och publicerar kartan" class="button green" />-->
 
                     <a href="#" id="mapInfoIcon" class="paletteInfoIcon" title="Kartinformation"><div></div></a>
                     <a href="#" id="resetMapButton" class="paletteInfoIcon" title="Återställer kartvyn till ursprungsläget."><div></div></a>
