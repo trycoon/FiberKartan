@@ -30,22 +30,23 @@ namespace FiberKartan.Admin
     public partial class AdminMasterPage : System.Web.UI.MasterPage
     {
         private FiberDataContext fiberDb;
+        private User currentUser;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             fiberDb = new FiberDataContext();
-            var user = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).First();
+            currentUser = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).First();
 
             if (!IsPostBack)
             {
-                loggedOnName.Text = user.Name;
-                loggedOnName.NavigateUrl = "EditUser.aspx?uid=" + user.Id;
-                lastLoggedOn.Text = user.LastLoggedOn.ToString();
+                loggedOnName.Text = currentUser.Name;
+                loggedOnName.NavigateUrl = "EditUser.aspx?uid=" + currentUser.Id;
+                lastLoggedOn.Text = currentUser.LastLoggedOn.ToString();
 
                 HandleNotifications();
             }
 
-            if (user.IsAdmin)
+            if (currentUser.IsAdmin)
             {
                 ListUsersButton.Visible = true;
                 ListUsersButton.NavigateUrl = "ListUsers.aspx?ReturnUrl=" + Request.Url.AbsoluteUri;
@@ -70,65 +71,50 @@ namespace FiberKartan.Admin
 
                 if (lastNotification != null)
                 {
-                    int lastNotificationValue = 0;
-                    var lastNotificationCookie = Request.Cookies.Get("lastNotification");
-
-                    if (lastNotificationCookie == null || !int.TryParse(lastNotificationCookie.Value, out lastNotificationValue))
+                    if (!currentUser.LastNotificationMessage.HasValue)
                     {
-                        var newCookie = new HttpCookie("lastNotification", lastNotification.Id.ToString());
-                        newCookie.HttpOnly = true;
-                        newCookie.Path = "/admin";
-                        newCookie.Expires = DateTime.Now.AddYears(25);
-
-                        Response.Cookies.Remove("lastNotification");    // Om kakan finns, men med ett ogiltigt värde.
-                        Response.Cookies.Add(newCookie);
+                        currentUser.LastNotificationMessage = 0;
                     }
-                    else
+
+                    if (currentUser.LastNotificationMessage.Value < lastNotification.Id)
                     {
-                        lastNotificationValue = int.Parse(lastNotificationCookie.Value);
-
-                        if (lastNotificationValue < lastNotification.Id)
+                        var messages = fiberDb.NotificationMessages.Where(n => currentUser.LastNotificationMessage.Value < n.Id).OrderByDescending(n => n.Id);
+                        
+                        var msgHTML = new StringBuilder();
+                        foreach (var msg in messages)
                         {
-                            var messages = fiberDb.NotificationMessages.Where(n => lastNotificationValue < n.Id).OrderByDescending(n => n.Id);
-
-                            lastNotificationCookie.Value = lastNotification.Id.ToString();
-                            lastNotificationCookie.HttpOnly = true;
-                            lastNotificationCookie.Path = "/admin";
-                            lastNotificationCookie.Expires = DateTime.Now.AddYears(25);
-                            Response.Cookies.Set(lastNotificationCookie);
-
-                            var msgHTML = new StringBuilder();
-                            foreach (var msg in messages)
-                            {
-                                msgHTML.Append("<article>")
-                                    .Append("<header>")
-                                        .Append("<h3>").Append(msg.Title).Append("</h3>")
-                                        .Append("<p>Tid: ").Append(msg.Created).Append("</p>")
-                                     .Append("</header>")
-                                     .Append(msg.Body)
-                               .Append("</article>");
-                            }
-
-                            Page.ClientScript.RegisterStartupScript(typeof(Page), "message",
-                               "var $dialog = $('<div></div>')" +
-                               ".html('" + msgHTML + "')" +
-                               ".dialog({" +
-                                       "autoOpen: false," +
-                                       "title: 'Meddelande'," +
-                                       "close: function () { $(this).remove(); }," +
-                                       "width: 400," +
-                                       "height: 600," +
-                                       "modal: true," +
-                                       "buttons: {" +
-                                           "Ok: function () {" +
-                                               "$(this).dialog(\"close\");" +
-                                           "}" +
-                                       "}," +
-                                       "dialogClass: 'buttons-centered'" +
-                               "});" +
-                               "$dialog.dialog('open');"
-                       , true);
+                            msgHTML.Append("<article>")
+                                .Append("<header>")
+                                    .Append("<h3>").Append(msg.Title).Append("</h3>")
+                                    .Append("<p>Tid: ").Append(msg.Created).Append("</p>")
+                                 .Append("</header>")
+                                 .Append(msg.Body)
+                           .Append("</article>")
+                           .Append("<hr/>");
                         }
+
+                        Page.ClientScript.RegisterStartupScript(typeof(Page), "message",
+                           "var $dialog = $('<div></div>')" +
+                           ".html('" + msgHTML + "')" +
+                           ".dialog({" +
+                                   "autoOpen: false," +
+                                   "title: 'Meddelande'," +
+                                   "close: function () { $(this).remove(); }," +
+                                   "width: 500," +
+                                   "height: 500," +
+                                   "modal: true," +
+                                   "buttons: {" +
+                                       "Ok: function () {" +
+                                           "$(this).dialog(\"close\");" +
+                                       "}" +
+                                   "}," +
+                                   "dialogClass: 'buttons-centered'" +
+                           "});" +
+                           "$dialog.dialog('open');"
+                        , true);
+
+                        currentUser.LastNotificationMessage = lastNotification.Id;
+                        fiberDb.SubmitChanges();
                     }
                 }
             }

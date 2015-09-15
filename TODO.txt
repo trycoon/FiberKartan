@@ -49,6 +49,8 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Uppdatera startsidan så att den blir mer sökbar och responsiv. Lägg in länkar och sitemap till regionskartorna.
 - Stöd olika lager av kartan.
 
+Ladda in script med async och defer. Google Maps: https://developers.google.com/maps/documentation/javascript/versions
+Och för min kod: http://stackoverflow.com/questions/16824347/how-can-i-use-the-script-defer-attribute-for-asp-mvc-4-bundles-with-scripts-rend
 
 
 
