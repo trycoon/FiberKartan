@@ -230,3 +230,5 @@ label
     margin: 10px auto 20px auto;
     display: block;
 }
+.buttons-centered .ui-dialog-buttonpane {text-align: center;}
+.buttons-centered .ui-dialog-buttonpane .ui-dialog-buttonset {float: none;}

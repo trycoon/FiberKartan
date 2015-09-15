@@ -92,6 +92,7 @@
                         height: 560,
                         modal: true,
                         resizable: false,
+                        dialogClass: 'buttons-centered',
                         open: function (event, ui) {
                             $('.ui-dialog-content').css('overflow', 'hidden');
                         }
@@ -109,6 +110,7 @@
                         width: 500,
                         modal: true,
                         resizable: false,
+                        dialogClass: 'buttons-centered',
                         buttons: {
                             Ok: function () {
                                 $(this).dialog("close");

@@ -88,6 +88,7 @@
                     width: 520,
                     modal: true,
                     resizable: false,
+                    dialogClass: 'buttons-centered',
                     buttons: {
                         Ok: function () {
                             $(this).dialog("close");

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Security;
+using System.Text;
 
 /*
 Copyright (c) 2012, Henrik Östman.
@@ -28,9 +29,11 @@ namespace FiberKartan.Admin
 {
     public partial class AdminMasterPage : System.Web.UI.MasterPage
     {
+        private FiberDataContext fiberDb;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            var fiberDb = new FiberDataContext();
+            fiberDb = new FiberDataContext();
             var user = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).First();
 
             if (!IsPostBack)
@@ -38,6 +41,8 @@ namespace FiberKartan.Admin
                 loggedOnName.Text = user.Name;
                 loggedOnName.NavigateUrl = "EditUser.aspx?uid=" + user.Id;
                 lastLoggedOn.Text = user.LastLoggedOn.ToString();
+
+                HandleNotifications();
             }
 
             if (user.IsAdmin)
@@ -51,6 +56,86 @@ namespace FiberKartan.Admin
         {
             FormsAuthentication.SignOut();
             Response.Redirect("Logon.aspx");
+        }
+
+        /// <summary>
+        /// Visar upp systemmeddelanden/notifieringar för användaren.
+        /// </summary>
+        private void HandleNotifications()
+        {
+            //  Id på det senaste visade meddelandet sparas i en kaka så att vi kan hålla reda på vilka meddelanden vi visat för användaren.
+            try
+            {
+                var lastNotification = fiberDb.NotificationMessages.OrderByDescending(n => n.Id).FirstOrDefault();
+
+                if (lastNotification != null)
+                {
+                    int lastNotificationValue = 0;
+                    var lastNotificationCookie = Request.Cookies.Get("lastNotification");
+
+                    if (lastNotificationCookie == null || !int.TryParse(lastNotificationCookie.Value, out lastNotificationValue))
+                    {
+                        var newCookie = new HttpCookie("lastNotification", lastNotification.Id.ToString());
+                        newCookie.HttpOnly = true;
+                        newCookie.Path = "/admin";
+                        newCookie.Expires = DateTime.Now.AddYears(25);
+
+                        Response.Cookies.Remove("lastNotification");    // Om kakan finns, men med ett ogiltigt värde.
+                        Response.Cookies.Add(newCookie);
+                    }
+                    else
+                    {
+                        lastNotificationValue = int.Parse(lastNotificationCookie.Value);
+
+                        if (lastNotificationValue < lastNotification.Id)
+                        {
+                            var messages = fiberDb.NotificationMessages.Where(n => lastNotificationValue < n.Id).OrderByDescending(n => n.Id);
+
+                            lastNotificationCookie.Value = lastNotification.Id.ToString();
+                            lastNotificationCookie.HttpOnly = true;
+                            lastNotificationCookie.Path = "/admin";
+                            lastNotificationCookie.Expires = DateTime.Now.AddYears(25);
+                            Response.Cookies.Set(lastNotificationCookie);
+
+                            var msgHTML = new StringBuilder();
+                            foreach (var msg in messages)
+                            {
+                                msgHTML.Append("<article>")
+                                    .Append("<header>")
+                                        .Append("<h3>").Append(msg.Title).Append("</h3>")
+                                        .Append("<p>Tid: ").Append(msg.Created).Append("</p>")
+                                     .Append("</header>")
+                                     .Append(msg.Body)
+                               .Append("</article>");
+                            }
+
+                            Page.ClientScript.RegisterStartupScript(typeof(Page), "message",
+                               "var $dialog = $('<div></div>')" +
+                               ".html('" + msgHTML + "')" +
+                               ".dialog({" +
+                                       "autoOpen: false," +
+                                       "title: 'Meddelande'," +
+                                       "close: function () { $(this).remove(); }," +
+                                       "width: 400," +
+                                       "height: 600," +
+                                       "modal: true," +
+                                       "buttons: {" +
+                                           "Ok: function () {" +
+                                               "$(this).dialog(\"close\");" +
+                                           "}" +
+                                       "}," +
+                                       "dialogClass: 'buttons-centered'" +
+                               "});" +
+                               "$dialog.dialog('open');"
+                       , true);
+                        }
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Utils.Log("Misslyckades med att visa upp notifieringsmeddelande för användare. Felmeddelande=" + exception.Message + ", Stacktrace=" + exception.StackTrace, System.Diagnostics.EventLogEntryType.Error, 170);
+            }
         }
     }
 }
