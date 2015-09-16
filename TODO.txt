@@ -52,5 +52,11 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 Ladda in script med async och defer. Google Maps: https://developers.google.com/maps/documentation/javascript/versions
 Och för min kod: http://stackoverflow.com/questions/16824347/how-can-i-use-the-script-defer-attribute-for-asp-mvc-4-bundles-with-scripts-rend
 
+Uppdatera SharpKML med KMZ-stöd: https://sharpkml.codeplex.com/releases/view/115032
+Ta den helst från NuGET: https://www.nuget.org/packages/SharpKml.Core/
+
+Uppgradera denna också: https://github.com/bjornsallarp/MightyLittleGeodesy
+
+
 
 
