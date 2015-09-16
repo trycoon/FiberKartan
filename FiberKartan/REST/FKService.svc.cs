@@ -106,6 +106,11 @@ namespace FiberKartan.REST
                 var hash = BitConverter.ToString(new SHA1Managed().ComputeHash(Encoding.UTF8.GetBytes(DateTime.Now.ToString()))).Replace("-", "");  // Tar tiden och får fram en unik hashnyckel.
 
                 map.Created = DateTime.Now;
+                if (publish)
+                {
+                    map.Published = map.Created;
+                }
+
                 map.MapType = existingMap.MapType;
 
                 map.KML_Hash = hash;
@@ -116,7 +121,7 @@ namespace FiberKartan.REST
                 // Påvisa vem som skapade denna nya version.
                 var user = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).FirstOrDefault();
                 map.User = user;
-                map.CreatorId = user.Id;                
+                map.CreatorId = user.Id;
 
                 existingMap.MapType.Maps.Add(map);  // Lägger till kartan.
 
@@ -294,9 +299,12 @@ namespace FiberKartan.REST
 
                 response.NewVersionNumber = map.Ver;
 
-                // Rensar cachen för Regionsvyn (TotalMap.aspx), så att den får ladda upp ny fräsch information.
-                HttpContext.Current.Cache.Remove("CachedTotalMap_" + map.MapType.Municipality.Code);
-                HttpContext.Current.Cache.Remove("CachedTotalMap_null"); // Hela Sverige.
+                // Om denna karta visas i regionsvyn(TotalMap.aspx) så måste cachen för denna tömmas så att den nya versionen visas.
+                if (((MapViewSettings)map.MapType.ViewSettings).HasFlag(MapViewSettings.AllowViewAggregatedMaps))
+                {
+                    HttpContext.Current.Cache.Remove("CachedTotalMap_" + map.MapType.Municipality.Code);
+                    HttpContext.Current.Cache.Remove("CachedTotalMap_null"); // Hela Sverige.
+                }
 
                 Utils.Log("Ny version av karta sparad " + (publish ? "och publicerad " : string.Empty) + "(MapTypeId=" + map.MapTypeId + ", Version=" + map.Ver + " för användare=" + HttpContext.Current.User.Identity.Name + ").", System.Diagnostics.EventLogEntryType.Information, 125);
 
@@ -412,6 +420,7 @@ namespace FiberKartan.REST
                 using (var mail = new MailMessage()
                 {
                     From = new MailAddress("noreply@fiberkartan.se", "FiberKartan"),
+                    Sender = new MailAddress(user.Username, user.Name),
                     ReplyTo = new MailAddress(user.Username, user.Name),
                     Subject = "Felrapport-Fiberkartan",
                     IsBodyHtml = true,
@@ -428,7 +437,7 @@ namespace FiberKartan.REST
                         SMTPServer.Send(mail);
                     }
                 }
-                
+
                 #endregion SendMail
             }
             catch (Exception exception)
@@ -482,7 +491,7 @@ namespace FiberKartan.REST
             int version = 0;
             int.TryParse(mapId, out mapTypeId);
             int.TryParse(ver, out version);
- 
+
             FiberKartan.Map map = null;
 
             if (version > 0)
@@ -501,7 +510,7 @@ namespace FiberKartan.REST
 
                 return response;
             }
-            
+
             names = names.Trim().ToLower();
             var layers = names.Split(',').Select(name => name.Trim()).ToArray();
 
@@ -512,7 +521,8 @@ namespace FiberKartan.REST
                 dynamic availableLayers = JsonConvert.DeserializeObject(map.Layers);
                 var result = new ExpandoObject() as IDictionary<string, Object>;
 
-                foreach (var requestedLayer in layers) {
+                foreach (var requestedLayer in layers)
+                {
                     var layer = availableLayers[requestedLayer];
 
                     if (layer != null)

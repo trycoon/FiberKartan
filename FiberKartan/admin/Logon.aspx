@@ -9,7 +9,7 @@
         <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
 	    <meta http-equiv="content-type" content="text/html;charset=UTF-8" >
         <link rel="Stylesheet" type="text/css" href="/inc/css/base.css?ver=1.7" media="screen" />
-        <link rel="Stylesheet" type="text/css" href="/inc/css/admin.css?ver=2.1" />
+        <link rel="Stylesheet" type="text/css" href="/inc/css/admin.css?ver=2.2" />
     </head>
     <body  class="dark">
         <form id="loginForm" runat="server">
@@ -17,7 +17,7 @@
                 <h1><asp:Literal ID="title" runat="server" Text="Ange inloggningsuppgifter" /></h1>
                 <p>
                     <label ID="usernameLabel" class="block" runat="server" for="username">E-postadress</label>
-                    <asp:TextBox ID="username" runat="server" MaxLength="50" AutoCompleteType="Email" type="email" />
+                    <asp:TextBox ID="username" runat="server" MaxLength="50" type="email" />
                 </p>
                 <p>
                     <label ID="passwordLabel" class="block" runat="server" for="password">Lösenord</label>

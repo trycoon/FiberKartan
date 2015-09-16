@@ -138,7 +138,9 @@ namespace FiberKartan.Admin
 
                         using (var mail = new MailMessage()
                         {
-                            From = new MailAddress(currentUser.Username),
+                            From = new MailAddress("noreply@fiberkartan.se", "FiberKartan"),
+                            Sender = new MailAddress(currentUser.Username, currentUser.Name),
+                            ReplyTo = new MailAddress(currentUser.Username, currentUser.Name),
                             Subject = "Inbjudan till fiberkarta",
                             IsBodyHtml = true,
                             DeliveryNotificationOptions = DeliveryNotificationOptions.Never
@@ -206,7 +208,9 @@ namespace FiberKartan.Admin
 
                     using (var mail = new MailMessage()
                     {
-                        From = new MailAddress(currentUser.Username),
+                        From = new MailAddress("noreply@fiberkartan.se", "FiberKartan"),
+                        Sender = new MailAddress(currentUser.Username, currentUser.Name),
+                        ReplyTo = new MailAddress(currentUser.Username, currentUser.Name),
                         Subject = "Inbjudan till fiberkarta",
                         IsBodyHtml = true,
                         DeliveryNotificationOptions = DeliveryNotificationOptions.Never

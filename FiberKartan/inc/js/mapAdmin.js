@@ -92,10 +92,17 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     });
 
     function setupView() {
-        // Startar ping-funktion.
+        // Skick initial ping för att visa att vi är anslutna.
+        setTimeout(function () {
+            $.get("../REST/FKService.svc/Ping");
+        }, 400);
+
+        // Startar ping-funktion för att visa att vi fortfarande är anslutna.
         setInterval(function () {
-            $.get(serverRoot + '/REST/FKService.svc/Ping');
-        }, 10000);
+            $.get("../REST/FKService.svc/Ping").fail(function () {
+                //TODO: Visa nått här för användaren, att tjänsten är nere. 
+            });
+        }, 5000);
 
         setupAccordion();
 
@@ -168,10 +175,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                     toggleShowNetwork();
                 }
 
-                // Räknar om fibersträckan.
-                if (mapContent.Settings.ShowTotalDigLength) {
-                    $('#totalDigLength').html(calculateTotalLineLength(0).toLocaleString());    // toLocaleString() fixar tusen avgränsare.
-                }
+                $('#totalDigLength').html(calculateTotalLineLength(0).toLocaleString());    // toLocaleString() fixar tusen avgränsare.
             });
 
             google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
@@ -297,6 +301,12 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             $("#saveButton").click(function (event) {
                 event.preventDefault()
                 saveChanges();
+            });
+        }
+        if ($("#saveAndPublishButton").length > 0) {
+            $("#saveAndPublishButton").click(function (event) {
+                event.preventDefault()
+                saveChanges(true);
             });
         }
     }
@@ -677,9 +687,6 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                         callback(newButton);
                     }
                 }
-
-                console.log('pollForButton');
-
             }, 50);
         } else {
             var drawManagerToolbar = $('.gmnoprint').find("[title='Sluta rita']").parent().parent();
@@ -821,9 +828,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             toggleShowCrossings();
             toggleShowRegions();
 
-            if (mapContent.Settings.ShowTotalDigLength) {
-                $('#totalDigLength').html(calculateTotalLineLength(0).toLocaleString());    // toLocaleString() fixar tusen avgränsare.
-            }
+            $('#totalDigLength').html(calculateTotalLineLength(0).toLocaleString());    // toLocaleString() fixar tusen avgränsare.
 
             $("#mapInfoIcon").click(function () {
                 showDialog(

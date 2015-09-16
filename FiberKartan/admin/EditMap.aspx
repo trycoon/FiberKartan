@@ -24,19 +24,19 @@
             <fieldset class="marginTop10px">
                 <legend>Inställningar</legend>
                 <input id="PublicVisible" type="checkbox" value="PublicVisible" checked="checked"
-                    runat="server" /><label for="PublicVisible" title="Om kartan skall vara synlig för publika besökare, annars syns den bara härifrån admin.">Publikt
+                    runat="server" /><label for="PublicVisible" title="Om kartan skall vara synlig för publika besökare, annars syns den bara i admin vyn.">Publikt
                         synlig</label><br />
                 <input id="ShowPalette" type="checkbox" value="ShowPalette" checked="checked" runat="server" /><label
-                    for="ShowPalette" title="Om den vita paletten, där bl.a anslutningsgrad och olika visningsalternativ, skall visas.">Visa
+                    for="ShowPalette" title="Om paletten, där bl.a anslutningsgrad och olika visningsalternativ listas, skall visas(publika vyn).">Visa
                     "paletten"</label><br />
                 <input id="ShowConnectionStatistics" type="checkbox" value="ShowConnectionStatistics"
-                    checked="checked" runat="server" /><label for="ShowConnectionStatistics" title="Visar anslutningsgraden och antal fastigheter i paletten">Visa
+                    checked="checked" runat="server" /><label for="ShowConnectionStatistics" title="Visar anslutningsgraden och antal fastigheter i paletten(publika vyn)">Visa
                         anslutningsgraden</label><br />
                 <input id="ShowTotalDigLengthStatistics" type="checkbox" value="ShowTotalDigLengthStatistics"
-                    checked="checked" runat="server" /><label for="ShowTotalDigLengthStatistics" title="Visar den uppskattade schaktlängden i paletten">Visa
+                    checked="checked" runat="server" /><label for="ShowTotalDigLengthStatistics" title="Visar den uppskattade schaktlängden i paletten(publika vyn)">Visa
                         uppskattad schaktlängd</label><br />
                 <input id="AllowViewAggregatedMaps" type="checkbox" value="AllowViewAggregatedMaps"
-                    runat="server" /><label for="AllowViewAggregatedMaps" title="Tillåt innehållet på kartan att visas i regionsvyn (en karta som visar flera kartor sammanslagna).">Tillåt
+                    runat="server" /><label for="AllowViewAggregatedMaps" title="Tillåt innehållet på kartan att visas i regions vyn (en karta som visar flera kartor sammanslagna).">Tillåt
                         att karta visas på regionskarta</label><br />
                 <input id="OnlyShowYesHouses" type="checkbox" value="OnlyShowYesHouses" runat="server" /><label
                     for="OnlyShowYesHouses" title="Visar bara markörer för de som vill ha fiber.">Visa

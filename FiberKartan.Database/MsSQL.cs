@@ -23,11 +23,11 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace FiberKartan.Database
 {
-    public class DAL
+    public class MsSQL : IDatabase
     {
         private static FiberDataContext fiberDb = new FiberDataContext();
 
-        public DAL()
+        public MsSQL()
         {            
         }
 

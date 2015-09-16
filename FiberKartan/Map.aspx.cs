@@ -229,8 +229,10 @@ namespace FiberKartan
                 this.ClientScript.RegisterStartupScript(typeof(Page), "mapContent", "fk.mapContent=" + JsonConvert.SerializeObject(mapContent) + "; ", true);
                 this.ClientScript.RegisterStartupScript(typeof(Page), "serverRoot", "fk.serverRoot='" + ConfigurationManager.AppSettings.Get("ServerAdress") + "'; ", true);
 
-                Response.Cache.SetLastModified(map.Created);
-                Response.Cache.SetETag(map.MapTypeId + "_" + map.Ver);
+                // Prevent caching.
+                Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+                Response.Cache.SetExpires(DateTime.Now.Subtract(TimeSpan.FromHours(10)));
             }
             else
             {

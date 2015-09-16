@@ -19,9 +19,9 @@
     <body>
         <form id="mapForm" runat="server" enableviewstate="false" onsubmit="return false;">
             <div id="map_canvas" style="width:100%; height:100%"></div>        
-            <div id="mainPalette" class="palette" runat="server" visible="false">
+            <div id="mainPalette" class="palette" runat="server">
                 <div class="paletteheader admin" title="Dra här för att flytta paletten.">Administrativ karta</div>
-                <asp:Panel id="connectionStatisticsPanel" runat="server" visible="false">
+                <asp:Panel id="connectionStatisticsPanel" runat="server">
                     <div>
                         Fastigheter som &auml;r intresserade:&nbsp;<strong><asp:Literal ID="NumberOfIntresstedLiteral" runat="server"></asp:Literal></strong>st
                     </div>
@@ -32,7 +32,7 @@
                         Anslutningsgraden &auml;r&nbsp;<strong><asp:Literal ID="ConnectionRatioLiteral" runat="server"></asp:Literal>%</strong>
                     </div>
                 </asp:Panel>
-                <asp:Panel id="totalDigLengthStatisticsPanel" runat="server" visible="false"> 
+                <asp:Panel id="totalDigLengthStatisticsPanel" runat="server"> 
                     Uppskattad schaktl&auml;ngd: <strong><span id="totalDigLength"></span></strong>&nbsp;meter                    
                 </asp:Panel>
                 
@@ -123,7 +123,9 @@
                 </div>                
                 <div class="palette_footer">
                     <asp:HyperLink id="backButton" runat="server" CssClass="button" Text="Tillbaka" title="Tillbaka till versionsväljaren" />
-                    <input id="saveButton" type="button" runat="server" value="Spara" title="Spara ändringar av kartan" class="button big red" />
+                    <input id="saveButton" type="button" runat="server" value="Spara" title="Spara ändringar" class="button green" />
+                    <!--<input id="saveAndPublishButton" type="button" runat="server" value="Publicera" title="Spara ändringar och publicerar kartan" class="button green" />-->
+
                     <a href="#" id="mapInfoIcon" class="paletteInfoIcon" title="Kartinformation"><div></div></a>
                     <a href="#" id="resetMapButton" class="paletteInfoIcon" title="Återställer kartvyn till ursprungsläget."><div></div></a>
                     <a href="#" id="snapshotButton" class="paletteInfoIcon" title="Skapar ett e-postmeddelade med en länk till nuvarande kartvy." target="_blank"><div></div></a> 

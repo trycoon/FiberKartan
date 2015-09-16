@@ -24,7 +24,7 @@
                             CommandName="UnSubscribeMapChanges" CommandArgument='<%# Eval("Id") %>' Visible='<%# ((bool)Eval("EmailSubscribeChanges")) %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField DataField="Title" HeaderText="Namn/Sidtitel" SortExpression="Title">
+                <asp:BoundField DataField="Title" HeaderText="Namn" SortExpression="Title">
                 </asp:BoundField>
                 <asp:BoundField DataField="Creator" HeaderText="Skapad av" SortExpression="Creator">
                     <ItemStyle Width="150px" />
@@ -88,6 +88,7 @@
                     width: 520,
                     modal: true,
                     resizable: false,
+                    dialogClass: 'buttons-centered',
                     buttons: {
                         Ok: function () {
                             $(this).dialog("close");

@@ -16,14 +16,23 @@
         <Columns>
             <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" ReadOnly="True"
                 Visible="False" />
-            <asp:BoundField DataField="Name" HeaderText="Namn" SortExpression="Name" ReadOnly="True"
-                ItemStyle-Width="184px" />
-            <asp:BoundField DataField="Username" HeaderText="Användarnamn" ReadOnly="True" SortExpression="Username"
-                ItemStyle-Width="114px">
+            <asp:BoundField DataField="Name" HeaderText="Namn" SortExpression="Name" ReadOnly="True"/>
+            <asp:BoundField DataField="Username" HeaderText="Användarnamn" ReadOnly="True" SortExpression="Username">
                 <ItemStyle Wrap="False" />
             </asp:BoundField>
+            <asp:TemplateField HeaderText="Spärrad" SortExpression="IsDeleted" ItemStyle-Width="60px" ItemStyle-HorizontalAlign="Center">
+                <ItemTemplate><%# (Boolean.Parse(Eval("IsDeleted").ToString())) ? "X" : "" %></ItemTemplate>
+            </asp:TemplateField>
             <asp:BoundField DataField="Description" HeaderText="Förening/företag" SortExpression="Description" />
-            <asp:BoundField DataField="Online" HeaderText="Aktiv" SortExpression="Online" />
+            <asp:BoundField DataField="Created" HeaderText="Skapad" ReadOnly="True" SortExpression="Created" ItemStyle-HorizontalAlign="Center">
+                <ItemStyle Wrap="False" />
+            </asp:BoundField>
+            <asp:BoundField DataField="LastActivity" HeaderText="Senast ansluten" ReadOnly="True" SortExpression="LastActivity" ItemStyle-HorizontalAlign="Center">
+                <ItemStyle Wrap="False" />
+            </asp:BoundField>
+            <asp:BoundField DataField="Online" HeaderText="Ansluten" SortExpression="Online">
+                <ItemStyle Wrap="False" />
+            </asp:BoundField>
             <asp:TemplateField ItemStyle-Width="70px">
                 <ItemTemplate>
                     <asp:HyperLink ID="editUserButton" runat="server" CssClass="button" NavigateUrl='<%# "EditUser.aspx?uid=" + Eval("Id") %>'
@@ -45,7 +54,7 @@
     <asp:HyperLink ID="newUserButton" runat="server" CssClass="button green" NavigateUrl='EditUser.aspx'
         ToolTip="Skapa användare" Text="Ny användare" />
     <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:FiberDBConnectionString %>"
-        SelectCommand="SELECT Id, Name, Username, Description, coalesce((SELECT 'Aktiv' WHERE DATEADD(ss, 20, LastActivity) >= GETDATE()), '') AS Online FROM [User] ORDER BY Description ASC">
+        SelectCommand="SELECT Id, Name, Username, IsDeleted, Description, Created, LastActivity, coalesce((SELECT 'Aktiv' WHERE DATEADD(ss, 15, LastActivity) >= GETDATE()), '') AS Online FROM [User] ORDER BY Description ASC">
     </asp:SqlDataSource>
 </asp:Content>
 <asp:Content ID="footer" ContentPlaceHolderID="footer" runat="server">

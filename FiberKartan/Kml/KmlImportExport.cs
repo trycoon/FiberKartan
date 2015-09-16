@@ -80,9 +80,15 @@ namespace FiberKartan.Kml
 
             // Itererar igenom alla StyleMaps i dokumentet och lägger in deras style i styleLookup också.
             var styleMaps = parser.Root.Flatten().OfType<SharpKml.Dom.StyleMapCollection>();
+            String styleString;
+
             foreach (var styleMap in styleMaps)
             {
-                styleLookup.Add("#" + styleMap.Id, styleLookup[styleMap.First().StyleUrl.OriginalString]);
+                styleString = styleMap.First().StyleUrl.OriginalString;
+                if (styleLookup.ContainsKey(styleString))
+                {
+                    styleLookup.Add("#" + styleMap.Id, styleLookup[styleString]);
+                }
             }
 
             var unkownMarkerType = fiberDb.MarkerTypes.Where(mt => mt.Name == "Unknown").Single();
@@ -444,10 +450,17 @@ namespace FiberKartan.Kml
 
             // Itererar igenom alla StyleMaps i dokumentet och lägger in deras style i styleLookup också.
             var styleMaps = parser.Root.Flatten().OfType<SharpKml.Dom.StyleMapCollection>();
+            String styleString;
+
             foreach (var styleMap in styleMaps)
             {
-                var targetMarkerStyle = markerStyleLookup[styleMap.First().StyleUrl.OriginalString];
-                markerStyleLookup.Add("#" + styleMap.Id, new MarkerStyleLookup { Href = targetMarkerStyle.Href, ImageName = targetMarkerStyle.ImageName });
+                styleString = styleMap.First().StyleUrl.OriginalString;
+
+                if (markerStyleLookup.ContainsKey(styleString))
+                {
+                    var targetMarkerStyle = markerStyleLookup[styleString];
+                    markerStyleLookup.Add("#" + styleMap.Id, new MarkerStyleLookup { Href = targetMarkerStyle.Href, ImageName = targetMarkerStyle.ImageName });
+                }
             }
 
             Utils.Log("Done creating stylelookup.", System.Diagnostics.EventLogEntryType.Information, 126);
@@ -717,7 +730,7 @@ namespace FiberKartan.Kml
                         throw new ApplicationException("Filen är tom, inget kan importeras.");
                     }
 
-                    if (file.ContentType.ToLower() == "application/vnd.google-earth.kml+xml")
+                    if (file.ContentType.ToLower() == "application/vnd.google-earth.kml+xml" || file.ContentType.ToLower() == "application/octet-stream")
                     {
                         kmlFile = KmlFile.Load(file.InputStream);
                     }
@@ -727,7 +740,7 @@ namespace FiberKartan.Kml
                     }
                     else
                     {
-                        Utils.Log("Fil som laddades upp stöds inte av systemet. Filnamn=\"" + file.FileName + "\", ContentLength=" + file.ContentLength + ", ContentType=\"" + file.ContentType + "\".", System.Diagnostics.EventLogEntryType.Warning, 105);
+                        Utils.Log("Fil för fastighetsgräns som laddades upp stöds inte av systemet. Användare=" + HttpContext.Current.User.Identity.Name + ", Filnamn=\"" + file.FileName + "\", ContentLength=" + file.ContentLength + ", ContentType=\"" + file.ContentType + "\".", System.Diagnostics.EventLogEntryType.Warning, 105);
                         throw new ApplicationException("Denna filtyp stöds inte.");
                     }
                 }
