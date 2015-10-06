@@ -52,3 +52,9 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Möjlighet att stänga av autonumreringen av skåp, så att man kan sätta dom själva.
 - Använda namn på kartan (eller ett nytt url-vänligt systemnamn) för att länka till kartor istället för nummer. Typ. http://fiberkartan.se/horsne_bara istället för http://fiberkartan.se/7
 
+
+
+DATABASÄNDRINGAR:
+- Tagit bort Marker, Lines, Regions (MÅSTE MIGRERA FÖRST!)
+- Sätt alla previousVersion=0 till previousVersion=-1
+- Kontrollera att layers har rätt standardvärde {} eller [].

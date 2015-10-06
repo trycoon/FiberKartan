@@ -75,8 +75,9 @@
     <Reference Include="MightyLittleGeodesy">
       <HintPath>..\lib\MightyLittleGeodesy.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SharpKml, Version=1.0.4638.18211, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -554,6 +555,12 @@
     <Compile Include="Resources\CssBundleTransform.cs" />
     <Compile Include="Resources\JavascriptBundleTransform.cs" />
     <Compile Include="Resources\HandleBarBundleTransform.cs" />
+    <Compile Include="REST\Responses\GetLayersResponse.cs" />
+    <Compile Include="REST\Responses\GetMapResponse.cs" />
+    <Compile Include="REST\Responses\GetMapsResponse.cs" />
+    <Compile Include="REST\Responses\PingResponse.cs" />
+    <Compile Include="REST\Responses\Response.cs" />
+    <Compile Include="REST\Responses\SaveMapResponse.cs" />
     <Compile Include="ResultBox.ascx.cs">
       <DependentUpon>ResultBox.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -615,14 +622,6 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Fiber.cs">
-      <DependentUpon>Fiber.dbml</DependentUpon>
-    </Compile>
-    <Compile Include="Fiber.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Fiber.dbml</DependentUpon>
     </Compile>
     <Compile Include="FileTransferHandler.ashx.cs">
       <DependentUpon>FileTransferHandler.ashx</DependentUpon>
@@ -692,11 +691,6 @@
     <Content Include="Admin\manual\Fiber-markers-svg.zip" />
     <Content Include="Admin\manual\Fiber-markers.zip" />
     <Content Include="Admin\AdminMasterPage.Master" />
-    <None Include="Fiber.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>Fiber.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
     <Content Include="FileTransferHandler.ashx" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
@@ -713,18 +707,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Fiber.dbml.layout">
-      <DependentUpon>Fiber.dbml</DependentUpon>
-    </None>
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FiberKartan.Database\FiberKartan.Database.csproj">
-      <Project>{CC63B146-CFAF-4E37-AE14-128338824BD4}</Project>
+      <Project>{cc63b146-cfaf-4e37-ae14-128338824bd4}</Project>
       <Name>FiberKartan.Database</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

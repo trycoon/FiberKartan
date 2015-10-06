@@ -1,0 +1,47 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Web;
+
+namespace FiberKartan.Database.Models
+{
+    [DataContract(Name = "layer")]
+    public class Layer
+    {
+        [DataMember(Name = "id")]
+        public String Id { get; set; }
+
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "readonly")]
+        public bool Readonly { get; set; }
+
+        [DataMember(Name = "markers", EmitDefaultValue = false)]
+        public List<Marker> Markers { get; set; }
+
+        [DataMember(Name = "lines", EmitDefaultValue = false)]
+        public List<Line> Lines { get; set; }
+
+        [DataMember(Name = "polygons", EmitDefaultValue = false)]
+        public List<Polygon> Polygons { get; set; }
+
+        public override bool Equals(System.Object obj)
+        {
+            Layer l = obj as Layer;
+            if ((object)l == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return base.Equals(obj) && Id == l.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+    }
+}

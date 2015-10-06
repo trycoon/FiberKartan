@@ -36,9 +36,9 @@ namespace FiberKartan.Database
     partial void InsertUser(User instance);
     partial void UpdateUser(User instance);
     partial void DeleteUser(User instance);
-    partial void InsertLine(Line instance);
-    partial void UpdateLine(Line instance);
-    partial void DeleteLine(Line instance);
+    partial void InsertIncidentReport(IncidentReport instance);
+    partial void UpdateIncidentReport(IncidentReport instance);
+    partial void DeleteIncidentReport(IncidentReport instance);
     partial void InsertMap(Map instance);
     partial void UpdateMap(Map instance);
     partial void DeleteMap(Map instance);
@@ -54,18 +54,15 @@ namespace FiberKartan.Database
     partial void InsertMapTypeAccessRight(MapTypeAccessRight instance);
     partial void UpdateMapTypeAccessRight(MapTypeAccessRight instance);
     partial void DeleteMapTypeAccessRight(MapTypeAccessRight instance);
-    partial void InsertMarker(Marker instance);
-    partial void UpdateMarker(Marker instance);
-    partial void DeleteMarker(Marker instance);
     partial void InsertMarkerType(MarkerType instance);
     partial void UpdateMarkerType(MarkerType instance);
     partial void DeleteMarkerType(MarkerType instance);
     partial void InsertMunicipality(Municipality instance);
     partial void UpdateMunicipality(Municipality instance);
     partial void DeleteMunicipality(Municipality instance);
-    partial void InsertRegion(Region instance);
-    partial void UpdateRegion(Region instance);
-    partial void DeleteRegion(Region instance);
+    partial void InsertNotificationMessage(NotificationMessage instance);
+    partial void UpdateNotificationMessage(NotificationMessage instance);
+    partial void DeleteNotificationMessage(NotificationMessage instance);
     partial void InsertServiceCompany(ServiceCompany instance);
     partial void UpdateServiceCompany(ServiceCompany instance);
     partial void DeleteServiceCompany(ServiceCompany instance);
@@ -117,11 +114,11 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		public System.Data.Linq.Table<Line> Lines
+		public System.Data.Linq.Table<IncidentReport> IncidentReports
 		{
 			get
 			{
-				return this.GetTable<Line>();
+				return this.GetTable<IncidentReport>();
 			}
 		}
 		
@@ -165,14 +162,6 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		public System.Data.Linq.Table<Marker> Markers
-		{
-			get
-			{
-				return this.GetTable<Marker>();
-			}
-		}
-		
 		public System.Data.Linq.Table<MarkerType> MarkerTypes
 		{
 			get
@@ -189,11 +178,11 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		public System.Data.Linq.Table<Region> Regions
+		public System.Data.Linq.Table<NotificationMessage> NotificationMessages
 		{
 			get
 			{
-				return this.GetTable<Region>();
+				return this.GetTable<NotificationMessage>();
 			}
 		}
 		
@@ -452,6 +441,10 @@ namespace FiberKartan.Database
 		
 		private bool _IsAdmin;
 		
+		private System.Nullable<int> _LastNotificationMessage;
+		
+		private EntitySet<IncidentReport> _IncidentReports;
+		
 		private EntitySet<Map> _Maps;
 		
 		private EntitySet<MapAccessInvitation> _MapAccessInvitations;
@@ -461,6 +454,8 @@ namespace FiberKartan.Database
 		private EntitySet<MapType> _MapTypes;
 		
 		private EntitySet<MapTypeAccessRight> _MapTypeAccessRights;
+		
+		private EntitySet<NotificationMessage> _NotificationMessages;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -486,15 +481,19 @@ namespace FiberKartan.Database
     partial void OnLastActivityChanged();
     partial void OnIsAdminChanging(bool value);
     partial void OnIsAdminChanged();
+    partial void OnLastNotificationMessageChanging(System.Nullable<int> value);
+    partial void OnLastNotificationMessageChanged();
     #endregion
 		
 		public User()
 		{
+			this._IncidentReports = new EntitySet<IncidentReport>(new Action<IncidentReport>(this.attach_IncidentReports), new Action<IncidentReport>(this.detach_IncidentReports));
 			this._Maps = new EntitySet<Map>(new Action<Map>(this.attach_Maps), new Action<Map>(this.detach_Maps));
 			this._MapAccessInvitations = new EntitySet<MapAccessInvitation>(new Action<MapAccessInvitation>(this.attach_MapAccessInvitations), new Action<MapAccessInvitation>(this.detach_MapAccessInvitations));
 			this._MapFiles = new EntitySet<MapFile>(new Action<MapFile>(this.attach_MapFiles), new Action<MapFile>(this.detach_MapFiles));
 			this._MapTypes = new EntitySet<MapType>(new Action<MapType>(this.attach_MapTypes), new Action<MapType>(this.detach_MapTypes));
 			this._MapTypeAccessRights = new EntitySet<MapTypeAccessRight>(new Action<MapTypeAccessRight>(this.attach_MapTypeAccessRights), new Action<MapTypeAccessRight>(this.detach_MapTypeAccessRights));
+			this._NotificationMessages = new EntitySet<NotificationMessage>(new Action<NotificationMessage>(this.attach_NotificationMessages), new Action<NotificationMessage>(this.detach_NotificationMessages));
 			OnCreated();
 		}
 		
@@ -698,6 +697,39 @@ namespace FiberKartan.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastNotificationMessage", DbType="Int")]
+		public System.Nullable<int> LastNotificationMessage
+		{
+			get
+			{
+				return this._LastNotificationMessage;
+			}
+			set
+			{
+				if ((this._LastNotificationMessage != value))
+				{
+					this.OnLastNotificationMessageChanging(value);
+					this.SendPropertyChanging();
+					this._LastNotificationMessage = value;
+					this.SendPropertyChanged("LastNotificationMessage");
+					this.OnLastNotificationMessageChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_IncidentReport", Storage="_IncidentReports", ThisKey="Id", OtherKey="CreatorId")]
+		public EntitySet<IncidentReport> IncidentReports
+		{
+			get
+			{
+				return this._IncidentReports;
+			}
+			set
+			{
+				this._IncidentReports.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Map", Storage="_Maps", ThisKey="Id", OtherKey="CreatorId")]
 		public EntitySet<Map> Maps
 		{
@@ -763,6 +795,19 @@ namespace FiberKartan.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_NotificationMessage", Storage="_NotificationMessages", ThisKey="Id", OtherKey="CreatorId")]
+		public EntitySet<NotificationMessage> NotificationMessages
+		{
+			get
+			{
+				return this._NotificationMessages;
+			}
+			set
+			{
+				this._NotificationMessages.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -781,6 +826,18 @@ namespace FiberKartan.Database
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_IncidentReports(IncidentReport entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_IncidentReports(IncidentReport entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
 		}
 		
 		private void attach_Maps(Map entity)
@@ -842,10 +899,22 @@ namespace FiberKartan.Database
 			this.SendPropertyChanging();
 			entity.User = null;
 		}
+		
+		private void attach_NotificationMessages(NotificationMessage entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_NotificationMessages(NotificationMessage entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
+		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Line")]
-	public partial class Line : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.IncidentReport")]
+	public partial class IncidentReport : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
@@ -856,21 +925,27 @@ namespace FiberKartan.Database
 		
 		private int _MapVer;
 		
-		private string _Name;
+		private int _CreatorId;
+		
+		private System.DateTime _Created;
+		
+		private int _ServiceCompanyId;
+		
+		private double _Latitude;
+		
+		private double _Longitude;
+		
+		private string _Estate;
 		
 		private string _Description;
 		
-		private string _LineColor;
+		private int _ReportStatus;
 		
-		private int _Width;
-		
-		private string _Coordinates;
-		
-		private int _Type;
-		
-		private int _Uid;
+		private EntityRef<User> _User;
 		
 		private EntityRef<Map> _Map;
+		
+		private EntityRef<ServiceCompany> _ServiceCompany;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -882,25 +957,29 @@ namespace FiberKartan.Database
     partial void OnMapTypeIdChanged();
     partial void OnMapVerChanging(int value);
     partial void OnMapVerChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
+    partial void OnCreatorIdChanging(int value);
+    partial void OnCreatorIdChanged();
+    partial void OnCreatedChanging(System.DateTime value);
+    partial void OnCreatedChanged();
+    partial void OnServiceCompanyIdChanging(int value);
+    partial void OnServiceCompanyIdChanged();
+    partial void OnLatitudeChanging(double value);
+    partial void OnLatitudeChanged();
+    partial void OnLongitudeChanging(double value);
+    partial void OnLongitudeChanged();
+    partial void OnEstateChanging(string value);
+    partial void OnEstateChanged();
     partial void OnDescriptionChanging(string value);
     partial void OnDescriptionChanged();
-    partial void OnLineColorChanging(string value);
-    partial void OnLineColorChanged();
-    partial void OnWidthChanging(int value);
-    partial void OnWidthChanged();
-    partial void OnCoordinatesChanging(string value);
-    partial void OnCoordinatesChanged();
-    partial void OnTypeChanging(int value);
-    partial void OnTypeChanged();
-    partial void OnUidChanging(int value);
-    partial void OnUidChanged();
+    partial void OnReportStatusChanging(int value);
+    partial void OnReportStatusChanged();
     #endregion
 		
-		public Line()
+		public IncidentReport()
 		{
+			this._User = default(EntityRef<User>);
 			this._Map = default(EntityRef<Map>);
+			this._ServiceCompany = default(EntityRef<ServiceCompany>);
 			OnCreated();
 		}
 		
@@ -924,7 +1003,7 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MapTypeId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MapTypeId", DbType="Int NOT NULL")]
 		public int MapTypeId
 		{
 			get
@@ -948,7 +1027,7 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MapVer", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MapVer", DbType="Int NOT NULL")]
 		public int MapVer
 		{
 			get
@@ -972,27 +1051,135 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(512)")]
-		public string Name
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatorId", DbType="Int NOT NULL")]
+		public int CreatorId
 		{
 			get
 			{
-				return this._Name;
+				return this._CreatorId;
 			}
 			set
 			{
-				if ((this._Name != value))
+				if ((this._CreatorId != value))
 				{
-					this.OnNameChanging(value);
+					if (this._User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCreatorIdChanging(value);
 					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
+					this._CreatorId = value;
+					this.SendPropertyChanged("CreatorId");
+					this.OnCreatorIdChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(MAX)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Created", DbType="DateTime NOT NULL")]
+		public System.DateTime Created
+		{
+			get
+			{
+				return this._Created;
+			}
+			set
+			{
+				if ((this._Created != value))
+				{
+					this.OnCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._Created = value;
+					this.SendPropertyChanged("Created");
+					this.OnCreatedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ServiceCompanyId", DbType="Int NOT NULL")]
+		public int ServiceCompanyId
+		{
+			get
+			{
+				return this._ServiceCompanyId;
+			}
+			set
+			{
+				if ((this._ServiceCompanyId != value))
+				{
+					if (this._ServiceCompany.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnServiceCompanyIdChanging(value);
+					this.SendPropertyChanging();
+					this._ServiceCompanyId = value;
+					this.SendPropertyChanged("ServiceCompanyId");
+					this.OnServiceCompanyIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Latitude", DbType="Float NOT NULL")]
+		public double Latitude
+		{
+			get
+			{
+				return this._Latitude;
+			}
+			set
+			{
+				if ((this._Latitude != value))
+				{
+					this.OnLatitudeChanging(value);
+					this.SendPropertyChanging();
+					this._Latitude = value;
+					this.SendPropertyChanged("Latitude");
+					this.OnLatitudeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Longitude", DbType="Float NOT NULL")]
+		public double Longitude
+		{
+			get
+			{
+				return this._Longitude;
+			}
+			set
+			{
+				if ((this._Longitude != value))
+				{
+					this.OnLongitudeChanging(value);
+					this.SendPropertyChanging();
+					this._Longitude = value;
+					this.SendPropertyChanged("Longitude");
+					this.OnLongitudeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Estate", DbType="NVarChar(200)")]
+		public string Estate
+		{
+			get
+			{
+				return this._Estate;
+			}
+			set
+			{
+				if ((this._Estate != value))
+				{
+					this.OnEstateChanging(value);
+					this.SendPropertyChanging();
+					this._Estate = value;
+					this.SendPropertyChanged("Estate");
+					this.OnEstateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(2000)")]
 		public string Description
 		{
 			get
@@ -1012,107 +1199,61 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LineColor", DbType="VarChar(8) NOT NULL", CanBeNull=false)]
-		public string LineColor
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReportStatus", DbType="Int NOT NULL")]
+		public int ReportStatus
 		{
 			get
 			{
-				return this._LineColor;
+				return this._ReportStatus;
 			}
 			set
 			{
-				if ((this._LineColor != value))
+				if ((this._ReportStatus != value))
 				{
-					this.OnLineColorChanging(value);
+					this.OnReportStatusChanging(value);
 					this.SendPropertyChanging();
-					this._LineColor = value;
-					this.SendPropertyChanged("LineColor");
-					this.OnLineColorChanged();
+					this._ReportStatus = value;
+					this.SendPropertyChanged("ReportStatus");
+					this.OnReportStatusChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Width", DbType="Int NOT NULL")]
-		public int Width
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_IncidentReport", Storage="_User", ThisKey="CreatorId", OtherKey="Id", IsForeignKey=true)]
+		public User User
 		{
 			get
 			{
-				return this._Width;
+				return this._User.Entity;
 			}
 			set
 			{
-				if ((this._Width != value))
+				User previousValue = this._User.Entity;
+				if (((previousValue != value) 
+							|| (this._User.HasLoadedOrAssignedValue == false)))
 				{
-					this.OnWidthChanging(value);
 					this.SendPropertyChanging();
-					this._Width = value;
-					this.SendPropertyChanged("Width");
-					this.OnWidthChanged();
+					if ((previousValue != null))
+					{
+						this._User.Entity = null;
+						previousValue.IncidentReports.Remove(this);
+					}
+					this._User.Entity = value;
+					if ((value != null))
+					{
+						value.IncidentReports.Add(this);
+						this._CreatorId = value.Id;
+					}
+					else
+					{
+						this._CreatorId = default(int);
+					}
+					this.SendPropertyChanged("User");
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Coordinates", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
-		public string Coordinates
-		{
-			get
-			{
-				return this._Coordinates;
-			}
-			set
-			{
-				if ((this._Coordinates != value))
-				{
-					this.OnCoordinatesChanging(value);
-					this.SendPropertyChanging();
-					this._Coordinates = value;
-					this.SendPropertyChanged("Coordinates");
-					this.OnCoordinatesChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="Int NOT NULL")]
-		public int Type
-		{
-			get
-			{
-				return this._Type;
-			}
-			set
-			{
-				if ((this._Type != value))
-				{
-					this.OnTypeChanging(value);
-					this.SendPropertyChanging();
-					this._Type = value;
-					this.SendPropertyChanged("Type");
-					this.OnTypeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Uid", DbType="Int NOT NULL")]
-		public int Uid
-		{
-			get
-			{
-				return this._Uid;
-			}
-			set
-			{
-				if ((this._Uid != value))
-				{
-					this.OnUidChanging(value);
-					this.SendPropertyChanging();
-					this._Uid = value;
-					this.SendPropertyChanged("Uid");
-					this.OnUidChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Map_Line", Storage="_Map", ThisKey="MapTypeId,MapVer", OtherKey="MapTypeId,Ver", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Map_IncidentReport", Storage="_Map", ThisKey="MapTypeId,MapVer", OtherKey="MapTypeId,Ver", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public Map Map
 		{
 			get
@@ -1129,12 +1270,12 @@ namespace FiberKartan.Database
 					if ((previousValue != null))
 					{
 						this._Map.Entity = null;
-						previousValue.Lines.Remove(this);
+						previousValue.IncidentReports.Remove(this);
 					}
 					this._Map.Entity = value;
 					if ((value != null))
 					{
-						value.Lines.Add(this);
+						value.IncidentReports.Add(this);
 						this._MapTypeId = value.MapTypeId;
 						this._MapVer = value.Ver;
 					}
@@ -1144,6 +1285,40 @@ namespace FiberKartan.Database
 						this._MapVer = default(int);
 					}
 					this.SendPropertyChanged("Map");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ServiceCompany_IncidentReport", Storage="_ServiceCompany", ThisKey="ServiceCompanyId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public ServiceCompany ServiceCompany
+		{
+			get
+			{
+				return this._ServiceCompany.Entity;
+			}
+			set
+			{
+				ServiceCompany previousValue = this._ServiceCompany.Entity;
+				if (((previousValue != value) 
+							|| (this._ServiceCompany.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ServiceCompany.Entity = null;
+						previousValue.IncidentReports.Remove(this);
+					}
+					this._ServiceCompany.Entity = value;
+					if ((value != null))
+					{
+						value.IncidentReports.Add(this);
+						this._ServiceCompanyId = value.Id;
+					}
+					else
+					{
+						this._ServiceCompanyId = default(int);
+					}
+					this.SendPropertyChanged("ServiceCompany");
 				}
 			}
 		}
@@ -1191,11 +1366,11 @@ namespace FiberKartan.Database
 		
 		private int _CreatorId;
 		
-		private EntitySet<Line> _Lines;
+		private System.Nullable<System.DateTime> _Published;
 		
-		private EntitySet<Marker> _Markers;
+		private string _Layers;
 		
-		private EntitySet<Region> _Regions;
+		private EntitySet<IncidentReport> _IncidentReports;
 		
 		private EntityRef<User> _User;
 		
@@ -1221,13 +1396,15 @@ namespace FiberKartan.Database
     partial void OnPreviousVerChanged();
     partial void OnCreatorIdChanging(int value);
     partial void OnCreatorIdChanged();
+    partial void OnPublishedChanging(System.Nullable<System.DateTime> value);
+    partial void OnPublishedChanged();
+    partial void OnLayersChanging(string value);
+    partial void OnLayersChanged();
     #endregion
 		
 		public Map()
 		{
-			this._Lines = new EntitySet<Line>(new Action<Line>(this.attach_Lines), new Action<Line>(this.detach_Lines));
-			this._Markers = new EntitySet<Marker>(new Action<Marker>(this.attach_Markers), new Action<Marker>(this.detach_Markers));
-			this._Regions = new EntitySet<Region>(new Action<Region>(this.attach_Regions), new Action<Region>(this.detach_Regions));
+			this._IncidentReports = new EntitySet<IncidentReport>(new Action<IncidentReport>(this.attach_IncidentReports), new Action<IncidentReport>(this.detach_IncidentReports));
 			this._User = default(EntityRef<User>);
 			this._MapType = default(EntityRef<MapType>);
 			OnCreated();
@@ -1401,42 +1578,56 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Map_Line", Storage="_Lines", ThisKey="MapTypeId,Ver", OtherKey="MapTypeId,MapVer")]
-		public EntitySet<Line> Lines
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Published", DbType="DateTime")]
+		public System.Nullable<System.DateTime> Published
 		{
 			get
 			{
-				return this._Lines;
+				return this._Published;
 			}
 			set
 			{
-				this._Lines.Assign(value);
+				if ((this._Published != value))
+				{
+					this.OnPublishedChanging(value);
+					this.SendPropertyChanging();
+					this._Published = value;
+					this.SendPropertyChanged("Published");
+					this.OnPublishedChanged();
+				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Map_Marker", Storage="_Markers", ThisKey="MapTypeId,Ver", OtherKey="MapTypeId,MapVer")]
-		public EntitySet<Marker> Markers
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Layers", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
+		public string Layers
 		{
 			get
 			{
-				return this._Markers;
+				return this._Layers;
 			}
 			set
 			{
-				this._Markers.Assign(value);
+				if ((this._Layers != value))
+				{
+					this.OnLayersChanging(value);
+					this.SendPropertyChanging();
+					this._Layers = value;
+					this.SendPropertyChanged("Layers");
+					this.OnLayersChanged();
+				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Map_Region", Storage="_Regions", ThisKey="MapTypeId,Ver", OtherKey="MapTypeId,MapVer")]
-		public EntitySet<Region> Regions
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Map_IncidentReport", Storage="_IncidentReports", ThisKey="MapTypeId,Ver", OtherKey="MapTypeId,MapVer")]
+		public EntitySet<IncidentReport> IncidentReports
 		{
 			get
 			{
-				return this._Regions;
+				return this._IncidentReports;
 			}
 			set
 			{
-				this._Regions.Assign(value);
+				this._IncidentReports.Assign(value);
 			}
 		}
 		
@@ -1528,37 +1719,13 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		private void attach_Lines(Line entity)
+		private void attach_IncidentReports(IncidentReport entity)
 		{
 			this.SendPropertyChanging();
 			entity.Map = this;
 		}
 		
-		private void detach_Lines(Line entity)
-		{
-			this.SendPropertyChanging();
-			entity.Map = null;
-		}
-		
-		private void attach_Markers(Marker entity)
-		{
-			this.SendPropertyChanging();
-			entity.Map = this;
-		}
-		
-		private void detach_Markers(Marker entity)
-		{
-			this.SendPropertyChanging();
-			entity.Map = null;
-		}
-		
-		private void attach_Regions(Region entity)
-		{
-			this.SendPropertyChanging();
-			entity.Map = this;
-		}
-		
-		private void detach_Regions(Region entity)
+		private void detach_IncidentReports(IncidentReport entity)
 		{
 			this.SendPropertyChanging();
 			entity.Map = null;
@@ -2105,8 +2272,6 @@ namespace FiberKartan.Database
 		
 		private string _Title;
 		
-		private string _MapUrl;
-		
 		private string _WelcomeMessage;
 		
 		private int _ViewSettings;
@@ -2139,8 +2304,6 @@ namespace FiberKartan.Database
     partial void OnCreatorIdChanged();
     partial void OnTitleChanging(string value);
     partial void OnTitleChanged();
-    partial void OnMapUrlChanging(string value);
-    partial void OnMapUrlChanged();
     partial void OnWelcomeMessageChanging(string value);
     partial void OnWelcomeMessageChanged();
     partial void OnViewSettingsChanging(int value);
@@ -2223,26 +2386,6 @@ namespace FiberKartan.Database
 					this._Title = value;
 					this.SendPropertyChanged("Title");
 					this.OnTitleChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MapUrl", DbType="NVarChar(255) NOT NULL", CanBeNull=false)]
-		public string MapUrl
-		{
-			get
-			{
-				return this._MapUrl;
-			}
-			set
-			{
-				if ((this._MapUrl != value))
-				{
-					this.OnMapUrlChanging(value);
-					this.SendPropertyChanging();
-					this._MapUrl = value;
-					this.SendPropertyChanged("MapUrl");
-					this.OnMapUrlChanged();
 				}
 			}
 		}
@@ -2774,396 +2917,6 @@ namespace FiberKartan.Database
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Marker")]
-	public partial class Marker : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private int _MapTypeId;
-		
-		private int _MapVer;
-		
-		private int _MarkerTypeId;
-		
-		private string _Name;
-		
-		private string _Description;
-		
-		private double _Latitude;
-		
-		private double _Longitude;
-		
-		private int _Settings;
-		
-		private string _OptionalInfo;
-		
-		private int _Uid;
-		
-		private EntityRef<Map> _Map;
-		
-		private EntityRef<MarkerType> _MarkerType;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnMapTypeIdChanging(int value);
-    partial void OnMapTypeIdChanged();
-    partial void OnMapVerChanging(int value);
-    partial void OnMapVerChanged();
-    partial void OnMarkerTypeIdChanging(int value);
-    partial void OnMarkerTypeIdChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
-    partial void OnDescriptionChanging(string value);
-    partial void OnDescriptionChanged();
-    partial void OnLatitudeChanging(double value);
-    partial void OnLatitudeChanged();
-    partial void OnLongitudeChanging(double value);
-    partial void OnLongitudeChanged();
-    partial void OnSettingsChanging(int value);
-    partial void OnSettingsChanged();
-    partial void OnOptionalInfoChanging(string value);
-    partial void OnOptionalInfoChanged();
-    partial void OnUidChanging(int value);
-    partial void OnUidChanged();
-    #endregion
-		
-		public Marker()
-		{
-			this._Map = default(EntityRef<Map>);
-			this._MarkerType = default(EntityRef<MarkerType>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MapTypeId", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int MapTypeId
-		{
-			get
-			{
-				return this._MapTypeId;
-			}
-			set
-			{
-				if ((this._MapTypeId != value))
-				{
-					if (this._Map.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnMapTypeIdChanging(value);
-					this.SendPropertyChanging();
-					this._MapTypeId = value;
-					this.SendPropertyChanged("MapTypeId");
-					this.OnMapTypeIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MapVer", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int MapVer
-		{
-			get
-			{
-				return this._MapVer;
-			}
-			set
-			{
-				if ((this._MapVer != value))
-				{
-					if (this._Map.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnMapVerChanging(value);
-					this.SendPropertyChanging();
-					this._MapVer = value;
-					this.SendPropertyChanged("MapVer");
-					this.OnMapVerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MarkerTypeId", DbType="Int NOT NULL")]
-		public int MarkerTypeId
-		{
-			get
-			{
-				return this._MarkerTypeId;
-			}
-			set
-			{
-				if ((this._MarkerTypeId != value))
-				{
-					if (this._MarkerType.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnMarkerTypeIdChanging(value);
-					this.SendPropertyChanging();
-					this._MarkerTypeId = value;
-					this.SendPropertyChanged("MarkerTypeId");
-					this.OnMarkerTypeIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(512)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
-			set
-			{
-				if ((this._Name != value))
-				{
-					this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(MAX)")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
-			set
-			{
-				if ((this._Description != value))
-				{
-					this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Latitude", DbType="Float NOT NULL")]
-		public double Latitude
-		{
-			get
-			{
-				return this._Latitude;
-			}
-			set
-			{
-				if ((this._Latitude != value))
-				{
-					this.OnLatitudeChanging(value);
-					this.SendPropertyChanging();
-					this._Latitude = value;
-					this.SendPropertyChanged("Latitude");
-					this.OnLatitudeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Longitude", DbType="Float NOT NULL")]
-		public double Longitude
-		{
-			get
-			{
-				return this._Longitude;
-			}
-			set
-			{
-				if ((this._Longitude != value))
-				{
-					this.OnLongitudeChanging(value);
-					this.SendPropertyChanging();
-					this._Longitude = value;
-					this.SendPropertyChanged("Longitude");
-					this.OnLongitudeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Settings", DbType="Int NOT NULL")]
-		public int Settings
-		{
-			get
-			{
-				return this._Settings;
-			}
-			set
-			{
-				if ((this._Settings != value))
-				{
-					this.OnSettingsChanging(value);
-					this.SendPropertyChanging();
-					this._Settings = value;
-					this.SendPropertyChanged("Settings");
-					this.OnSettingsChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OptionalInfo", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
-		public string OptionalInfo
-		{
-			get
-			{
-				return this._OptionalInfo;
-			}
-			set
-			{
-				if ((this._OptionalInfo != value))
-				{
-					this.OnOptionalInfoChanging(value);
-					this.SendPropertyChanging();
-					this._OptionalInfo = value;
-					this.SendPropertyChanged("OptionalInfo");
-					this.OnOptionalInfoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Uid", DbType="Int NOT NULL")]
-		public int Uid
-		{
-			get
-			{
-				return this._Uid;
-			}
-			set
-			{
-				if ((this._Uid != value))
-				{
-					this.OnUidChanging(value);
-					this.SendPropertyChanging();
-					this._Uid = value;
-					this.SendPropertyChanged("Uid");
-					this.OnUidChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Map_Marker", Storage="_Map", ThisKey="MapTypeId,MapVer", OtherKey="MapTypeId,Ver", IsForeignKey=true)]
-		public Map Map
-		{
-			get
-			{
-				return this._Map.Entity;
-			}
-			set
-			{
-				Map previousValue = this._Map.Entity;
-				if (((previousValue != value) 
-							|| (this._Map.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Map.Entity = null;
-						previousValue.Markers.Remove(this);
-					}
-					this._Map.Entity = value;
-					if ((value != null))
-					{
-						value.Markers.Add(this);
-						this._MapTypeId = value.MapTypeId;
-						this._MapVer = value.Ver;
-					}
-					else
-					{
-						this._MapTypeId = default(int);
-						this._MapVer = default(int);
-					}
-					this.SendPropertyChanged("Map");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MarkerType_Marker", Storage="_MarkerType", ThisKey="MarkerTypeId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
-		public MarkerType MarkerType
-		{
-			get
-			{
-				return this._MarkerType.Entity;
-			}
-			set
-			{
-				MarkerType previousValue = this._MarkerType.Entity;
-				if (((previousValue != value) 
-							|| (this._MarkerType.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._MarkerType.Entity = null;
-						previousValue.Markers.Remove(this);
-					}
-					this._MarkerType.Entity = value;
-					if ((value != null))
-					{
-						value.Markers.Add(this);
-						this._MarkerTypeId = value.Id;
-					}
-					else
-					{
-						this._MarkerTypeId = default(int);
-					}
-					this.SendPropertyChanged("MarkerType");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.MarkerType")]
 	public partial class MarkerType : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -3179,8 +2932,6 @@ namespace FiberKartan.Database
 		private string _DestIcon;
 		
 		private string _Description;
-		
-		private EntitySet<Marker> _Markers;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -3200,7 +2951,6 @@ namespace FiberKartan.Database
 		
 		public MarkerType()
 		{
-			this._Markers = new EntitySet<Marker>(new Action<Marker>(this.attach_Markers), new Action<Marker>(this.detach_Markers));
 			OnCreated();
 		}
 		
@@ -3304,19 +3054,6 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MarkerType_Marker", Storage="_Markers", ThisKey="Id", OtherKey="MarkerTypeId")]
-		public EntitySet<Marker> Markers
-		{
-			get
-			{
-				return this._Markers;
-			}
-			set
-			{
-				this._Markers.Assign(value);
-			}
-		}
-		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -3335,18 +3072,6 @@ namespace FiberKartan.Database
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_Markers(Marker entity)
-		{
-			this.SendPropertyChanging();
-			entity.MarkerType = this;
-		}
-		
-		private void detach_Markers(Marker entity)
-		{
-			this.SendPropertyChanging();
-			entity.MarkerType = null;
 		}
 	}
 	
@@ -3536,31 +3261,23 @@ namespace FiberKartan.Database
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Region")]
-	public partial class Region : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.NotificationMessage")]
+	public partial class NotificationMessage : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		private int _Id;
 		
-		private int _MapTypeId;
+		private string _Title;
 		
-		private int _MapVer;
+		private string _Body;
 		
-		private string _Name;
+		private System.DateTime _Created;
 		
-		private string _Description;
+		private int _CreatorId;
 		
-		private string _FillColor;
-		
-		private string _LineColor;
-		
-		private string _Coordinates;
-		
-		private int _Uid;
-		
-		private EntityRef<Map> _Map;
+		private EntityRef<User> _User;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -3568,27 +3285,19 @@ namespace FiberKartan.Database
     partial void OnCreated();
     partial void OnIdChanging(int value);
     partial void OnIdChanged();
-    partial void OnMapTypeIdChanging(int value);
-    partial void OnMapTypeIdChanged();
-    partial void OnMapVerChanging(int value);
-    partial void OnMapVerChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
-    partial void OnDescriptionChanging(string value);
-    partial void OnDescriptionChanged();
-    partial void OnFillColorChanging(string value);
-    partial void OnFillColorChanged();
-    partial void OnLineColorChanging(string value);
-    partial void OnLineColorChanged();
-    partial void OnCoordinatesChanging(string value);
-    partial void OnCoordinatesChanged();
-    partial void OnUidChanging(int value);
-    partial void OnUidChanged();
+    partial void OnTitleChanging(string value);
+    partial void OnTitleChanged();
+    partial void OnBodyChanging(string value);
+    partial void OnBodyChanged();
+    partial void OnCreatedChanging(System.DateTime value);
+    partial void OnCreatedChanged();
+    partial void OnCreatorIdChanging(int value);
+    partial void OnCreatorIdChanged();
     #endregion
 		
-		public Region()
+		public NotificationMessage()
 		{
-			this._Map = default(EntityRef<Map>);
+			this._User = default(EntityRef<User>);
 			OnCreated();
 		}
 		
@@ -3612,206 +3321,120 @@ namespace FiberKartan.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MapTypeId", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int MapTypeId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Title", DbType="NVarChar(255) NOT NULL", CanBeNull=false)]
+		public string Title
 		{
 			get
 			{
-				return this._MapTypeId;
+				return this._Title;
 			}
 			set
 			{
-				if ((this._MapTypeId != value))
+				if ((this._Title != value))
 				{
-					if (this._Map.HasLoadedOrAssignedValue)
+					this.OnTitleChanging(value);
+					this.SendPropertyChanging();
+					this._Title = value;
+					this.SendPropertyChanged("Title");
+					this.OnTitleChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Body", DbType="NVarChar(4000)")]
+		public string Body
+		{
+			get
+			{
+				return this._Body;
+			}
+			set
+			{
+				if ((this._Body != value))
+				{
+					this.OnBodyChanging(value);
+					this.SendPropertyChanging();
+					this._Body = value;
+					this.SendPropertyChanged("Body");
+					this.OnBodyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Created", DbType="DateTime NOT NULL")]
+		public System.DateTime Created
+		{
+			get
+			{
+				return this._Created;
+			}
+			set
+			{
+				if ((this._Created != value))
+				{
+					this.OnCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._Created = value;
+					this.SendPropertyChanged("Created");
+					this.OnCreatedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatorId", DbType="Int NOT NULL")]
+		public int CreatorId
+		{
+			get
+			{
+				return this._CreatorId;
+			}
+			set
+			{
+				if ((this._CreatorId != value))
+				{
+					if (this._User.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
-					this.OnMapTypeIdChanging(value);
+					this.OnCreatorIdChanging(value);
 					this.SendPropertyChanging();
-					this._MapTypeId = value;
-					this.SendPropertyChanged("MapTypeId");
-					this.OnMapTypeIdChanged();
+					this._CreatorId = value;
+					this.SendPropertyChanged("CreatorId");
+					this.OnCreatorIdChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MapVer", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int MapVer
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_NotificationMessage", Storage="_User", ThisKey="CreatorId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public User User
 		{
 			get
 			{
-				return this._MapVer;
+				return this._User.Entity;
 			}
 			set
 			{
-				if ((this._MapVer != value))
-				{
-					if (this._Map.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnMapVerChanging(value);
-					this.SendPropertyChanging();
-					this._MapVer = value;
-					this.SendPropertyChanged("MapVer");
-					this.OnMapVerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(512)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
-			set
-			{
-				if ((this._Name != value))
-				{
-					this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(MAX)")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
-			set
-			{
-				if ((this._Description != value))
-				{
-					this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FillColor", DbType="VarChar(8) NOT NULL", CanBeNull=false)]
-		public string FillColor
-		{
-			get
-			{
-				return this._FillColor;
-			}
-			set
-			{
-				if ((this._FillColor != value))
-				{
-					this.OnFillColorChanging(value);
-					this.SendPropertyChanging();
-					this._FillColor = value;
-					this.SendPropertyChanged("FillColor");
-					this.OnFillColorChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LineColor", DbType="VarChar(8) NOT NULL", CanBeNull=false)]
-		public string LineColor
-		{
-			get
-			{
-				return this._LineColor;
-			}
-			set
-			{
-				if ((this._LineColor != value))
-				{
-					this.OnLineColorChanging(value);
-					this.SendPropertyChanging();
-					this._LineColor = value;
-					this.SendPropertyChanged("LineColor");
-					this.OnLineColorChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Coordinates", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
-		public string Coordinates
-		{
-			get
-			{
-				return this._Coordinates;
-			}
-			set
-			{
-				if ((this._Coordinates != value))
-				{
-					this.OnCoordinatesChanging(value);
-					this.SendPropertyChanging();
-					this._Coordinates = value;
-					this.SendPropertyChanged("Coordinates");
-					this.OnCoordinatesChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Uid", DbType="Int NOT NULL")]
-		public int Uid
-		{
-			get
-			{
-				return this._Uid;
-			}
-			set
-			{
-				if ((this._Uid != value))
-				{
-					this.OnUidChanging(value);
-					this.SendPropertyChanging();
-					this._Uid = value;
-					this.SendPropertyChanged("Uid");
-					this.OnUidChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Map_Region", Storage="_Map", ThisKey="MapTypeId,MapVer", OtherKey="MapTypeId,Ver", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
-		public Map Map
-		{
-			get
-			{
-				return this._Map.Entity;
-			}
-			set
-			{
-				Map previousValue = this._Map.Entity;
+				User previousValue = this._User.Entity;
 				if (((previousValue != value) 
-							|| (this._Map.HasLoadedOrAssignedValue == false)))
+							|| (this._User.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._Map.Entity = null;
-						previousValue.Regions.Remove(this);
+						this._User.Entity = null;
+						previousValue.NotificationMessages.Remove(this);
 					}
-					this._Map.Entity = value;
+					this._User.Entity = value;
 					if ((value != null))
 					{
-						value.Regions.Add(this);
-						this._MapTypeId = value.MapTypeId;
-						this._MapVer = value.Ver;
+						value.NotificationMessages.Add(this);
+						this._CreatorId = value.Id;
 					}
 					else
 					{
-						this._MapTypeId = default(int);
-						this._MapVer = default(int);
+						this._CreatorId = default(int);
 					}
-					this.SendPropertyChanged("Map");
+					this.SendPropertyChanged("User");
 				}
 			}
 		}
@@ -3859,6 +3482,8 @@ namespace FiberKartan.Database
 		
 		private string _ContactPersonPhone;
 		
+		private EntitySet<IncidentReport> _IncidentReports;
+		
 		private EntitySet<MapType> _MapTypes;
 		
     #region Extensibility Method Definitions
@@ -3885,6 +3510,7 @@ namespace FiberKartan.Database
 		
 		public ServiceCompany()
 		{
+			this._IncidentReports = new EntitySet<IncidentReport>(new Action<IncidentReport>(this.attach_IncidentReports), new Action<IncidentReport>(this.detach_IncidentReports));
 			this._MapTypes = new EntitySet<MapType>(new Action<MapType>(this.attach_MapTypes), new Action<MapType>(this.detach_MapTypes));
 			OnCreated();
 		}
@@ -4049,6 +3675,19 @@ namespace FiberKartan.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ServiceCompany_IncidentReport", Storage="_IncidentReports", ThisKey="Id", OtherKey="ServiceCompanyId")]
+		public EntitySet<IncidentReport> IncidentReports
+		{
+			get
+			{
+				return this._IncidentReports;
+			}
+			set
+			{
+				this._IncidentReports.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ServiceCompany_MapType", Storage="_MapTypes", ThisKey="Id", OtherKey="ServiceCompanyId")]
 		public EntitySet<MapType> MapTypes
 		{
@@ -4080,6 +3719,18 @@ namespace FiberKartan.Database
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_IncidentReports(IncidentReport entity)
+		{
+			this.SendPropertyChanging();
+			entity.ServiceCompany = this;
+		}
+		
+		private void detach_IncidentReports(IncidentReport entity)
+		{
+			this.SendPropertyChanging();
+			entity.ServiceCompany = null;
 		}
 		
 		private void attach_MapTypes(MapType entity)

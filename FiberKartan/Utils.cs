@@ -79,47 +79,6 @@ namespace FiberKartan
         }
 
         /// <summary>
-        /// Metoden används för att returnera vilken tillträdesnivå en användare har till en karta.
-        /// </summary>
-        /// <param name="mapTypeId">Id på karta som man vill granska</param>
-        /// <returns>Vilken tillträdesnivå man har till kartan</returns>
-        public static MapAccessRights GetMapAccessRights(int mapTypeId)
-        {
-            if (mapTypeId < 1)
-            {
-                return MapAccessRights.None;
-            }
-
-            // Kolla om vi är inloggade.
-            if (!HttpContext.Current.User.Identity.IsAuthenticated)
-            {
-                return MapAccessRights.None;
-            }
-
-            var fiberDb = new FiberDataContext();
-            var user = fiberDb.Users.Where(u => u.Username == HttpContext.Current.User.Identity.Name).SingleOrDefault();
-            if (user == null)
-            {
-                return MapAccessRights.None;
-            }
-
-            /*if (user.IsAdmin)
-            {
-                // Adminusers has full access, so that we could help users when in trouble.
-                return MapAccessRights.Read | MapAccessRights.Export | MapAccessRights.Write | MapAccessRights.FullAccess;
-            }*/
-
-            var access = fiberDb.MapTypeAccessRights.Where(mtar => mtar.MapTypeId == mapTypeId && mtar.UserId == user.Id).SingleOrDefault();
-
-            if (access == null)
-            {
-                return MapAccessRights.None;
-            }
-
-            return (MapAccessRights)access.AccessRight;
-        }
-
-        /// <summary>
         /// Metoden används för att returnera vilken tillträdesnivå en användare har till en karta. Metoden förutsätter att parametern "mid" finns på querystringen, om inte, använd den överlagrade metoden som tar en mapTypeId-parameter.
         /// </summary>
         /// <returns>Vilken tillträdesnivå man har till kartan</returns>
@@ -358,19 +317,6 @@ namespace FiberKartan
                 .Replace("/", "_")
                 .Replace("+", "-");
         }
-    }
-
-    /// <summary>
-    /// Vilka tillträdesnivåer som finns för en karta.
-    /// </summary>
-    [Flags]
-    public enum MapAccessRights : int
-    {
-        None = 0,
-        Read = 1,   // Kan granska en karta och alla dess versioner.
-        Export = 2, // Kan exportera en karta och alla dess versioner.
-        Write = 4,  // Kan modifiera en karta och skapa nya versioner.
-        FullAccess = 8  // Fulla rättigheter, kan även bjuda in och ge rättigheter till andra användare.
     }
 
     /// <summary>

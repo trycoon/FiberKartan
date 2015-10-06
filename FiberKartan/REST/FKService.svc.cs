@@ -15,7 +15,9 @@ using System.ServiceModel.Web;
 using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
-using FiberKartan;
+using FiberKartan.Database;
+using FiberKartan.REST.Models;
+using FiberKartan.REST.Responses;
 using Newtonsoft.Json;
 
 /*
@@ -41,6 +43,76 @@ namespace FiberKartan.REST
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class FKService : IFKService
     {
+        /// <summary>
+        /// Database reference.
+        /// </summary>
+        MsSQL db = new MsSQL(); //TODO: Switch to interface instead of concrete class.
+
+        /// <summary>
+        /// Metod som returnerar en lista på tillgängliga kartor.
+        /// </summary>
+        /// <returns>Lista på kartor</returns>
+        public GetMapsResponse GetMaps()
+        {
+            var fiberDb = new FiberDataContext();
+            var response = new GetMapsResponse();
+
+            if (!HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                response.ErrorCode = ErrorCode.NotLoggedIn;
+                response.ErrorMessage = "Du måste vara inloggad för att hämta lista på kartor.";
+
+                return response;
+            }
+
+            var user = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).FirstOrDefault();
+            response.Maps = db.GetMapTypes(user.Id);
+
+            return response;
+        }
+
+        /// <summary>
+        /// Metod som returnerar en karta.
+        /// </summary>
+        /// <param name="mapTypeId">Id på karta</param>
+        /// <param name="version">[Frivilligt] Version av kartan som skall hämtas, om inget versionsnummer anges så antas den senaste versionen</param>
+        /// <returns>Karta</returns>
+        public GetMapResponse GetMap(string mapTypeId, string version)
+        {
+            var fiberDb = new FiberDataContext();
+            var response = new GetMapResponse();
+
+            if (!HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                response.ErrorCode = ErrorCode.NotLoggedIn;
+                response.ErrorMessage = "Du måste vara inloggad för att hämta kartversion.";
+
+                return response;
+            }
+
+            if (string.IsNullOrEmpty(mapTypeId) || string.IsNullOrEmpty(version))
+            {
+                response.ErrorCode = ErrorCode.MissingInformation;
+                response.ErrorMessage = "mapTypeId och/eller version saknas i anrop.";
+
+                return response;
+            }
+
+            int mapId = 0;
+            int ver = 0;
+            int.TryParse(mapTypeId, out mapId);
+            int.TryParse(version, out ver);
+
+            if (!Utils.GetMapAccessRights(mapId).HasFlag(MapAccessRights.Read))
+            {
+                return new GetMapResponse() { ErrorCode = ErrorCode.NoAccessToMap, ErrorMessage = "Du saknar behörighet visa denna karta." };
+            }
+
+            // TODO: response.Map = fiberDb.Maps.Where(m => m.MapTypeId == mapId && m.Ver == ver).SingleOrDefault(m => new ViewMap(m));
+
+            return response;
+        }
+
         /// <summary>
         /// Metod som sparar ner ändringar av en karta.
         /// </summary>
@@ -123,11 +195,11 @@ namespace FiberKartan.REST
                 {
                     if (layer.Markers == null)
                     {
-                        layer.Markers = new List<Marker>();
+                        layer.Markers = new List<FiberKartan.REST.Models.Marker>();
                     }
                     if (layer.Lines == null)
                     {
-                        layer.Lines = new List<Line>();
+                        layer.Lines = new List<FiberKartan.REST.Models.Line>();
                     }
                     if (layer.Polygons == null)
                     {
@@ -206,207 +278,6 @@ namespace FiberKartan.REST
             return response;
         }
 
-        /// <summary>
-        /// Lägger till nya/uppdaterar befintliga markörer till ett lager.
-        /// </summary>
-        /// <param name="newMarkers">lista med nya/uppdaterade markörer.</param>
-        /// <param name="existingMarkers">existerande lista med markörer i lagret.</param>
-        private void AddMarkers(List<Marker> newMarkers, List<Marker> existingMarkers)
-        {
-            Utils.Log("Lägger till markörer till kart-lager.", System.Diagnostics.EventLogEntryType.Information, 126);
-
-            List<Marker> resultList = new List<Marker>(existingMarkers.Count);
-
-            var lookup = existingMarkers.ToDictionary(x => x.Id, x => x);
-
-            foreach (var marker in newMarkers)
-            {
-                // Ny markör?
-                if (marker.Id < 0)
-                {
-                    resultList.Add(new Marker()
-                    {
-                        Uid = 0,    // TODO: Gör nått smart!
-                        Name = Utils.RemoveInvalidXmlChars(marker.Name, true) ?? string.Empty,
-                        Description = Utils.RemoveInvalidXmlChars(marker.Desc, true) ?? string.Empty,
-                        MarkerTypeId = marker.MarkId,
-                        Latitude = double.Parse(marker.Lat, CultureInfo.InvariantCulture.NumberFormat),
-                        Longitude = double.Parse(marker.Lng, CultureInfo.InvariantCulture.NumberFormat),
-                        Settings = marker.Settings,
-                        OptionalInfo = (marker.OptionalInfo ?? "{}").Trim()
-                    });
-                }
-                else
-                {
-                    Marker oldMarker;
-                    lookup.TryGetValue(marker.Id, out oldMarker);
-
-                    if (oldMarker == null)
-                    {
-
-                    }
-                    else
-                    {
-                        resultList.Add(new Marker()
-                        {
-                            Uid = updatedMarker.Uid,
-                            Name = Utils.RemoveInvalidXmlChars(updatedMarker.Name, true) ?? string.Empty,
-                            Description = Utils.RemoveInvalidXmlChars(updatedMarker.Desc, true) ?? Utils.RemoveInvalidXmlChars(existingMarker.Description, true),
-                            MarkerTypeId = updatedMarker.MarkId,
-                            Latitude = double.Parse(updatedMarker.Lat, CultureInfo.InvariantCulture.NumberFormat),
-                            Longitude = double.Parse(updatedMarker.Lng, CultureInfo.InvariantCulture.NumberFormat),
-                            Settings = updatedMarker.Settings,
-                            OptionalInfo = (updatedMarker.OptionalInfo ?? "{}").Trim()
-                        });
-                    }                 
-                }
-            }
-        }
-
-        /// <summary>
-        /// Lägger till nya/uppdaterar befintliga linjer till ett lager.
-        /// </summary>
-        /// <param name="newLines">lista med nya/uppdaterade linjer.</param>
-        /// <param name="existingLines">existerande lista med linjer i lagret.</param>
-        private void AddLines(List<Line> newLines, List<Line> existingLines)
-        {
-            Utils.Log("Kopierar befintliga linjer till ny kartversion.", System.Diagnostics.EventLogEntryType.Information, 126);
-
-            // Uppdaterar grävsträckor med eventuell ny information, hämtar bara ut de grävsträckor som fortfarande finns, övriga har blivit borttagna.
-           /* foreach (var existingLine in existingMap.Lines.Where(el => mapContent.Cables.Exists(l => l.Id == el.Id)))
-            {
-                var updatedLine = (from ul in mapContent.Cables where ul.Id == existingLine.Id select ul).Single();
-
-                var updatedCoordinates = new StringBuilder();
-                for (var i = 0; i < updatedLine.Coord.Count; i++)
-                {
-                    updatedCoordinates.Append(updatedLine.Coord[i].Lat.ToString().Replace(",", "."));
-                    updatedCoordinates.Append(":");
-                    updatedCoordinates.Append(updatedLine.Coord[i].Lng.ToString().Replace(",", "."));
-                    if (i < updatedLine.Coord.Count - 1)
-                    {
-                        updatedCoordinates.Append("|");
-                    }
-                }
-
-                map.Lines.Add(new FiberKartan.Line()
-                {
-                    Uid = updatedLine.Uid,
-                    Name = Utils.RemoveInvalidXmlChars(updatedLine.Name, true) ?? string.Empty,
-                    Description = Utils.RemoveInvalidXmlChars(updatedLine.Desc, true) ?? Utils.RemoveInvalidXmlChars(existingLine.Description, true),
-                    LineColor = updatedLine.Color,
-                    Width = int.Parse(updatedLine.Width),
-                    Coordinates = updatedCoordinates.ToString(),
-                    Type = updatedLine.Type
-                });
-            }
-
-            Utils.Log("Lägger till nya linjer till ny kartversion.", System.Diagnostics.EventLogEntryType.Information, 126);
-
-            // Lägger till nya grävsträckor. Dessa kommer in med Id som är negativa.
-            foreach (var newLine in (from nl in mapContent.Cables where nl.Id < 0 select nl))
-            {
-                var newCoordinates = new StringBuilder();
-                for (var i = 0; i < newLine.Coord.Count; i++)
-                {
-                    newCoordinates.Append(newLine.Coord[i].Lat.ToString().Replace(",", "."));
-                    newCoordinates.Append(":");
-                    newCoordinates.Append(newLine.Coord[i].Lng.ToString().Replace(",", "."));
-                    if (i < newLine.Coord.Count - 1)
-                    {
-                        newCoordinates.Append("|");
-                    }
-                }
-
-                map.Lines.Add(new FiberKartan.Line()
-                {
-                    Uid = 0,    // Ny linje får Uid satt till Id av databasen.
-                    Name = Utils.RemoveInvalidXmlChars(newLine.Name, true) ?? string.Empty,
-                    Description = Utils.RemoveInvalidXmlChars(newLine.Desc, true) ?? string.Empty,
-                    LineColor = newLine.Color,
-                    Width = int.Parse(newLine.Width),
-                    Coordinates = newCoordinates.ToString(),
-                    Type = newLine.Type
-                });
-            }*/
-        }
-
-        /// <summary>
-        /// Lägger till nya/uppdaterar befintliga polygoner till ett lager.
-        /// </summary>
-        /// <param name="newPolygons">lista med nya/uppdaterade polygoner.</param>
-        /// <param name="existingPolygons">existerande lista med polygoner i lagret.</param>
-        private void AddPolygons(List<Polygon> newPolygons, List<Polygon> existingPolygons)
-        {
-            Utils.Log("Kopierar befintliga områden till ny kartversion.", System.Diagnostics.EventLogEntryType.Information, 126);
-
-            // Uppdaterar områden med eventuell ny information, hämtar bara ut de områden som fortfarande finns, övriga har blivit borttagna.
-           /* foreach (var existingRegion in existingMap.Regions.Where(er => mapContent.Regions.Exists(l => l.Id == er.Id)))
-            {
-                var updatedRegion = (from ur in mapContent.Regions where ur.Id == existingRegion.Id select ur).Single();
-
-                var updatedCoordinates = new StringBuilder();
-                for (var i = 0; i < updatedRegion.Coord.Count; i++)
-                {
-                    updatedCoordinates.Append(updatedRegion.Coord[i].Lat.ToString().Replace(",", "."));
-                    updatedCoordinates.Append(":");
-                    updatedCoordinates.Append(updatedRegion.Coord[i].Lng.ToString().Replace(",", "."));
-                    if (i < updatedRegion.Coord.Count - 1)
-                    {
-                        updatedCoordinates.Append("|");
-                    }
-                }
-
-                map.Regions.Add(new FiberKartan.Region()
-                {
-                    Uid = updatedRegion.Uid,
-                    Name = Utils.RemoveInvalidXmlChars(updatedRegion.Name, true) ?? string.Empty,
-                    Description = Utils.RemoveInvalidXmlChars(updatedRegion.Desc, true) ?? Utils.RemoveInvalidXmlChars(existingRegion.Description, true),
-                    FillColor = updatedRegion.FillColor,
-                    LineColor = updatedRegion.BorderColor,
-                    Coordinates = updatedCoordinates.ToString()
-                });
-            }
-
-            Utils.Log("Lägger till nya områden till ny kartversion.", System.Diagnostics.EventLogEntryType.Information, 126);
-
-            // Lägger till nya områden. Dessa kommer in med Id som är negativa.
-            foreach (var newRegion in (from nr in mapContent.Regions where nr.Id < 0 select nr))
-            {
-                var newCoordinates = new StringBuilder();
-                for (var i = 0; i < newRegion.Coord.Count; i++)
-                {
-                    newCoordinates.Append(newRegion.Coord[i].Lat.ToString().Replace(",", "."));
-                    newCoordinates.Append(":");
-                    newCoordinates.Append(newRegion.Coord[i].Lng.ToString().Replace(",", "."));
-                    if (i < newRegion.Coord.Count - 1)
-                    {
-                        newCoordinates.Append("|");
-                    }
-                }
-
-                map.Regions.Add(new FiberKartan.Region()
-                {
-                    Uid = 0,    // Nytt område får Uid satt till Id av databasen.
-                    Name = Utils.RemoveInvalidXmlChars(newRegion.Name, true) ?? string.Empty,
-                    Description = Utils.RemoveInvalidXmlChars(newRegion.Desc, true) ?? string.Empty,
-                    FillColor = newRegion.FillColor,
-                    LineColor = newRegion.BorderColor,
-                    Coordinates = newCoordinates.ToString()
-                });
-            }*/
-        }
-
-        /// <summary>
-        /// Metod som returnerar en karta.
-        /// </summary>
-        /// <param name="mapTypeId">Id på karta</param>
-        /// <param name="version">[Frivilligt] Version av kartan som skall hämtas, om inget versionsnummer anges så antas den senaste versionen</param>
-        /// <returns>Karta</returns>
-        public ViewMap GetMap(string mapTypeId, string version)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Metod som returnerar ett eller flera lager för en karta.
@@ -436,40 +307,7 @@ namespace FiberKartan.REST
                 return response;
             }
 
-            int mapId = 0;
-            int ver = 0;
-            int.TryParse(mapTypeId, out mapId);
-            int.TryParse(version, out ver);
-
-            FiberKartan.Map map = null;
-
-            if (ver > 0)
-            {
-                map = (from m in fiberDb.Maps where (m.MapTypeId == mapId && m.Ver == ver) select m).FirstOrDefault();
-            }
-            else
-            {
-                map = (from m in fiberDb.Maps.OrderByDescending(m => m.Ver) where m.MapTypeId == mapId select m).FirstOrDefault();
-            }
-
-            if (!Utils.GetMapAccessRights(mapId).HasFlag(MapAccessRights.Read))
-            {
-                response.ErrorCode = ErrorCode.NoAccessToMap;
-                response.ErrorMessage = "Du saknar behörighet för att hämta kartlager från denna karta.";
-
-                return response;
-            }
-
-            ids = ids.Trim();
-            var layersIds = ids.Split(',').Select(name => name.Trim()).ToArray();
-
-            Utils.Log("Hämtar kartlager \"" + ids + "\" för karta med MapId=" + mapId + " för användare=" + HttpContext.Current.User.Identity.Name + ".", System.Diagnostics.EventLogEntryType.Information, 130);
-
-            if (!string.IsNullOrEmpty(map.Layers))
-            {
-                var availableLayers = JsonConvert.DeserializeObject<List<Layer>>(map.Layers);
-                availableLayers = availableLayers.Where(layer => ids.Contains(layer.Id)).ToList<Layer>();
-            }
+            
 
             return response;
         }
@@ -527,11 +365,6 @@ namespace FiberKartan.REST
                     return new Response() { ErrorCode = ErrorCode.MissingInformation, ErrorMessage = "En felbeskrivning måste anges." };
                 }
 
-                if (report.Position == null || string.IsNullOrEmpty(report.Position.Latitude) || string.IsNullOrEmpty(report.Position.Longitude))
-                {
-                    return new Response() { ErrorCode = ErrorCode.MissingInformation, ErrorMessage = "Position måste anges." };
-                }
-
                 // Påvisa vem som skapade denna rapport.
                 var user = (from u in fiberDb.Users where (u.Username == HttpContext.Current.User.Identity.Name) select u).FirstOrDefault();
 
@@ -543,8 +376,8 @@ namespace FiberKartan.REST
                     Created = DateTime.Now,
                     ServiceCompanyId = existingMap.MapType.ServiceCompanyId.Value,
                     ReportStatus = 1,
-                    Latitude = double.Parse(report.Position.Latitude, CultureInfo.InvariantCulture.NumberFormat),
-                    Longitude = double.Parse(report.Position.Longitude, CultureInfo.InvariantCulture.NumberFormat),
+                    Latitude = report.Position.Latitude,
+                    Longitude = report.Position.Longitude,
                     Estate = report.Estate,
                     Description = report.Description
                 };
@@ -634,6 +467,192 @@ namespace FiberKartan.REST
             {
                 Message = "pong"
             };
+        }
+
+        /// <summary>
+        /// Lägger till nya/uppdaterar befintliga markörer till ett lager.
+        /// </summary>
+        /// <param name="newMarkers">lista med nya/uppdaterade markörer.</param>
+        /// <param name="existingMarkers">existerande lista med markörer i lagret.</param>
+        private void AddMarkers(List<FiberKartan.REST.Models.Marker> newMarkers, List<FiberKartan.REST.Models.Marker> existingMarkers)
+        {
+            Utils.Log("Lägger till markörer till kart-lager.", System.Diagnostics.EventLogEntryType.Information, 126);
+
+            List<Marker> resultList = new List<Marker>(existingMarkers.Count);
+
+            var lastId = existingMarkers.Max(m => m.Id);    // Hämta ut senaste använda Id. Så att nya markörer kan ta vid därifrån.
+            var lookup = existingMarkers.ToDictionary(x => x.Id, x => x);
+
+            foreach (var marker in newMarkers)
+            {
+                // Ny markör?
+                if (marker.Id < 0)
+                {
+                    resultList.Add(new Marker()
+                    {
+                        Id = ++lastId,
+                        Name = Utils.RemoveInvalidXmlChars(marker.Name, true) ?? string.Empty,
+                        Description = Utils.RemoveInvalidXmlChars(marker.Description, true) ?? string.Empty,
+                        Type = marker.Type,
+                        Latitude = marker.Latitude,
+                        Longitude = marker.Longitude,
+                        Settings = (marker.Settings ?? "{}").Trim()
+                    });
+                }
+                else
+                {
+                    Marker oldMarker;
+                    lookup.TryGetValue(marker.Id, out oldMarker);
+
+                    if (oldMarker != null)
+                    {
+                        resultList.Add(new Marker()
+                        {
+                            Id = marker.Id,
+                            Name = Utils.RemoveInvalidXmlChars(marker.Name, true) ?? string.Empty,
+                            Description = Utils.RemoveInvalidXmlChars(marker.Description, true) ?? Utils.RemoveInvalidXmlChars(marker.Description, true),
+                            Type = marker.Type,
+                            Latitude = marker.Latitude,
+                            Longitude = marker.Longitude,
+                            Settings = (marker.Settings ?? "{}").Trim()
+                        });
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Lägger till nya/uppdaterar befintliga linjer till ett lager.
+        /// </summary>
+        /// <param name="newLines">lista med nya/uppdaterade linjer.</param>
+        /// <param name="existingLines">existerande lista med linjer i lagret.</param>
+        private void AddLines(List<Line> newLines, List<Line> existingLines)
+        {
+            Utils.Log("Kopierar befintliga linjer till ny kartversion.", System.Diagnostics.EventLogEntryType.Information, 126);
+
+            // Uppdaterar grävsträckor med eventuell ny information, hämtar bara ut de grävsträckor som fortfarande finns, övriga har blivit borttagna.
+            /* foreach (var existingLine in existingMap.Lines.Where(el => mapContent.Cables.Exists(l => l.Id == el.Id)))
+             {
+                 var updatedLine = (from ul in mapContent.Cables where ul.Id == existingLine.Id select ul).Single();
+
+                 var updatedCoordinates = new StringBuilder();
+                 for (var i = 0; i < updatedLine.Coord.Count; i++)
+                 {
+                     updatedCoordinates.Append(updatedLine.Coord[i].Lat.ToString().Replace(",", "."));
+                     updatedCoordinates.Append(":");
+                     updatedCoordinates.Append(updatedLine.Coord[i].Lng.ToString().Replace(",", "."));
+                     if (i < updatedLine.Coord.Count - 1)
+                     {
+                         updatedCoordinates.Append("|");
+                     }
+                 }
+
+                 map.Lines.Add(new FiberKartan.Line()
+                 {
+                     Uid = updatedLine.Uid,
+                     Name = Utils.RemoveInvalidXmlChars(updatedLine.Name, true) ?? string.Empty,
+                     Description = Utils.RemoveInvalidXmlChars(updatedLine.Desc, true) ?? Utils.RemoveInvalidXmlChars(existingLine.Description, true),
+                     LineColor = updatedLine.Color,
+                     Width = int.Parse(updatedLine.Width),
+                     Coordinates = updatedCoordinates.ToString(),
+                     Type = updatedLine.Type
+                 });
+             }
+
+             Utils.Log("Lägger till nya linjer till ny kartversion.", System.Diagnostics.EventLogEntryType.Information, 126);
+
+             // Lägger till nya grävsträckor. Dessa kommer in med Id som är negativa.
+             foreach (var newLine in (from nl in mapContent.Cables where nl.Id < 0 select nl))
+             {
+                 var newCoordinates = new StringBuilder();
+                 for (var i = 0; i < newLine.Coord.Count; i++)
+                 {
+                     newCoordinates.Append(newLine.Coord[i].Lat.ToString().Replace(",", "."));
+                     newCoordinates.Append(":");
+                     newCoordinates.Append(newLine.Coord[i].Lng.ToString().Replace(",", "."));
+                     if (i < newLine.Coord.Count - 1)
+                     {
+                         newCoordinates.Append("|");
+                     }
+                 }
+
+                 map.Lines.Add(new FiberKartan.Line()
+                 {
+                     Uid = 0,    // Ny linje får Uid satt till Id av databasen.
+                     Name = Utils.RemoveInvalidXmlChars(newLine.Name, true) ?? string.Empty,
+                     Description = Utils.RemoveInvalidXmlChars(newLine.Desc, true) ?? string.Empty,
+                     LineColor = newLine.Color,
+                     Width = int.Parse(newLine.Width),
+                     Coordinates = newCoordinates.ToString(),
+                     Type = newLine.Type
+                 });
+             }*/
+        }
+
+        /// <summary>
+        /// Lägger till nya/uppdaterar befintliga polygoner till ett lager.
+        /// </summary>
+        /// <param name="newPolygons">lista med nya/uppdaterade polygoner.</param>
+        /// <param name="existingPolygons">existerande lista med polygoner i lagret.</param>
+        private void AddPolygons(List<Polygon> newPolygons, List<Polygon> existingPolygons)
+        {
+            Utils.Log("Kopierar befintliga områden till ny kartversion.", System.Diagnostics.EventLogEntryType.Information, 126);
+
+            // Uppdaterar områden med eventuell ny information, hämtar bara ut de områden som fortfarande finns, övriga har blivit borttagna.
+            /* foreach (var existingRegion in existingMap.Regions.Where(er => mapContent.Regions.Exists(l => l.Id == er.Id)))
+             {
+                 var updatedRegion = (from ur in mapContent.Regions where ur.Id == existingRegion.Id select ur).Single();
+
+                 var updatedCoordinates = new StringBuilder();
+                 for (var i = 0; i < updatedRegion.Coord.Count; i++)
+                 {
+                     updatedCoordinates.Append(updatedRegion.Coord[i].Lat.ToString().Replace(",", "."));
+                     updatedCoordinates.Append(":");
+                     updatedCoordinates.Append(updatedRegion.Coord[i].Lng.ToString().Replace(",", "."));
+                     if (i < updatedRegion.Coord.Count - 1)
+                     {
+                         updatedCoordinates.Append("|");
+                     }
+                 }
+
+                 map.Regions.Add(new FiberKartan.Region()
+                 {
+                     Uid = updatedRegion.Uid,
+                     Name = Utils.RemoveInvalidXmlChars(updatedRegion.Name, true) ?? string.Empty,
+                     Description = Utils.RemoveInvalidXmlChars(updatedRegion.Desc, true) ?? Utils.RemoveInvalidXmlChars(existingRegion.Description, true),
+                     FillColor = updatedRegion.FillColor,
+                     LineColor = updatedRegion.BorderColor,
+                     Coordinates = updatedCoordinates.ToString()
+                 });
+             }
+
+             Utils.Log("Lägger till nya områden till ny kartversion.", System.Diagnostics.EventLogEntryType.Information, 126);
+
+             // Lägger till nya områden. Dessa kommer in med Id som är negativa.
+             foreach (var newRegion in (from nr in mapContent.Regions where nr.Id < 0 select nr))
+             {
+                 var newCoordinates = new StringBuilder();
+                 for (var i = 0; i < newRegion.Coord.Count; i++)
+                 {
+                     newCoordinates.Append(newRegion.Coord[i].Lat.ToString().Replace(",", "."));
+                     newCoordinates.Append(":");
+                     newCoordinates.Append(newRegion.Coord[i].Lng.ToString().Replace(",", "."));
+                     if (i < newRegion.Coord.Count - 1)
+                     {
+                         newCoordinates.Append("|");
+                     }
+                 }
+
+                 map.Regions.Add(new FiberKartan.Region()
+                 {
+                     Uid = 0,    // Nytt område får Uid satt till Id av databasen.
+                     Name = Utils.RemoveInvalidXmlChars(newRegion.Name, true) ?? string.Empty,
+                     Description = Utils.RemoveInvalidXmlChars(newRegion.Desc, true) ?? string.Empty,
+                     FillColor = newRegion.FillColor,
+                     LineColor = newRegion.BorderColor,
+                     Coordinates = newCoordinates.ToString()
+                 });
+             }*/
         }
     }
 }
