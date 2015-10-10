@@ -32,7 +32,7 @@
                     <ItemTemplate>
                         <asp:Button ID="SaveButton" runat="server" Text="Spara" CssClass="button" CommandName="SaveChanges"
                             CommandArgument='<%# Eval("UserId") %>' />
-                        <asp:Button ID="RemoveButton" runat="server" Text="Ta bort" CssClass="button right removeButton"
+                        <asp:Button ID="RemoveButton" runat="server" Text="Ta bort" CssClass="button removeButton"
                             CommandName="RemoveUserRight" CommandArgument='<%# Eval("UserId") %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
