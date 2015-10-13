@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using FiberKartan;
 using System.Configuration;
 using System.Web.Security;
+using FiberKartan.Database.Internal;
 
 /*
 Copyright (c) 2012, Henrik Östman.

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="FiberDB" Class="FiberDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="FiberDB" EntityNamespace="FiberKartan.Database.Internal" ContextNamespace="FiberKartan.Database.Internal" Class="FiberDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=SERVER2012\SQL2008;Initial Catalog=FiberDB;Integrated Security=True" SettingsObjectName="FiberKartan.Database.Properties.Settings" SettingsPropertyName="FiberDBConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.ImportErrors" Member="ImportErrors">
     <Type Name="ImportError">

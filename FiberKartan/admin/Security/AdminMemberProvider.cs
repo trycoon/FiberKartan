@@ -197,13 +197,15 @@ namespace FiberKartan.Admin.Security
             if (string.IsNullOrEmpty(username.Trim())) return false;
             
             var fiberDb = new FiberDataContext();
-            var dbUser = fiberDb.Users.Where(u => u.Username == username.Trim().ToLower()).SingleOrDefault();
+            var dbUser = fiberDb.Users.SingleOrDefault(u => u.Username == username.Trim().ToLower());
 
             if (dbUser != null)
             {
-                User user = new User(dbUser.Id, dbUser.Username, dbUser.Name, dbUser.Password);
-                user.Description = dbUser.Description;
-                user.LastLoggedOn = dbUser.LastLoggedOn.HasValue ? dbUser.LastLoggedOn.Value : DateTime.MinValue;
+                var user = new User(dbUser.Id, dbUser.Username, dbUser.Name, dbUser.Password)
+                {
+                    Description = dbUser.Description,
+                    LastLoggedOn = dbUser.LastLoggedOn ?? DateTime.MinValue
+                };
 
                 // Det är okey att logga in om man har ett tomt lösenord, användaren skall då bli uppmanad att sätta ett lösenord.
                 // Om ett lösenord finns så skall det så klart matcha det inmatade.

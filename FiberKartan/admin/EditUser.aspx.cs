@@ -11,6 +11,7 @@ using System.Net.Mail;
 using System.Configuration;
 using System.Text;
 using System.Net.Mime;
+using FiberKartan.Database.Internal;
 
 /*
 Copyright (c) 2012, Henrik Östman.

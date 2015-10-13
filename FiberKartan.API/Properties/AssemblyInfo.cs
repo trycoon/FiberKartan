@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FiberKartan.Database")]
+[assembly: AssemblyTitle("FiberKartan.API")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Liquidbytes.se")]
-[assembly: AssemblyProduct("FiberKartan.Database")]
-[assembly: AssemblyCopyright("Copyright ©  2014 Liquidbytes.se")]
+[assembly: AssemblyProduct("FiberKartan.API")]
+[assembly: AssemblyCopyright("Copyright ©  2015 Liquidbytes.se")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3a4894b3-399f-4fd1-b715-63f119830100")]
+[assembly: Guid("ac94138f-dd60-47e0-b748-f86132acc3ee")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-// You can specify all the values or you can default the Build and Revision Numbers 
+// You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]

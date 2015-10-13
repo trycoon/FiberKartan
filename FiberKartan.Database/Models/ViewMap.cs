@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Web;
+using FiberKartan.Database.Internal;
 
 namespace FiberKartan.Database.Models
 {
@@ -26,7 +25,7 @@ namespace FiberKartan.Database.Models
         {
             this.MapType = new ViewMapType(map.MapType);
             this.Version = map.Ver;
-            this.PreviousVersion = map.PreviousVer.HasValue ? map.PreviousVer.Value : -1;
+            this.PreviousVersion = map.PreviousVer ?? -1;
             this.Created = map.Created;
             this.Creator = this.Creator = new Creator
             {

@@ -44,7 +44,7 @@ namespace FiberKartan.Admin
             // Kolla om sidan laddas med en Invitation-kod, i så fall skall vi visa upp ett formulär för att skapa ny användare.
             if (!string.IsNullOrEmpty(Request.QueryString["invitation"]))
             {
-                invitation = fiberDb.MapAccessInvitations.Where(ar => ar.InvitationCode == Request.QueryString["invitation"]).FirstOrDefault();
+                invitation = fiberDb.MapAccessInvitations.FirstOrDefault(ar => ar.InvitationCode == Request.QueryString["invitation"]);
 
                 if (invitation == null)
                 {
@@ -54,7 +54,7 @@ namespace FiberKartan.Admin
                 else
                 {
                     // Här kollar vi att det inte finns en användare redan med samma e-postadress som i inbjudan, dom kan ju ha kommit till efter inbjudan skickades ut och i så fall kan vi inte skapa en ny användare.
-                    var existingUser = fiberDb.Users.Where(u => u.Username == invitation.Email).FirstOrDefault();
+                    var existingUser = fiberDb.Users.FirstOrDefault(u => u.Username == invitation.Email);
                     if (existingUser == null)
                     {
                         loginBox.Visible = false;
@@ -79,7 +79,7 @@ namespace FiberKartan.Admin
 
             if (provider.ValidateUser(username.Text, password.Text))
             {
-                var dbUser = fiberDb.Users.Where(u => u.Id == provider.User.UserId).Single();
+                var dbUser = fiberDb.Users.Single(u => u.Id == provider.User.UserId);
                 dbUser.LastLoggedOn = DateTime.Now; // Uppdaterar tiden.
                 fiberDb.SubmitChanges();
 
@@ -87,15 +87,19 @@ namespace FiberKartan.Admin
                 if (rememberMeCheckBox.Checked)
                 {
                     var ticket = new FormsAuthenticationTicket(1, provider.User.UserName, DateTime.Now, DateTime.Now.AddDays(183), true, string.Empty);
-                    var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
-                    cookie.Expires = DateTime.Now.AddDays(183);
+                    var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket))
+                    {
+                        Expires = DateTime.Now.AddDays(183)
+                    };
                     Response.Cookies.Add(cookie);
                 }
                 else
                 {
                     var ticket = new FormsAuthenticationTicket(1, provider.User.UserName, DateTime.Now, DateTime.Now.AddHours(5), false, string.Empty);
-                    var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
-                    cookie.Expires = DateTime.Now.AddHours(5);
+                    var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket))
+                    {
+                        Expires = DateTime.Now.AddHours(5)
+                    };
                     Response.Cookies.Add(cookie);
                 }
 
@@ -167,7 +171,7 @@ namespace FiberKartan.Admin
             else
             {
                 var provider = (AdminMemberProvider)Membership.Provider;
-                var dbUser = fiberDb.Users.Where(u => u.Id == provider.User.UserId).Single();
+                var dbUser = fiberDb.Users.Single(u => u.Id == provider.User.UserId);
                 dbUser.Password = AdminMemberProvider.GeneratePasswordHash(dbUser.Username, password.Text);
                 fiberDb.SubmitChanges();
 
@@ -256,8 +260,10 @@ namespace FiberKartan.Admin
 
                 // Skapa inloggnings-kaka.
                 var ticket = new FormsAuthenticationTicket(1, newUser.Username, DateTime.Now, DateTime.Now.AddHours(5), false, string.Empty);
-                var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
-                cookie.Expires = DateTime.Now.AddHours(5);
+                var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket))
+                {
+                    Expires = DateTime.Now.AddHours(5)
+                };
                 Response.Cookies.Add(cookie);
 
                 Utils.Log("Ny användare skapad! Id=" + newUser.Id + ", namn=\"" + newUser.Name + "\", username=\"" + newUser.Username + "\" med rättighet=" + newMapAccessRight.AccessRight + " till karta=" + newMapAccessRight.MapTypeId + ". Skapad från ip-adress \"" + Request.ServerVariables["REMOTE_ADDR"].ToString() + "\".", System.Diagnostics.EventLogEntryType.SuccessAudit, 103);
@@ -287,7 +293,7 @@ namespace FiberKartan.Admin
                 // Skicka ett bekräftelse mail till personen som skickade inbjudan, så att dom vet att mottagaren nu har registrerat ett konto och kan arbeta med kartan.
                 try
                 {
-                    var invitationSentBy = fiberDb.Users.Where(u => u.Id == invitation.InvitationSentBy).FirstOrDefault();
+                    var invitationSentBy = fiberDb.Users.FirstOrDefault(u => u.Id == invitation.InvitationSentBy);
 
                     if (invitationSentBy != null)
                     {

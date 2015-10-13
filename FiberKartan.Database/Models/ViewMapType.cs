@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Web;
+﻿using System.Runtime.Serialization;
+using FiberKartan.Database.Internal;
 
 namespace FiberKartan.Database.Models
 {
@@ -31,7 +28,7 @@ namespace FiberKartan.Database.Models
                 Name = mapType.User.Name
             };
 
-            this.Municipality = new FiberKartan.Database.Models.Municipality
+            this.Municipality = new Municipality
             {
                 Code = mapType.MunicipalityCode,
                 CenterLatitude = mapType.Municipality.CenterLatitude,
@@ -44,7 +41,7 @@ namespace FiberKartan.Database.Models
         public int Id { get; set; }
 
         [DataMember(Name = "title")]
-        public String Title { get; set; }
+        public string Title { get; set; }
 
         [DataMember(Name = "creator")]
         public Creator Creator { get; set; }

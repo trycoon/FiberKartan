@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FiberKartan.Database
+namespace FiberKartan.Database.Internal
 {
 	using System.Data.Linq;
 	using System.Data.Linq.Mapping;

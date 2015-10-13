@@ -477,7 +477,6 @@
     <Content Include="inc\js\fancybox\jquery.fancybox.pack.js" />
     <Content Include="inc\js\jquery.cookie.js" />
     <Content Include="inc\js\jquery.ui.touch-punch.min.js" />
-    <Content Include="REST\FKService.svc" />
     <Content Include="Global.asax" />
     <Content Include="inc\css\admin.css" />
     <Content Include="inc\css\base.css" />
@@ -510,6 +509,37 @@
     <Content Include="Map.aspx" />
     <Content Include="Admin\MapAdmin.aspx" />
     <Content Include="robots.txt" />
+    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetLayersResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetMapResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetMapsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetMapTypeResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetMapTypesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.PingResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.Response.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.saveMapResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <None Include="Service References\FiberKartan.API.FKService\FKService.disco" />
+    <None Include="Service References\FiberKartan.API.FKService\configuration91.svcinfo" />
+    <None Include="Service References\FiberKartan.API.FKService\configuration.svcinfo" />
+    <None Include="Service References\FiberKartan.API.FKService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="TotalMap.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -555,12 +585,6 @@
     <Compile Include="Resources\CssBundleTransform.cs" />
     <Compile Include="Resources\JavascriptBundleTransform.cs" />
     <Compile Include="Resources\HandleBarBundleTransform.cs" />
-    <Compile Include="REST\Responses\GetLayersResponse.cs" />
-    <Compile Include="REST\Responses\GetMapResponse.cs" />
-    <Compile Include="REST\Responses\GetMapsResponse.cs" />
-    <Compile Include="REST\Responses\PingResponse.cs" />
-    <Compile Include="REST\Responses\Response.cs" />
-    <Compile Include="REST\Responses\SaveMapResponse.cs" />
     <Compile Include="ResultBox.ascx.cs">
       <DependentUpon>ResultBox.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -631,9 +655,6 @@
     <Compile Include="MapEntities\SimpleCable.cs" />
     <Compile Include="MapEntities\SimpleMapContent.cs" />
     <Compile Include="MapEntities\SimpleMarker.cs" />
-    <Compile Include="REST\FKService.svc.cs">
-      <DependentUpon>FKService.svc</DependentUpon>
-    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -644,7 +665,6 @@
     <Compile Include="Admin\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="REST\IFKService.cs" />
     <Compile Include="Map.aspx.cs">
       <DependentUpon>Map.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -675,6 +695,11 @@
     <Compile Include="Kml\KmlMarker.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Service References\FiberKartan.API.FKService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="TotalMap.aspx.cs">
       <DependentUpon>TotalMap.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -699,6 +724,22 @@
     <Content Include="Resources\views\incidentForm.hbs" />
     <None Include="Properties\PublishProfiles\FiberKartan.pubxml" />
     <Content Include="Resources\views\addressSearchResult.hbs" />
+    <None Include="Service References\FiberKartan.API.FKService\FKService.wsdl" />
+    <None Include="Service References\FiberKartan.API.FKService\FKService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FiberKartan.API.FKService\FKService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FiberKartan.API.FKService\FKService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FiberKartan.API.FKService\FKService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FiberKartan.API.FKService\FKService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -714,6 +755,12 @@
       <Project>{cc63b146-cfaf-4e37-ae14-128338824bd4}</Project>
       <Name>FiberKartan.Database</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\FiberKartan.API.FKService\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

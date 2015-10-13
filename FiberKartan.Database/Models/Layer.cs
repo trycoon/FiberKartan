@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Web;
 
 namespace FiberKartan.Database.Models
 {
@@ -27,9 +25,9 @@ namespace FiberKartan.Database.Models
         [DataMember(Name = "polygons", EmitDefaultValue = false)]
         public List<Polygon> Polygons { get; set; }
 
-        public override bool Equals(System.Object obj)
+        public override bool Equals(Object obj)
         {
-            Layer l = obj as Layer;
+            var l = obj as Layer;
             if ((object)l == null)
             {
                 return false;
