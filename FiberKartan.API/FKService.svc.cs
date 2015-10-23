@@ -4,13 +4,19 @@ using System.Configuration;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Reflection;
 using System.Security.Cryptography;
+using System.Security.Permissions;
 using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
 using System.Text;
+using System.Threading;
 using System.Web;
+using System.Web.Security;
 using FiberKartan.Database;
 using FiberKartan.Database.Models;
 using FiberKartan.API.Responses;
+using log4net;
 
 /*
 Copyright (c) 2012, Henrik Östman.
@@ -32,23 +38,89 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace FiberKartan.API
 {
+    // AspNetCompatibility is needed to access and set Cookies!
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class FKService : IFKService
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Database reference.
         /// </summary>
-        readonly MsSQL db = new MsSQL(); //TODO: Switch to interface instead of concrete class.
+        private readonly MsSQL db = new MsSQL(); //TODO: Switch to interface instead of concrete class.
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public FKService()
+        {
+            // Needed to be able to set role-based access on methods.
+            //Thread.CurrentPrincipal = HttpContext.Current.User;
+        }
+        /// <summary>
+        /// Method för att logga in användare.
+        /// </summary>
+        /// <param name="credentials">Inloggningsuppgifter</param>
+        /// <returns>Användaruppgifter om lyckad inloggning</returns>
+        public GetLoginResponse Login(Credentials credentials)
+        {
+            /*if (ValidateUser(credentials.Username, credentials.Password))
+            {
+               /* var ticket = new FormsAuthenticationTicket(1, provider.User.UserName, DateTime.Now,
+                    DateTime.Now.AddHours(5), false, string.Empty);
+                var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket))
+                {
+                    Expires = DateTime.Now.AddHours(5)
+                };
+                if (WebOperationContext.Current != null)
+                {
+                    WebOperationContext.Current.OutgoingResponse.Headers.Add(cookie.Value);
+                }*/
+
+              //  db.SetLastLoggedOn(1);
+                /*Utils.Log(
+                    "Användare id=" + dbUser.Id + ", username=\"" + dbUser.Username + "\" loggade in från ip-adress \"" +
+                    Request.ServerVariables["REMOTE_ADDR"].ToString() + "\".",
+                    System.Diagnostics.EventLogEntryType.SuccessAudit, 102);*/
+
+           /* }
+            else
+            {
+
+                Thread.Sleep(100);  // Fördröjning så att man inte kan bygga ett program som söker efter lösenord.
+            }
+            /* var user = db.Login(credentials);
+             var response = new GetLoginResponse
+             {
+                 Id = user.Id,
+                 Name = user.Name,
+                 IsAdmin = user.IsAdmin,
+                 Username = user.Username,
+                 LastLoggedOn = user.LastLoggedOn,
+                 LastNotificationMessage = user.LastNotificationMessage
+             };
+            
+             return response;*/
+            return null;
+        }
+
+        /// <summary>
+        /// Method för att logga ut användare.
+        /// </summary>
+        public void Logout()
+        {
+           // db.Logout(1);
+        }
 
         /// <summary>
         /// Metod som returnerar en lista på tillgängliga karttyper.
         /// </summary>
         /// <param name="orderBy">Fält som vi skall sortera efter, "Title" är standard</param>
-        /// <param name="sortOrder">Sorteringsordning(asc|desc)</param>
+        /// <param name="sortDescending">Sortera i stigande ordning, annars i fallande</param>
         /// <param name="offset">Från vilken post vi vill börja listan</param>
         /// <param name="count">Hur många poster vi är intresserade av</param>
         /// <returns>Lista på karttyper</returns>
-        public GetMapTypesResponse GetMapTypes(string orderBy = "Title", string sortOrder = "asc", int offset = 0, int count = 20)
+        public GetMapTypesResponse GetMapTypes(string orderBy, bool sortDescending, int offset, int count)
         {
             var response = new GetMapTypesResponse();
 
@@ -56,11 +128,21 @@ namespace FiberKartan.API
             {
                 response.ErrorCode = ErrorCode.NotLoggedIn;
                 response.ErrorMessage = "Du måste vara inloggad för att hämta lista på karttyper.";
+                log.Info(response.ErrorMessage);
 
                 return response;
             }
+
+            if (string.IsNullOrEmpty(orderBy))
+            {
+                orderBy = "Title";
+            }
+            if (count < 1)
+            {
+                count = 20;
+            }
             //TODO: Fixa userId
-            response.MapTypes = db.GetMapTypes(1, orderBy, sortOrder, offset, count);
+            response.MapTypes = db.GetMapTypes(1, orderBy, sortDescending, offset, count);
 
             return response;
         }
@@ -70,7 +152,8 @@ namespace FiberKartan.API
         /// </summary>
         /// <param name="mapTypeId">Id på karttypen</param>
         /// <returns>Karttyp, eller null om karttyp inte finns</returns>
-        public GetMapTypeResponse GetMapType(int mapTypeId)
+        [PrincipalPermission(SecurityAction.Demand, Role = "Users")]
+        public GetMapTypeResponse GetMapType(string mapTypeId)
         {
             var response = new GetMapTypeResponse();
 
@@ -78,11 +161,23 @@ namespace FiberKartan.API
             {
                 response.ErrorCode = ErrorCode.NotLoggedIn;
                 response.ErrorMessage = "Du måste vara inloggad för att hämta karttyp.";
+                log.Info(response.ErrorMessage);
 
                 return response;
             }
+
+            var mapId = 0;
+            if (!int.TryParse(mapTypeId, out mapId))
+            {
+                response.ErrorCode = ErrorCode.MissingInformation;
+                response.ErrorMessage = "mapTypeId saknas eller är ogilltigt i anrop.";
+                log.Info(response.ErrorMessage + " mapTypeId=" + mapTypeId);
+
+                return response;
+            }
+
             //TODO: Fixa userId
-            response.MapType = db.GetMapType(1, mapTypeId);
+            response.MapType = db.GetMapType(1, mapId);
 
             return response;
         }
@@ -92,11 +187,11 @@ namespace FiberKartan.API
         /// </summary>
         /// <param name="mapTypeId">Karta som efterfrågas</param>
         /// <param name="orderBy">Fält som vi skall sortera efter, "Ver" är standard</param>
-        /// <param name="sortOrder">Sorteringsordning(asc|desc)</param>
+        /// <param name="sortAscending">Sortera i fallande ordning, annars i stigande</param>
         /// <param name="offset">Från vilken post vi vill börja listan</param>
         /// <param name="count">Hur många poster vi är intresserade av</param>
         /// <returns>Lista på kartor</returns>
-        public GetMapsResponse GetMaps(int mapTypeId, string orderBy = "Ver", string sortOrder = "asc", int offset = 0, int count = 20)
+        public GetMapsResponse GetMaps(string mapTypeId, string orderBy, bool sortAscending, int offset, int count)
         {
             var response = new GetMapsResponse();
 
@@ -104,11 +199,32 @@ namespace FiberKartan.API
             {
                 response.ErrorCode = ErrorCode.NotLoggedIn;
                 response.ErrorMessage = "Du måste vara inloggad för att hämta lista på kartor.";
+                log.Info(response.ErrorMessage);
 
                 return response;
             }
+
+            var mapId = 0;
+            if (!int.TryParse(mapTypeId, out mapId))
+            {
+                response.ErrorCode = ErrorCode.MissingInformation;
+                response.ErrorMessage = "mapTypeId saknas eller är ogilltigt i anrop.";
+                log.Info(response.ErrorMessage + " mapTypeId=" + mapTypeId);
+
+                return response;
+            }
+
+            if (string.IsNullOrEmpty(orderBy))
+            {
+                orderBy = "Ver";
+            }
+            if (count < 1)
+            {
+                count = 20;
+            }
+
             //TODO: Fixa userId
-            response.Maps = db.GetMapVersions(1, mapTypeId, orderBy, sortOrder, offset, count);
+            response.Maps = db.GetMapVersions(1, mapId, orderBy, sortAscending, offset, count);
 
             return response;
         }
@@ -119,7 +235,7 @@ namespace FiberKartan.API
         /// <param name="mapTypeId">Id på karttypen</param>
         /// <param name="version">Version av kartan som skall användas, 0 om senaste version</param>
         /// <returns>Karta</returns>
-        public GetMapResponse GetMap(int mapTypeId, int version)
+        public GetMapResponse GetMap(string mapTypeId, string version)
         {
             var response = new GetMapResponse();
 
@@ -127,11 +243,34 @@ namespace FiberKartan.API
             {
                 response.ErrorCode = ErrorCode.NotLoggedIn;
                 response.ErrorMessage = "Du måste vara inloggad för att hämta kartversion.";
+                log.Info(response.ErrorMessage);
 
                 return response;
             }
+
+            var mapId = 0;
+            var ver = 0;
+
+            if (!int.TryParse(mapTypeId, out mapId))
+            {
+                response.ErrorCode = ErrorCode.MissingInformation;
+                response.ErrorMessage = "mapTypeId saknas eller är ogilltigt i anrop.";
+                log.Info(response.ErrorMessage + " mapTypeId=" + mapTypeId);
+
+                return response;
+            }
+
+            if (!int.TryParse(version, out ver) || ver < 0)
+            {
+                response.ErrorCode = ErrorCode.MissingInformation;
+                response.ErrorMessage = "version saknas eller är ogilltigt i anrop.";
+                log.Info(response.ErrorMessage + " version=" + version);
+
+                return response;
+            }
+
             //TODO: Fixa userId
-            response.Map = db.GetMapVersion(1, mapTypeId, version);
+            response.Map = db.GetMapVersion(1, mapId, ver);
 
             return response;
         }
@@ -142,7 +281,7 @@ namespace FiberKartan.API
         /// <param name="mapContent">Kartans innehåll(markörer, kabelsträckor, osv)</param>
         /// <param name="mapTypeId">Id på karttypen</param>
         /// <returns>Versionsnummer på den sparade kartan</returns>
-        public SaveMapResponse SaveMap(SaveMap mapContent, int mapTypeId)
+        public SaveMapResponse SaveMap(SaveMap mapContent, string mapTypeId)
         {
             var response = new SaveMapResponse();
 
@@ -150,6 +289,7 @@ namespace FiberKartan.API
             {
                 response.ErrorCode = ErrorCode.NotLoggedIn;
                 response.ErrorMessage = "Du måste vara inloggad för att spara karta.";
+                log.Info(response.ErrorMessage);
 
                 return response;
             }
@@ -323,7 +463,7 @@ namespace FiberKartan.API
         /// <param name="version">Version av kartan som skall användas, 0 om senaste version</param>
         /// <param name="ids">Id på lagret som skall hämtas, kommaseparerad för flera</param>
         /// <returns>Lista med kartlager</returns>
-        public GetLayersResponse GetLayers(int mapTypeId, int version, string ids)
+        public GetLayersResponse GetLayers(string mapTypeId, string version, string ids)
         {
             var response = new GetLayersResponse();
 
@@ -331,11 +471,34 @@ namespace FiberKartan.API
             {
                 response.ErrorCode = ErrorCode.NotLoggedIn;
                 response.ErrorMessage = "Du måste vara inloggad för att hämta kartlager.";
+                log.Info(response.ErrorMessage);
 
                 return response;
             }
+
+            var mapId = 0;
+            var ver = 0;
+
+            if (!int.TryParse(mapTypeId, out mapId))
+            {
+                response.ErrorCode = ErrorCode.MissingInformation;
+                response.ErrorMessage = "mapTypeId saknas eller är ogilltigt i anrop.";
+                log.Info(response.ErrorMessage + " mapTypeId=" + mapTypeId);
+
+                return response;
+            }
+
+            if (!int.TryParse(version, out ver) || ver < 0)
+            {
+                response.ErrorCode = ErrorCode.MissingInformation;
+                response.ErrorMessage = "version saknas eller är ogilltigt i anrop.";
+                log.Info(response.ErrorMessage + " version=" + version);
+
+                return response;
+            }
+
             //TODO: Fixa userId
-            response.Layers = db.GetLayers(1, mapTypeId, ids, version);
+            response.Layers = db.GetLayers(1, mapId, ids, ver);
 
             return response;
         }
@@ -346,7 +509,7 @@ namespace FiberKartan.API
         /// <param name="mapTypeId">Id på karttypen</param>
         /// <param name="version">Version av kartan som skall användas, 0 om senaste version</param>
         /// <param name="report">Felrapport</param>
-        public Response ReportIncident(int mapTypeId, int version, IncidentReport report)
+        public Response ReportIncident(string mapTypeId, string version, IncidentReport report)
         {
             var response = new Response();
 
@@ -354,6 +517,7 @@ namespace FiberKartan.API
             {
                 response.ErrorCode = ErrorCode.NotLoggedIn;
                 response.ErrorMessage = "Du måste vara inloggad för att rapportera incidenter.";
+                log.Info(response.ErrorMessage);
 
                 return response;
             }
@@ -488,24 +652,24 @@ namespace FiberKartan.API
         /// <returns>Ett dymmy-svar</returns>
         public PingResponse Ping()
         {
-           /* try
-            {
-                // Kolla om man har en sessionskaka satt så att vi kan se vilken användare det är.
-                if (HttpContext.Current.User != null && HttpContext.Current.User.Identity != null)
-                {
-                    var fiberDb = new FiberDataContext();
-                    var user = fiberDb.Users.Where(u => u.Username == HttpContext.Current.User.Identity.Name).SingleOrDefault();
-                    if (user != null)
-                    {
-                        user.LastActivity = DateTime.Now;   // Uppdaterar tidsstämpeln för användaren.
-                        fiberDb.SubmitChanges();
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // Vi bryr oss inte om fel. Det är inte en så viktig funktion.
-            }*/
+            /* try
+             {
+                 // Kolla om man har en sessionskaka satt så att vi kan se vilken användare det är.
+                 if (HttpContext.Current.User != null && HttpContext.Current.User.Identity != null)
+                 {
+                     var fiberDb = new FiberDataContext();
+                     var user = fiberDb.Users.Where(u => u.Username == HttpContext.Current.User.Identity.Name).SingleOrDefault();
+                     if (user != null)
+                     {
+                         user.LastActivity = DateTime.Now;   // Uppdaterar tidsstämpeln för användaren.
+                         fiberDb.SubmitChanges();
+                     }
+                 }
+             }
+             catch (Exception)
+             {
+                 // Vi bryr oss inte om fel. Det är inte en så viktig funktion.
+             }*/
 
             return new PingResponse()
             {
@@ -697,6 +861,6 @@ namespace FiberKartan.API
                      Coordinates = newCoordinates.ToString()
                  });
              }*/
-       // }
+        // }
     }
 }

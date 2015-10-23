@@ -35,13 +35,13 @@ namespace FiberKartan.API
         /// Metod som returnerar en lista på tillgängliga karttyper.
         /// </summary>
         /// <param name="orderBy">Fält som vi skall sortera efter, "Title" är standard</param>
-        /// <param name="sortOrder">Sorteringsordning(asc|desc)</param>
+        /// <param name="sortDescending">Sortera i stigande ordning, annars i fallande</param>
         /// <param name="offset">Från vilken post vi vill börja listan</param>
         /// <param name="count">Hur många poster vi är intresserade av</param>
         /// <returns>Lista på karttyper</returns>
         [OperationContract]
-        [WebGet(UriTemplate = "/maptypes?orderBy={orderBy}&sortOrder={sortOrder}&offset={offset}&count={count}")]
-        GetMapTypesResponse GetMapTypes(string orderBy = "Title", string sortOrder = "asc", int offset = 0, int count = 20);
+        [WebGet(UriTemplate = "/maptypes?orderBy={orderBy}&sortDescending={sortDescending}&offset={offset}&count={count}")]
+        GetMapTypesResponse GetMapTypes(string orderBy = "Title", bool sortDescending = false, int offset = 0, int count = 20);
 
         /// <summary>
         /// Metod som returnerar en specifik karttyp.
@@ -50,20 +50,20 @@ namespace FiberKartan.API
         /// <returns>Karttyp, eller null om karttyp inte finns</returns>
         [OperationContract]
         [WebGet(UriTemplate = "/maptypes/{mapTypeId}")]
-        GetMapTypeResponse GetMapType(int mapTypeId);
+        GetMapTypeResponse GetMapType(string mapTypeId);
 
         /// <summary>
         /// Metod som returnerar en lista på tillgängliga kartor.
         /// </summary>
         /// <param name="mapTypeId">Karta som efterfrågas</param>
         /// <param name="orderBy">Fält som vi skall sortera efter, "Ver" är standard</param>
-        /// <param name="sortOrder">Sorteringsordning(asc|desc)</param>
+        /// <param name="sortAscending">Sortera i fallande ordning, annars i stigande</param>
         /// <param name="offset">Från vilken post vi vill börja listan</param>
         /// <param name="count">Hur många poster vi är intresserade av</param>
         /// <returns>Lista på kartor</returns>
         [OperationContract]
-        [WebGet(UriTemplate = "/maptypes/{mapTypeId}/maps?orderBy={orderBy}&sortOrder={sortOrder}&offset={offset}&count={count}")]
-        GetMapsResponse GetMaps(int mapTypeId, string orderBy = "Ver", string sortOrder = "asc", int offset = 0, int count = 20);
+        [WebGet(UriTemplate = "/maptypes/{mapTypeId}/maps?orderBy={orderBy}&sortAscending={sortAscending}&offset={offset}&count={count}")]
+        GetMapsResponse GetMaps(string mapTypeId, string orderBy, bool sortAscending, int offset, int count);
 
         /// <summary>
         /// Metod som returnerar en karta.
@@ -73,7 +73,7 @@ namespace FiberKartan.API
         /// <returns>Karta, eller null om karta inte finns</returns>
         [OperationContract]
         [WebGet(UriTemplate = "/maptypes/{mapTypeId}/maps/{version}")]
-        GetMapResponse GetMap(int mapTypeId, int version);
+        GetMapResponse GetMap(string mapTypeId, string version);
 
         /// <summary>
         /// Metod som sparar ner ändringar av en karta.
@@ -86,7 +86,7 @@ namespace FiberKartan.API
          Method = "POST",
          RequestFormat = WebMessageFormat.Json,
          BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-        SaveMapResponse SaveMap(SaveMap mapContent, int mapTypeId);
+        SaveMapResponse SaveMap(SaveMap mapContent, string mapTypeId);
 
         /// <summary>
         /// Metod som returnerar ett lager för en karta.
@@ -97,7 +97,7 @@ namespace FiberKartan.API
         /// <returns>Lista med kartlager</returns>
         [OperationContract]
         [WebGet(UriTemplate = "/maptypes/{mapTypeId}/maps/{version}/layers/{ids}")]
-        GetLayersResponse GetLayers(int mapTypeId, int version, string ids);
+        GetLayersResponse GetLayers(string mapTypeId, string version, string ids);
 
         /// <summary>
         /// Metod som används för att rapportera fel på ett fibernätverk.
@@ -109,7 +109,7 @@ namespace FiberKartan.API
         [WebInvoke(UriTemplate = "/maptypes/{mapTypeId}/maps/{version}/reportIncident",
          Method = "POST",
          RequestFormat = WebMessageFormat.Json)]
-        Response ReportIncident(int mapTypeId, int version, IncidentReport report);
+        Response ReportIncident(string mapTypeId, string version, IncidentReport report);
 
         /// <summary>
         /// Metod som används för att kontinuerligt anropa servern för att på så sätt påvisa att klienten ännu är ansluten.

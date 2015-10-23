@@ -31,6 +31,7 @@ namespace FiberKartan.Database.Models
             this.Municipality = new Municipality
             {
                 Code = mapType.MunicipalityCode,
+                Name = mapType.Municipality.Name,
                 CenterLatitude = mapType.Municipality.CenterLatitude,
                 CenterLongitude = mapType.Municipality.CenterLongitude,
                 Referencesystem = mapType.Municipality.Referencesystem,

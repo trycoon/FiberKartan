@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Reflection;
 using FiberKartan.Database.Internal;
 using FiberKartan.Database.Models;
+using log4net;
 using Newtonsoft.Json;
 using User = FiberKartan.Database.Models.User;
 
@@ -30,14 +32,22 @@ namespace FiberKartan.Database
 {
     public sealed class MsSQL : IDatabase
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         // http://www.sidarok.com/web/blog/content/2008/05/02/10-tips-to-improve-your-linq-to-sql-application-performance.html
 
-        /*public static User GetUserByUsername(string username)
+        /// <summary>
+        /// Hämtar användare med hjälp av användarnamn.
+        /// </summary>
+        /// <param name="username">Användarnamn på användare</param>
+        /// <returns>Användare, eller null om användare inte finns</returns>
+        public User GetUserByUsername(string username)
         {
-            var user = (from u in fiberDb.Users where (u.Username == username) select u).First();
+            var fiberDb = new Internal.FiberDataContext();
+            var dbUser = fiberDb.Users.SingleOrDefault(u => u.Username == username);
 
-            return user;
-        }*/
+            return dbUser == null ? null : new User(dbUser);
+        }
 
         /// <summary>
         /// Hämtar användare med hjälp av användar id.
@@ -53,16 +63,19 @@ namespace FiberKartan.Database
         }
 
         /// <summary>
-        /// Hämtar användare med hjälp av användar e-postadress. 
+        /// Sätter senaste inloggningstiden.
         /// </summary>
-        /// <param name="email">e-post adress på användaren</param>
-        /// <returns>Användare, eller null om användare inte finns</returns>
-        public User GetUserByEmail(string email)
+        /// <param name="userId">Id på användare</param>
+        public void SetLastLoggedOn(int userId)
         {
             var fiberDb = new Internal.FiberDataContext();
-            var user = fiberDb.Users.SingleOrDefault(u => u.Username == email);
+            var user = fiberDb.Users.SingleOrDefault(u => u.Id == userId);
 
-            return user == null ? null : new User(user);
+            if (user != null)
+            {
+                user.LastLoggedOn = DateTime.Now; // Uppdaterar tiden.
+                fiberDb.SubmitChanges();  
+            }
         }
 
         /// <summary>
@@ -80,7 +93,7 @@ namespace FiberKartan.Database
 
             var fiberDb = new Internal.FiberDataContext();
             var user = fiberDb.Users.SingleOrDefault(u => u.Id == userId);
-            if (user == null)
+            if (user == null || user.IsDeleted)
             {
                 return MapAccessRights.None;
             }
@@ -107,16 +120,33 @@ namespace FiberKartan.Database
         /// </summary>
         /// <param name="userId">Id på användare som gör anropet.</param>
         /// <param name="orderBy">Fält som vi skall sortera efter, "Title" är standard</param>
-        /// <param name="sortOrder">Sorteringsordning(asc|desc)</param>
+        /// <param name="sortDescending">Sortera i stigande ordning, annars i fallande</param>
         /// <param name="offset">Från vilken post vi vill börja listan</param>
         /// <param name="count">Hur många poster vi är intresserade av</param>
         /// <returns>Lista på kartor</returns>
-        public List<ViewMapType> GetMapTypes(int userId, string orderBy = "Title", string sortOrder = "asc", int offset = 0, int count = 20)
+        public List<ViewMapType> GetMapTypes(int userId, string orderBy = "Title", bool sortDescending = false, int offset = 0, int count = 20)
         {
             var fiberDb = new Internal.FiberDataContext();
+            var mapTypes = new List<ViewMapType>();
 
-            // TODO, sorteringsordning bör vara Title, men för administratörer bör de egna kartorna ligga först.
-            var mapTypes = fiberDb.MapTypeAccessRights.Where("(UserId == @0 && AccessRight > 0) || User.IsAdmin", userId).Select(mt => new ViewMapType(mt.MapType)).OrderBy("@0 @1", orderBy, sortOrder).Skip(offset).Take(count).ToList();
+            var user = this.GetUser(userId);
+
+            if (user != null && !user.IsDeleted)
+            {
+                IQueryable<Internal.MapType> collection = null;
+
+                if (user.IsAdmin)
+                {
+                    collection = fiberDb.MapTypes;
+                }
+                else
+                {
+                    collection = fiberDb.MapTypes.Where(mt => mt.MapTypeAccessRights.Any(mtar => mtar.UserId == userId && mtar.AccessRight > 0));
+                }
+
+
+                mapTypes = collection.OrderBy(string.Format("{0} {1}", orderBy, sortDescending ? "descending" : "ascending")).Skip(offset).Take(count).Select(mt => new ViewMapType(mt)).ToList();
+            }
 
             return mapTypes;
         }
@@ -148,11 +178,11 @@ namespace FiberKartan.Database
         /// <param name="userId">Id på användare som gör anropet.</param>
         /// <param name="mapTypeId">Karta som efterfrågas</param>
         /// <param name="orderBy">Fält som vi skall sortera efter, "Ver" är standard</param>
-        /// <param name="sortOrder">Sorteringsordning(asc|desc)</param>
+        /// <param name="sortAscending">Sortera i fallande ordning, annars i stigande</param>
         /// <param name="offset">Från vilken post vi vill börja listan</param>
         /// <param name="count">Hur många poster vi är intresserade av</param>
         /// <returns>Lista på kartversioner</returns>
-        public List<ViewMap> GetMapVersions(int userId, int mapTypeId, string orderBy = "Ver", string sortOrder = "asc", int offset = 0, int count = 20)
+        public List<ViewMap> GetMapVersions(int userId, int mapTypeId, string orderBy = "Ver", bool sortAscending = false, int offset = 0, int count = 20)
         {
             var fiberDb = new Internal.FiberDataContext();
 
@@ -161,7 +191,7 @@ namespace FiberKartan.Database
             // Kontrollera om användaren har rättigheter att granska karta.
             if (this.GetMapAccessRights(userId, mapTypeId).HasFlag(MapAccessRights.Read))
             {
-                mapVersions = fiberDb.Maps.Where(m => m.MapTypeId == mapTypeId).OrderBy("@0 @1", orderBy, sortOrder).Skip(offset).Take(count).Select(m => new ViewMap(m, false)).ToList();
+                mapVersions = fiberDb.Maps.Where(m => m.MapTypeId == mapTypeId).OrderBy(string.Format("{0} {1}", orderBy, sortAscending ? "ascending" : "descending")).Skip(offset).Take(count).Select(m => new ViewMap(m, false)).ToList();
             }
 
             return mapVersions;
@@ -215,7 +245,7 @@ namespace FiberKartan.Database
 
             if (mapTypeId < 1 || string.IsNullOrEmpty(ids))
             {
-                throw new DataException("mapTypeId och/eller id på lager saknas i anrop.");
+                throw new DatabaseException("mapTypeId och/eller id på lager saknas i anrop.");
             }
 
             Map map = null;

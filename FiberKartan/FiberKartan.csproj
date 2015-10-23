@@ -509,37 +509,6 @@
     <Content Include="Map.aspx" />
     <Content Include="Admin\MapAdmin.aspx" />
     <Content Include="robots.txt" />
-    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetLayersResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetMapResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetMapsResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetMapTypeResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.GetMapTypesResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.PingResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.Response.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FiberKartan.API.FKService\FiberKartan.FiberKartan.API.FKService.saveMapResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <None Include="Service References\FiberKartan.API.FKService\FKService.disco" />
-    <None Include="Service References\FiberKartan.API.FKService\configuration91.svcinfo" />
-    <None Include="Service References\FiberKartan.API.FKService\configuration.svcinfo" />
-    <None Include="Service References\FiberKartan.API.FKService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
     <Content Include="TotalMap.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -695,11 +664,6 @@
     <Compile Include="Kml\KmlMarker.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Service References\FiberKartan.API.FKService\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="TotalMap.aspx.cs">
       <DependentUpon>TotalMap.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -724,22 +688,6 @@
     <Content Include="Resources\views\incidentForm.hbs" />
     <None Include="Properties\PublishProfiles\FiberKartan.pubxml" />
     <Content Include="Resources\views\addressSearchResult.hbs" />
-    <None Include="Service References\FiberKartan.API.FKService\FKService.wsdl" />
-    <None Include="Service References\FiberKartan.API.FKService\FKService.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FiberKartan.API.FKService\FKService1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FiberKartan.API.FKService\FKService2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FiberKartan.API.FKService\FKService3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FiberKartan.API.FKService\FKService4.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -758,9 +706,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\FiberKartan.API.FKService\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

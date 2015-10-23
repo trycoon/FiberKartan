@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="FiberKartan.REST.FKService" CodeBehind="FKService.svc.cs" %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="FiberKartan.API.FKService" CodeBehind="FKService.svc.cs" %>

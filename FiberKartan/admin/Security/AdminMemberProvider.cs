@@ -6,6 +6,8 @@ using System.Web.Security;
 using System.Text;
 using FiberKartan;
 using System.Security.Cryptography;
+using FiberKartan.Database;
+using FiberKartan.Database.Internal;
 
 /*
 Copyright (c) 2012, Henrik Östman.
@@ -194,17 +196,18 @@ namespace FiberKartan.Admin.Security
         /// <returns></returns>
         public override bool ValidateUser(string username, string password)
         {
+            var db = new MsSQL();
+
             if (string.IsNullOrEmpty(username.Trim())) return false;
-            
-            var fiberDb = new FiberDataContext();
-            var dbUser = fiberDb.Users.SingleOrDefault(u => u.Username == username.Trim().ToLower());
+
+            var dbUser = db.GetUserByUsername(username.Trim().ToLower());
 
             if (dbUser != null)
             {
                 var user = new User(dbUser.Id, dbUser.Username, dbUser.Name, dbUser.Password)
                 {
                     Description = dbUser.Description,
-                    LastLoggedOn = dbUser.LastLoggedOn ?? DateTime.MinValue
+                    LastLoggedOn = dbUser.LastLoggedOn
                 };
 
                 // Det är okey att logga in om man har ett tomt lösenord, användaren skall då bli uppmanad att sätta ett lösenord.
