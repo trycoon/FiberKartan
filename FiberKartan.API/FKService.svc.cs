@@ -55,7 +55,7 @@ namespace FiberKartan.API
         public FKService()
         {
             // Needed to be able to set role-based access on methods.
-            //Thread.CurrentPrincipal = HttpContext.Current.User;
+            Thread.CurrentPrincipal = HttpContext.Current.User;
         }
         /// <summary>
         /// Method för att logga in användare.
@@ -64,6 +64,7 @@ namespace FiberKartan.API
         /// <returns>Användaruppgifter om lyckad inloggning</returns>
         public GetLoginResponse Login(Credentials credentials)
         {
+            var cred = credentials;
             /*if (ValidateUser(credentials.Username, credentials.Password))
             {
                /* var ticket = new FormsAuthenticationTicket(1, provider.User.UserName, DateTime.Now,
@@ -83,7 +84,7 @@ namespace FiberKartan.API
                     Request.ServerVariables["REMOTE_ADDR"].ToString() + "\".",
                     System.Diagnostics.EventLogEntryType.SuccessAudit, 102);*/
 
-           /* }
+            /*}
             else
             {
 
@@ -105,7 +106,7 @@ namespace FiberKartan.API
         }
 
         /// <summary>
-        /// Method för att logga ut användare.
+        /// Metod används för att logga ut från tjänsten.
         /// </summary>
         public void Logout()
         {

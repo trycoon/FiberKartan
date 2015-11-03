@@ -32,6 +32,24 @@ namespace FiberKartan.API
     public interface IFKService
     {
         /// <summary>
+        /// Metod används för att logga in i tjänsten och få erfoderliga kakor satta som bevisar att man är inloggad.
+        /// </summary>
+        /// <param name="credentials">Inloggningsuppgifter</param>
+        /// <returns>Uppgifter om inloggad användare vid lyckad inloggning</returns>
+        [WebInvoke(UriTemplate = "/sessions",
+            Method = "POST",
+            RequestFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        GetLoginResponse Login(Credentials credentials);
+
+        /// <summary>
+        /// Metod används för att logga ut från tjänsten.
+        /// </summary>
+        [WebInvoke(UriTemplate = "/sessions",
+            Method = "DELETE")]
+        void Logout();
+
+        /// <summary>
         /// Metod som returnerar en lista på tillgängliga karttyper.
         /// </summary>
         /// <param name="orderBy">Fält som vi skall sortera efter, "Title" är standard</param>

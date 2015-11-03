@@ -10,5 +10,8 @@ namespace FiberKartan.Database.Models
 
         [DataMember(Name = "password")]
         public string Password { get; set; }
+
+        [DataMember(Name = "isPersistent ")]
+        public bool IsPersistent { get; set; }
     }
 }
