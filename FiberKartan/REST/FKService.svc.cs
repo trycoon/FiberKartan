@@ -427,10 +427,10 @@ namespace FiberKartan.REST
                     DeliveryNotificationOptions = DeliveryNotificationOptions.Never
                 })
                 {
+                    mail.To.Add(new MailAddress(existingMap.MapType.ServiceCompany.ServiceEmail));
+
                     // HTML-innehåll måste kodas så här
                     mail.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(body.ToString(), Encoding.UTF8, MediaTypeNames.Text.Html));
-
-                    mail.Bcc.Add(new MailAddress(existingMap.MapType.ServiceCompany.ServiceEmail));
 
                     using (var SMTPServer = new SmtpClient())
                     {
