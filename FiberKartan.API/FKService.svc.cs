@@ -5,11 +5,10 @@ using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Security.Permissions;
+using System.Runtime.Serialization;
+using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
-using System.Text;
 using System.Threading;
 using System.Web;
 using System.Web.Security;
@@ -36,6 +35,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+// The following line sets the default namespace for DataContract serialized typed to be ""
+[assembly: ContractNamespace("", ClrNamespace = "FiberKartan.API")]
+
 namespace FiberKartan.API
 {
     // AspNetCompatibility is needed to access and set Cookies!
@@ -54,8 +57,7 @@ namespace FiberKartan.API
         /// </summary>
         public FKService()
         {
-            // Needed to be able to set role-based access on methods.
-            Thread.CurrentPrincipal = HttpContext.Current.User;
+            // Nothing here.
         }
         /// <summary>
         /// Method för att logga in användare.
@@ -64,45 +66,36 @@ namespace FiberKartan.API
         /// <returns>Användaruppgifter om lyckad inloggning</returns>
         public GetLoginResponse Login(Credentials credentials)
         {
-            var cred = credentials;
-            /*if (ValidateUser(credentials.Username, credentials.Password))
+            var response = new GetLoginResponse();
+            string name = ServiceSecurityContext.Current.PrimaryIdentity.Name;
+            if (Membership.ValidateUser(credentials.Username, credentials.Password))
             {
-               /* var ticket = new FormsAuthenticationTicket(1, provider.User.UserName, DateTime.Now,
-                    DateTime.Now.AddHours(5), false, string.Empty);
+                
+                var user = Membership.Provider.GetUser(credentials.Username, true);
+                var ticket = new FormsAuthenticationTicket(1, "username", DateTime.Now,
+                    DateTime.Now.AddHours(5), credentials.IsPersistent, "\"user\": \"aaa\"}", FormsAuthentication.FormsCookiePath);
                 var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket))
                 {
+                    Path = FormsAuthentication.FormsCookiePath,
                     Expires = DateTime.Now.AddHours(5)
                 };
                 if (WebOperationContext.Current != null)
                 {
                     WebOperationContext.Current.OutgoingResponse.Headers.Add(cookie.Value);
-                }*/
+                }
 
               //  db.SetLastLoggedOn(1);
                 /*Utils.Log(
                     "Användare id=" + dbUser.Id + ", username=\"" + dbUser.Username + "\" loggade in från ip-adress \"" +
                     Request.ServerVariables["REMOTE_ADDR"].ToString() + "\".",
                     System.Diagnostics.EventLogEntryType.SuccessAudit, 102);*/
-
-            /*}
+            }
             else
             {
-
                 Thread.Sleep(100);  // Fördröjning så att man inte kan bygga ett program som söker efter lösenord.
             }
-            /* var user = db.Login(credentials);
-             var response = new GetLoginResponse
-             {
-                 Id = user.Id,
-                 Name = user.Name,
-                 IsAdmin = user.IsAdmin,
-                 Username = user.Username,
-                 LastLoggedOn = user.LastLoggedOn,
-                 LastNotificationMessage = user.LastNotificationMessage
-             };
-            
-             return response;*/
-            return null;
+           
+             return response;
         }
 
         /// <summary>
@@ -153,7 +146,6 @@ namespace FiberKartan.API
         /// </summary>
         /// <param name="mapTypeId">Id på karttypen</param>
         /// <returns>Karttyp, eller null om karttyp inte finns</returns>
-        [PrincipalPermission(SecurityAction.Demand, Role = "Users")]
         public GetMapTypeResponse GetMapType(string mapTypeId)
         {
             var response = new GetMapTypeResponse();

@@ -47,6 +47,7 @@ namespace FiberKartan.API.Security
         /// </summary>
         /// <param name="username">Användarnamn</param>
         /// <param name="password">Lösenord</param>
+        /// <exception cref="SecurityTokenValidationException">If not permitted to login.</exception>
         /// <returns></returns>
         public override void Validate(string username, string password)
         {
@@ -77,6 +78,11 @@ namespace FiberKartan.API.Security
                 if ((string.IsNullOrEmpty(dbUser.Password) || dbUser.Password == GeneratePasswordHash(dbUser.Username, password.Trim())) && !dbUser.IsDeleted)
                 {
                     log.InfoFormat("Logged in user with id: {0} and username: {1}.", dbUser.Id, username);
+                }
+                else
+                {
+                    log.InfoFormat("User failed to login, wrong username or password, or user blocked. User with username: {0} and id: {1}.", username, dbUser.Id);
+                    throw new SecurityTokenValidationException("Felaktigt användarnamn eller lösenord.");
                 }
             }
 

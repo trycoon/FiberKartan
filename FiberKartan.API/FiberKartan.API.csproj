@@ -83,7 +83,11 @@
     <Compile Include="Responses\Response.cs" />
     <Compile Include="Responses\SaveMapResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\CustomPrincipal.cs" />
+    <Compile Include="Security\CustomSecurityAttribute.cs" />
     <Compile Include="Security\CustomUserNameValidator.cs" />
+    <Compile Include="Security\RequestValidator.cs" />
+    <Compile Include="Security\SecurityServiceElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

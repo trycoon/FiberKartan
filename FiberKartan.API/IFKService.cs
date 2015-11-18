@@ -2,6 +2,7 @@
 using System.ServiceModel.Web;
 using FiberKartan.Database.Models;
 using FiberKartan.API.Responses;
+using FiberKartan.API.Security;
 
 /*
 Copyright (c) 2012, Henrik Östman.
@@ -36,15 +37,17 @@ namespace FiberKartan.API
         /// </summary>
         /// <param name="credentials">Inloggningsuppgifter</param>
         /// <returns>Uppgifter om inloggad användare vid lyckad inloggning</returns>
+        [OperationContract]
         [WebInvoke(UriTemplate = "/sessions",
             Method = "POST",
             RequestFormat = WebMessageFormat.Json,
-            BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+            BodyStyle = WebMessageBodyStyle.Bare)]
         GetLoginResponse Login(Credentials credentials);
 
         /// <summary>
         /// Metod används för att logga ut från tjänsten.
         /// </summary>
+        [OperationContract]
         [WebInvoke(UriTemplate = "/sessions",
             Method = "DELETE")]
         void Logout();
@@ -58,6 +61,7 @@ namespace FiberKartan.API
         /// <param name="count">Hur många poster vi är intresserade av</param>
         /// <returns>Lista på karttyper</returns>
         [OperationContract]
+        [CustomSecurity]
         [WebGet(UriTemplate = "/maptypes?orderBy={orderBy}&sortDescending={sortDescending}&offset={offset}&count={count}")]
         GetMapTypesResponse GetMapTypes(string orderBy = "Title", bool sortDescending = false, int offset = 0, int count = 20);
 
