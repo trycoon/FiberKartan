@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
+using System.Web;
 using log4net;
 
 /*
@@ -26,7 +25,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace FiberKartan.API.Security
 {
-    public class RequestValidator : IParameterInspector
+    public class RequestProfiler : IParameterInspector
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -42,15 +41,15 @@ namespace FiberKartan.API.Security
             var securityContext = ServiceSecurityContext.Current;
 
             string user = null;
-            bool isAnonymous = true;
 
             if (securityContext != null)
             {
                 user = securityContext.PrimaryIdentity.Name;
-                isAnonymous = securityContext.IsAnonymous;
             }
 
-            return null;
+            log.InfoFormat("Begin request to resource \"{0}\" for user \"{1}\" having IP: {2}, mapping to operation \"{3}\".", operationContext.IncomingMessageHeaders.To.AbsolutePath, user, HttpContext.Current.Request.UserHostAddress, operationName);
+            
+            return DateTime.Now;
         }
 
         /// <summary>
@@ -62,7 +61,18 @@ namespace FiberKartan.API.Security
         /// <param name="correlationState"></param>
         public void AfterCall(string operationName, object[] outputs, object returnValue, object correlationState)
         {
-            // Nothing here.
+            var operationDuration = DateTime.Now.Subtract((DateTime)correlationState);
+            var operationContext = OperationContext.Current;
+            var securityContext = ServiceSecurityContext.Current;
+
+            string user = null;
+
+            if (securityContext != null)
+            {
+                user = securityContext.PrimaryIdentity.Name;
+            }
+
+            log.InfoFormat("End request to resource \"{0}\" for user \"{1}\" having IP: {2}, request duration: {3}", operationContext.IncomingMessageHeaders.To.AbsolutePath, user, HttpContext.Current.Request.UserHostAddress, operationDuration);
         }
     }
 }

@@ -27,13 +27,13 @@ namespace FiberKartan.API.Security
         {
             get
             {
-                return typeof(CustomSecurityAttribute);
+                return typeof(SecurityAttribute);
             }
         }
 
         protected override object CreateBehavior()
         {
-            return new CustomSecurityAttribute();
+            return new SecurityAttribute();
         }
     }
 }

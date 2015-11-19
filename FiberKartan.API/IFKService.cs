@@ -61,7 +61,7 @@ namespace FiberKartan.API
         /// <param name="count">Hur många poster vi är intresserade av</param>
         /// <returns>Lista på karttyper</returns>
         [OperationContract]
-        [CustomSecurity]
+        [Security]
         [WebGet(UriTemplate = "/maptypes?orderBy={orderBy}&sortDescending={sortDescending}&offset={offset}&count={count}")]
         GetMapTypesResponse GetMapTypes(string orderBy = "Title", bool sortDescending = false, int offset = 0, int count = 20);
 
