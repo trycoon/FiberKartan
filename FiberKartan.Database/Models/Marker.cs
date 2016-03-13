@@ -19,10 +19,10 @@ namespace FiberKartan.Database.Models
         public int Type { get; set; }
 
         [DataMember(Name = "lat")]
-        public Double Latitude { get; set; }
+        public double Latitude { get; set; }
 
         [DataMember(Name = "lng")]
-        public Double Longitude { get; set; }
+        public double Longitude { get; set; }
 
         [DataMember(Name = "settings", EmitDefaultValue = false)]
         public string Settings { get; set; }

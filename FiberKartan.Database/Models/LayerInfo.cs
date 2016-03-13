@@ -7,7 +7,7 @@ namespace FiberKartan.Database.Models
     public class LayerInfo
     {
         [DataMember(Name = "id")]
-        public String Id { get; set; }
+        public string Id { get; set; }
 
         [DataMember(Name = "name")]
         public string Name { get; set; }

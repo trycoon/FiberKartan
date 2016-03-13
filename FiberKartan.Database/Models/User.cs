@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Runtime.Serialization;
 
 namespace FiberKartan.Database.Models
@@ -35,6 +36,22 @@ namespace FiberKartan.Database.Models
             this.LastNotificationMessage = dbUser.LastNotificationMessage ?? -1;
         }
 
+        [OnSerializing]
+        private void OnSerializing(StreamingContext context)
+        {
+            this.CreatedSerialized = this.Created.ToString("yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+            this.LastLoggedOnSerialized = this.LastLoggedOn.ToString("yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+            this.LastActivitySerialized = this.LastActivity.ToString("yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+        }
+
+        [OnDeserialized]
+        private void OnDeserializing(StreamingContext context)
+        {
+            this.Created = this.CreatedSerialized == null ? default(DateTime) : DateTime.ParseExact(this.CreatedSerialized, "yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+            this.LastLoggedOn = this.LastLoggedOnSerialized == null ? default(DateTime) : DateTime.ParseExact(this.LastLoggedOnSerialized, "yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+            this.LastActivity = this.LastActivitySerialized == null ? default(DateTime) : DateTime.ParseExact(this.LastActivitySerialized, "yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+        }
+
         [DataMember(Name = "id")]
         public int Id { get; set; }
 
@@ -53,14 +70,17 @@ namespace FiberKartan.Database.Models
         [DataMember(Name = "isDeleted")]
         public bool IsDeleted { get; set; }
 
-        [DataMember(Name = "created")]
         public DateTime Created { get; set; }
+        [DataMember(Name = "created", IsRequired = false, EmitDefaultValue = false)]
+        private string CreatedSerialized { get; set; }
 
-        [DataMember(Name = "lastLoggedOn")]
         public DateTime LastLoggedOn { get; set; }
+        [DataMember(Name = "lastLoggedOn", IsRequired = false, EmitDefaultValue = false)]
+        private string LastLoggedOnSerialized { get; set; }
 
-        [DataMember(Name = "lastActivity")]
         public DateTime LastActivity { get; set; }
+        [DataMember(Name = "lastActivity", IsRequired = false, EmitDefaultValue = false)]
+        private string LastActivitySerialized { get; set; }
 
         [DataMember(Name = "isAdmin")]
         public bool IsAdmin { get; set; }

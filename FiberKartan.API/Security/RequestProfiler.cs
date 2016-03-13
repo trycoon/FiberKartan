@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.ServiceModel;
 using System.ServiceModel.Dispatcher;
 using System.Web;
@@ -38,16 +39,10 @@ namespace FiberKartan.API.Security
         public object BeforeCall(string operationName, object[] inputs)
         {
             var operationContext = OperationContext.Current;
-            var securityContext = ServiceSecurityContext.Current;
 
-            string user = null;
+                CallContext.LogicalSetData("user", 123);
 
-            if (securityContext != null)
-            {
-                user = securityContext.PrimaryIdentity.Name;
-            }
-
-            log.InfoFormat("Begin request to resource \"{0}\" for user \"{1}\" having IP: {2}, mapping to operation \"{3}\".", operationContext.IncomingMessageHeaders.To.AbsolutePath, user, HttpContext.Current.Request.UserHostAddress, operationName);
+            log.InfoFormat("Begin request to resource \"{0}\" for user having IP: {1}, mapping to operation \"{2}\".", operationContext.IncomingMessageHeaders.To.AbsolutePath, HttpContext.Current.Request.UserHostAddress, operationName);
             
             return DateTime.Now;
         }
@@ -63,16 +58,8 @@ namespace FiberKartan.API.Security
         {
             var operationDuration = DateTime.Now.Subtract((DateTime)correlationState);
             var operationContext = OperationContext.Current;
-            var securityContext = ServiceSecurityContext.Current;
 
-            string user = null;
-
-            if (securityContext != null)
-            {
-                user = securityContext.PrimaryIdentity.Name;
-            }
-
-            log.InfoFormat("End request to resource \"{0}\" for user \"{1}\" having IP: {2}, request duration: {3}", operationContext.IncomingMessageHeaders.To.AbsolutePath, user, HttpContext.Current.Request.UserHostAddress, operationDuration);
+            log.InfoFormat("End request to resource \"{0}\" for user having IP: {1}, request duration: {2}", operationContext.IncomingMessageHeaders.To.AbsolutePath, HttpContext.Current.Request.UserHostAddress, operationDuration);
         }
     }
 }

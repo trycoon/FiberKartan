@@ -8,7 +8,7 @@ namespace FiberKartan.Database.Models
     public class Layer
     {
         [DataMember(Name = "id")]
-        public String Id { get; set; }
+        public string Id { get; set; }
 
         [DataMember(Name = "name")]
         public string Name { get; set; }
@@ -25,7 +25,7 @@ namespace FiberKartan.Database.Models
         [DataMember(Name = "polygons", EmitDefaultValue = false)]
         public List<Polygon> Polygons { get; set; }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             var l = obj as Layer;
             if ((object)l == null)

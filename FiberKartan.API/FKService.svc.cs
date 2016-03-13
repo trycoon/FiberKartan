@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
@@ -15,6 +16,7 @@ using System.Web.Security;
 using FiberKartan.Database;
 using FiberKartan.Database.Models;
 using FiberKartan.API.Responses;
+using FiberKartan.API.Security;
 using log4net;
 
 /*
@@ -67,35 +69,50 @@ namespace FiberKartan.API
         public GetLoginResponse Login(Credentials credentials)
         {
             var response = new GetLoginResponse();
-            string name = ServiceSecurityContext.Current.PrimaryIdentity.Name;
-            if (Membership.ValidateUser(credentials.Username, credentials.Password))
+
+            try
             {
-                
-                var user = Membership.Provider.GetUser(credentials.Username, true);
+                var user = SecurityHandler.Validate(credentials.Username, credentials.Password);
+
                 var ticket = new FormsAuthenticationTicket(1, "username", DateTime.Now,
-                    DateTime.Now.AddHours(5), credentials.IsPersistent, "\"user\": \"aaa\"}", FormsAuthentication.FormsCookiePath);
+                   DateTime.Now.AddHours(5), credentials.IsPersistent, "{\"user\": \"aaa\"}", FormsAuthentication.FormsCookiePath);
                 var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket))
                 {
                     Path = FormsAuthentication.FormsCookiePath,
-                    Expires = DateTime.Now.AddHours(5)
+                    Expires = DateTime.Now.AddHours(5),
+                    HttpOnly = true     // Prevent Javascript on client to access cookie.
                 };
-                if (WebOperationContext.Current != null)
-                {
-                    WebOperationContext.Current.OutgoingResponse.Headers.Add(cookie.Value);
-                }
 
-              //  db.SetLastLoggedOn(1);
-                /*Utils.Log(
-                    "Användare id=" + dbUser.Id + ", username=\"" + dbUser.Username + "\" loggade in från ip-adress \"" +
-                    Request.ServerVariables["REMOTE_ADDR"].ToString() + "\".",
-                    System.Diagnostics.EventLogEntryType.SuccessAudit, 102);*/
+                HttpContext.Current.Response.AppendCookie(cookie);
+                log.InfoFormat("User successfully logged in with id: {0}, username: {1}, and name: {2}.", user.Id, user.Username, user.Name);
+
+                db.SetLastLoggedOn(user.Id);
+
+                response.User = new UserResponse()
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Username = user.Username,
+                    LastLoggedOn = user.LastLoggedOn.ToLocalTime().ToString(),
+                    IsAdmin = user.IsAdmin,
+                    LastNotificationMessage = user.LastNotificationMessage
+                };
             }
-            else
+            catch (SecurityTokenException ex)
             {
                 Thread.Sleep(100);  // Fördröjning så att man inte kan bygga ett program som söker efter lösenord.
+                response.ErrorCode = ErrorCode.NotLoggedIn;
+                response.ErrorMessage = ex.Message;
             }
-           
-             return response;
+            catch (Exception ex)
+            {
+                log.Error(ex);
+                Thread.Sleep(100);  // Fördröjning så att man inte kan bygga ett program som söker efter lösenord.
+                response.ErrorCode = ErrorCode.GenericError;
+                response.ErrorMessage = "Fel vid validering av användarnamn och lösenord, var god försök igen senare.";
+            }
+
+            return response;
         }
 
         /// <summary>
@@ -103,7 +120,9 @@ namespace FiberKartan.API
         /// </summary>
         public void Logout()
         {
-           // db.Logout(1);
+            // db.Logout(1);
+           // log.InfoFormat("User successfully logged out with id: {0}, username: {1}, and name: {2}.", user.Id, user.Username, user.Name);
+            FormsAuthentication.SignOut();
         }
 
         /// <summary>

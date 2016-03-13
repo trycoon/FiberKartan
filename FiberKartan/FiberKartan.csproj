@@ -26,6 +26,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -550,6 +551,11 @@
     <Compile Include="Admin\ListUsers.aspx.designer.cs">
       <DependentUpon>ListUsers.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Fiber.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Fiber.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Resources\BundleConfig.cs" />
     <Compile Include="Resources\CssBundleTransform.cs" />
     <Compile Include="Resources\JavascriptBundleTransform.cs" />
@@ -686,6 +692,11 @@
     </Content>
     <Content Include="Resources\views\marker.hbs" />
     <Content Include="Resources\views\incidentForm.hbs" />
+    <Content Include="Fiber.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>Fiber.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Properties\PublishProfiles\FiberKartan.pubxml" />
     <Content Include="Resources\views\addressSearchResult.hbs" />
     <None Include="Web.Debug.config">
@@ -706,6 +717,11 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fiber.dbml.layout">
+      <DependentUpon>Fiber.dbml</DependentUpon>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

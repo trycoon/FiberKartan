@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.Serialization;
 using FiberKartan.Database.Internal;
 
@@ -41,6 +42,20 @@ namespace FiberKartan.Database.Models
             }
         }
 
+        [OnSerializing]
+        private void OnSerializing(StreamingContext context)
+        {
+            this.CreatedSerialized = this.Created.ToString("yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+            this.PublishedSerialized = this.Published?.ToString("yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+        }
+
+        [OnDeserialized]
+        private void OnDeserializing(StreamingContext context)
+        {
+            this.Created = this.CreatedSerialized == null ? default(DateTime) : DateTime.ParseExact(this.CreatedSerialized, "yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+            this.Published = this.PublishedSerialized == null ? (DateTime?)null : DateTime.ParseExact(this.PublishedSerialized, "yyyy/M/d/ hh:m:s", CultureInfo.InvariantCulture);
+        }
+
         [DataMember(Name = "mapType")]
         public ViewMapType MapType { get; set; }
 
@@ -50,14 +65,16 @@ namespace FiberKartan.Database.Models
         [DataMember(Name = "previousVersion")]
         public int PreviousVersion { get; set; }
 
-        [DataMember(Name = "created")]
         public DateTime Created { get; set; }
+        [DataMember(Name = "created", IsRequired = false, EmitDefaultValue = false)]
+        private string CreatedSerialized { get; set; }
 
         [DataMember(Name = "creator")]
         public Creator Creator { get; set; }
 
-        [DataMember(Name = "published", EmitDefaultValue = false)]
         public DateTime? Published { get; set; }
+        [DataMember(Name = "published", IsRequired = false, EmitDefaultValue = false)]
+        private string PublishedSerialized { get; set; }
 
         [DataMember(Name = "views")]
         public int Views { get; set; }

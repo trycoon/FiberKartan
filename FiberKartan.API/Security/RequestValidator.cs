@@ -1,9 +1,12 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Net;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
+using System.ServiceModel.Web;
+using System.Web;
+using System.Web.Security;
+using FiberKartan.Database;
 using log4net;
 
 /*
@@ -29,6 +32,7 @@ namespace FiberKartan.API.Security
     public class RequestValidator : IParameterInspector
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly MsSQL db = new MsSQL();
 
         /// <summary>
         /// Method executed before REST-operation is executed.
@@ -39,15 +43,14 @@ namespace FiberKartan.API.Security
         public object BeforeCall(string operationName, object[] inputs)
         {
             var operationContext = OperationContext.Current;
-            var securityContext = ServiceSecurityContext.Current;
+            CallContext.LogicalSetData("currentUser", null);    // Clear out possible reference, this should never happend...
 
-            string user = null;
-            bool isAnonymous = true;
+            if (!string.IsNullOrEmpty(HttpContext.Current.User.Identity.Name)) {
+                var user = db.GetUserByUsername(HttpContext.Current.User.Identity.Name);
 
-            if (securityContext != null)
-            {
-                user = securityContext.PrimaryIdentity.Name;
-                isAnonymous = securityContext.IsAnonymous;
+                if (user != null && !user.IsDeleted) {
+                    CallContext.LogicalSetData("currentUser", user);
+                }
             }
 
             return null;
@@ -62,7 +65,7 @@ namespace FiberKartan.API.Security
         /// <param name="correlationState"></param>
         public void AfterCall(string operationName, object[] outputs, object returnValue, object correlationState)
         {
-            // Nothing here.
+            CallContext.LogicalSetData("currentUser", null);    // This should not be needed since CallContext should be unique for every request, but we do it anyway to be safe.
         }
     }
 }

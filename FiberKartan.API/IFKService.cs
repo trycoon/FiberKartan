@@ -27,7 +27,7 @@ namespace FiberKartan.API
     /// <summary>
     /// Möjliga felkoder man kan få när mar anropar REST-gränssnittet.
     /// </summary>
-    public enum ErrorCode : int { Ok = 0, NotLoggedIn = 1, NoAccessToMap = 2, FailedToSave = 3, MissingInformation = 4 };
+    public enum ErrorCode : int { Ok = 0, NotLoggedIn = 1, NoAccessToMap = 2, FailedToSave = 3, MissingInformation = 4, GenericError = 5 };
 
     [ServiceContract]
     public interface IFKService
@@ -71,6 +71,7 @@ namespace FiberKartan.API
         /// <param name="mapTypeId">Id på karttypen</param>
         /// <returns>Karttyp, eller null om karttyp inte finns</returns>
         [OperationContract]
+        [Security]
         [WebGet(UriTemplate = "/maptypes/{mapTypeId}")]
         GetMapTypeResponse GetMapType(string mapTypeId);
 
@@ -84,6 +85,7 @@ namespace FiberKartan.API
         /// <param name="count">Hur många poster vi är intresserade av</param>
         /// <returns>Lista på kartor</returns>
         [OperationContract]
+        [Security]
         [WebGet(UriTemplate = "/maptypes/{mapTypeId}/maps?orderBy={orderBy}&sortAscending={sortAscending}&offset={offset}&count={count}")]
         GetMapsResponse GetMaps(string mapTypeId, string orderBy, bool sortAscending, int offset, int count);
 
@@ -94,6 +96,7 @@ namespace FiberKartan.API
         /// <param name="version">Version av kartan som skall hämtas, 0 om senaste version</param>
         /// <returns>Karta, eller null om karta inte finns</returns>
         [OperationContract]
+        [Security]
         [WebGet(UriTemplate = "/maptypes/{mapTypeId}/maps/{version}")]
         GetMapResponse GetMap(string mapTypeId, string version);
 
@@ -104,6 +107,7 @@ namespace FiberKartan.API
         /// <param name="mapTypeId">Id på karttypen</param>
         /// <returns>Returkod och id på nya markörer, sträckor, osv.</returns>
         [OperationContract]
+        [Security]
         [WebInvoke(UriTemplate = "/maptypes/{mapTypeId}/maps",
          Method = "POST",
          RequestFormat = WebMessageFormat.Json,
@@ -118,6 +122,7 @@ namespace FiberKartan.API
         /// <param name="version">Version av kartan som skall användas, 0 om senaste version</param>
         /// <returns>Lista med kartlager</returns>
         [OperationContract]
+        [Security]
         [WebGet(UriTemplate = "/maptypes/{mapTypeId}/maps/{version}/layers/{ids}")]
         GetLayersResponse GetLayers(string mapTypeId, string version, string ids);
 
@@ -128,6 +133,7 @@ namespace FiberKartan.API
         /// <param name="version">Version av kartan som skall användas, 0 om senaste version</param>
         /// <param name="report">Felrapport</param>
         [OperationContract]
+        [Security]
         [WebInvoke(UriTemplate = "/maptypes/{mapTypeId}/maps/{version}/reportIncident",
          Method = "POST",
          RequestFormat = WebMessageFormat.Json)]

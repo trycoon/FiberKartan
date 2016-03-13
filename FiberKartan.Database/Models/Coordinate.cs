@@ -7,9 +7,9 @@ namespace FiberKartan.Database.Models
     public class Coordinate
     {
         [DataMember(Name = "lat")]
-        public Double Latitude { get; set; }
+        public double Latitude { get; set; }
 
         [DataMember(Name = "lng")]
-        public Double Longitude { get; set; }
+        public double Longitude { get; set; }
     }
 }
