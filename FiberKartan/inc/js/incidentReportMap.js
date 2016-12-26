@@ -32,16 +32,16 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 
     // Deklarera ny funktion i jQuery för att hämta ut querystring-parametrar. Används: $.QueryString["param"]
     (function ($) {
-        $.QueryString = (function (a) {
+        $.QueryString = (function(a) {
             if (a === "") return {};
             var b = {};
             for (var i = 0; i < a.length; ++i) {
                 var p = a[i].split('=');
-                if (p.length != 2) continue;
+                if (p.length !== 2) continue;
                 b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
             }
             return b;
-        })(window.location.search.substr(1).split('&'))
+        })(window.location.search.substr(1).split('&'));
     })(jQuery);
 
     $(document).ready(function () {
@@ -101,7 +101,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     });
 
     function createMarkerTypeLookupTable() {
-        if (mapContent.MarkerTypes != null) {
+        if (mapContent.MarkerTypes) {
             for (var i = 0, length = mapContent.MarkerTypes.length; i < length; i++) {
                 markerTypeLookup[mapContent.MarkerTypes[i].Id] = mapContent.MarkerTypes[i];
             }
@@ -109,13 +109,14 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function plotMapContent() {
-        if (mapContent.Markers != null) {
-            for (var i = 0, length = mapContent.Markers.length; i < length; i++) {
+        var i, length;
+        if (mapContent.Markers) {
+            for (i = 0, length = mapContent.Markers.length; i < length; i++) {
                 addMarker(mapContent.Markers[i]);
             }
         }
-        if (mapContent.Cables != null) {
-            for (var i = 0, length = mapContent.Cables.length; i < length; i++) {
+        if (mapContent.Cables) {
+            for (i = 0, length = mapContent.Cables.length; i < length; i++) {
                 addCable(mapContent.Cables[i].LineColor, mapContent.Cables[i].Width, mapContent.Cables[i].Coordinates);
             }
         }
@@ -125,7 +126,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         var markerType = markerTypeLookup[markerInfo.TypeId];
         var location = new google.maps.LatLng(markerInfo.Lat, markerInfo.Long);
 
-        if (markerType != undefined) {  // Lägg bara till markörer som vi definierat.
+        if (markerType) {  // Lägg bara till markörer som vi definierat.
             var estate;
 
             if (markerType.Name === MARKERTYPE.HouseYes || markerType.Name === MARKERTYPE.HouseMaybe || markerType.Name === MARKERTYPE.HouseNotContacted || markerType.Name === MARKERTYPE.HouseNo) {
@@ -176,7 +177,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         
         var position = event.latLng;
         if (marker) {
-            position = marker.getPosition()
+            position = marker.getPosition();
         }
 
         incidentInfoWindow.setContent(Handlebars.templates['incidentForm']({ estate: estate, lat: position.lat().toFixed(7), lng: position.lng().toFixed(6) }));
