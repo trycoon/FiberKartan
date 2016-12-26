@@ -357,7 +357,7 @@ namespace FiberKartan.Kml
                         region.Coordinates += (kmlPolygon.Coordinates[i].Lat.ToString().Replace(",", ".") + ":" + kmlPolygon.Coordinates[i].Long.ToString().Replace(",", ".")) + (i < kmlPolygon.Coordinates.Count - 1 ? "|" : string.Empty);
                     }
 
-                    map.Regions.Add(region);
+                                        map.Regions.Add(region);
                 }
 
                 fiberDb.SubmitChanges();
@@ -598,10 +598,18 @@ namespace FiberKartan.Kml
                             }
                         }
 
-                        // För kopplingsskåp filtrerar vi bort alla tecken som inte är siffror, för namnet på ett kopplingsskåp måste vara ett tal.
+                        // För kopplingsskåp filtrerar vi bort alla tecken som inte är siffror, för namnet på ett kopplingsskåp måste vara ett numeriskt tal.
+                        // Begynnande "0" skall också tas bort så att t.ex. "07" blir "7".
                         if (markerType.Name == MapEntityName.FiberBox)
                         {
-                            kmlMarker.Name = nonDigitRegexp.Replace(kmlMarker.Name, "");
+                            if (kmlMarker.Name == null)
+                            {
+                                kmlMarker.Name = "";
+                            }
+                            else
+                            {
+                                kmlMarker.Name = nonDigitRegexp.Replace(kmlMarker.Name, "").TrimStart('0');
+                            }
                         }
 
                         kml.Markers.Add(kmlMarker);

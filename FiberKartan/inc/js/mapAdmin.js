@@ -25,6 +25,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     var map,
     mapContent = fk.mapContent,
     serverRoot = fk.serverRoot,
+    privateFuncs = {},
     mapOverlay,
     placesService,
     kmlLayer,
@@ -92,7 +93,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     });
 
     function setupView() {
-        // Skick initial ping för att visa att vi är anslutna.
+        // Skicka initial ping för att visa att vi är anslutna.
         setTimeout(function () {
             $.get("../REST/FKService.svc/Ping");
         }, 400);
@@ -801,8 +802,8 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         // Om man klickar på en bild så binds den tidigare valda markören till detta kopplingsskåp.
         $('.tempBindingFiberbox').click(function () {
             var markerToBind = getMarkerById(currentSelectedObject);
-            markerToBind.optionalInfo.KS = $(this).attr('data-fiberBoxId');            // Sätter markörens bindning till kopplingsskåpets namn(nummer).
-            markerToBind.marker.set("labelContent", $(this).attr('data-fiberBoxId'));  // Uppdaterar markörens label.
+            markerToBind.optionalInfo.KS = $(this).attr('data-fiberBoxId').toString();            // Sätter markörens bindning till kopplingsskåpets namn(nummer).
+            markerToBind.marker.set("labelContent", $(this).attr('data-fiberBoxId').toString());  // Uppdaterar markörens label.
 
             // Städa efter oss.
             exitFiberboxBindingMode();
@@ -1305,13 +1306,16 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 var labelText;
 
                 if (markerType.Name === MARKERTYPE.FiberBox) {
-                    if (id < 0) {   // Detta är ett kabelskåp som vi nu lägger till, hitta ett unikt id/namn för denna. Det behöver inte alltid vara det sista numret i serien, det kan finnas luckor som måste fyllas igen.
+                    if (id < 0) { // Detta är ett kopplingsskåp som vi nu lägger till, hitta ett unikt id/namn för denna. Det behöver inte alltid vara det sista numret i serien, det kan finnas luckor som måste fyllas igen.
                         name = getNextAvailableFiberBoxId();
+                    } else {
+                        name = parseInt(name, 10).toString();  // remove leading zeros. older versions allowed names like "07", but they should now be converted to "7".
                     }
 
                     labelText = name;
                 } else {
-                    if (optionalInfo === null || optionalInfo.KS === 0) {
+                    // set label on marker to the name of the fiberbox its bound to.
+                    if (optionalInfo === null || optionalInfo.KS === 0 || optionalInfo.KS === '0') {
                         labelText = "?";
                     } else {
                         labelText = optionalInfo.KS;
@@ -1408,7 +1412,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 
             case MARKERTYPE.FiberBox:
                 nameFieldHtml = '<label for="name">Kopplingsskåp</label>' +
-                        '<input id="name" class="oneLine" type="text" maxlength="3" disabled="disabled" title="Namn med löpnummer automatgenereras av systemet och kan därför inte ändras" /><br/><br/>';
+                        '<input id="name" class="oneLine" type="text" maxlength="3" pattern="\\d+" required x-validator-func="fiberboxValidator"/><br/><br/>';
 
                 markerTypesHtml = '<img title="Kopplingsskåp." src="../inc/img/markers/FiberBox.png" data-markerType="FiberBox" />';
                 break;
@@ -1448,7 +1452,6 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 
         var $dialog = $('<div id="edit"></div>')
                         .html(
-                            '<form onsubmit="return false;" action="#">' +
                                 nameFieldHtml +
                                 '<label for="desc">Beskrivning</label><br/>' +
                                 '<textarea id="desc" rows="6" cols="58"></textarea><br/>' +
@@ -1470,8 +1473,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                                 : "") +
                                 '<p>Position(WGS84) lat: ' + clickedMarker.marker.getPosition().lat().toFixed(7) + ', long: ' + clickedMarker.marker.getPosition().lng().toFixed(6) + '</p>' +
                                 '<div id="reverseGeocode_' + clickedMarker.id + '" class="reverseGeocode clickable">Visa närmsta belägenhetsadress</div>' +
-                                '<input id="okButton" type="button" value="Ok" /><input id="deleteButton" type="button" value="Radera" />' +
-                            '</form>'
+                                '<input id="okButton" type="button" value="Ok" /><input id="deleteButton" type="button" value="Radera" />'
                         )
                         .dialog({
                             autoOpen: false,
@@ -1552,8 +1554,36 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                                         $(this).addClass('selected');
                                     });
                                 });
-                                $("#okButton").click(function (event) {
-                                    clickedMarker.name = $("#name").val();
+                                $("#okButton").click(function(event) {
+
+                                    // loop all input-elements and call each validator function if available.
+                                    var allValid = true, result;
+                                    $("#edit input").each(function(i, el) {
+                                        $(this).removeClass("invalid");
+                                        var validator = $(this).attr("x-validator-func");
+                                        if (validator && privateFuncs[validator]) {
+                                            result = privateFuncs[validator]($(this), clickedMarker);
+                                            if (!result) {
+                                                allValid = false;
+                                            }
+                                        }
+                                    });
+
+                                    // don't proceed unless all validations has passed.
+                                    if (!allValid) {
+                                        return false;
+                                    }
+      
+                                    // if the marker that was changed was a FiberBox and the name was changed,
+                                    // then we we need to update its bindinginformation and all other markers bound to it.
+                                    if (clickedMarker.markerType.Name === MARKERTYPE.FiberBox && clickedMarker.name !== $("#name").val()) {
+                                        var newName = $("#name").val();
+                                        updateFiberboxBinding(clickedMarker, clickedMarker.name, newName);
+                                        clickedMarker.name = newName;
+                                    } else {
+                                        clickedMarker.name = $("#name").val();
+                                    }
+
                                     clickedMarker.desc = tinyMCE.get('desc').getContent();
 
                                     // Spara undan kryssrutor under Övrigt till settings-propertyn.
@@ -1586,7 +1616,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                                 });
                                 $("#deleteButton").click(function (event) {
                                     for (var i = 0, length = markersArray.length; i < length; i++) {
-                                        if (markersArray[i].id == clickedMarker.id) {
+                                        if (markersArray[i].id === clickedMarker.id) {
                                             google.maps.event.clearInstanceListeners(clickedMarker);    // Ta bort alla eventlyssnare.
                                             clickedMarker.marker.setMap(null);
                                             clickedMarker.marker = null;
@@ -1604,6 +1634,55 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                             }
                         });
         $dialog.dialog('open');
+    }
+
+    /**
+     * Update FiberBox binding information and all other markers bound to it.
+     * @param {Object} fiberboxMarker 
+     * @param {String} oldId 
+     * @param {String} newId 
+     */
+    function updateFiberboxBinding(fiberboxMarker, oldId, newId) {
+        fiberboxMarker.marker.set("labelContent", newId);  // update fiberbox markers label.
+        // Make sure that they are strings, some old markers may use integers.
+        oldId = oldId.toString();
+        newId = newId.toString();
+        // loop and update all markers bound to this fiberbox and update their bindingvalue.
+        markersArray.forEach(function(marker) {
+            if (marker.optionalInfo &&
+                marker.optionalInfo.KS &&
+                marker.id !== fiberboxMarker.id &&  // make sure to not change self.
+                marker.optionalInfo.KS.toString() === oldId) { // markers with our old id is bound to us, lets give them the new id.
+                    marker.optionalInfo.KS = newId;
+                    marker.marker.set("labelContent", newId);
+            }
+        });
+    }
+
+    /**
+     * Called upon to validate editing of fiberbox before allowed to be persisted.
+     * @param {Object} el DOM-element
+     * @param {Object} validateMarker marker object
+     * @return {boolean} whether the validation has passed.
+     */
+    privateFuncs.fiberboxValidator = function fiberboxValidator(el, validateMarker) {
+        // pattern check.
+        if (!el[0].validity.valid) {
+            el.addClass("invalid");
+            return false;
+        }
+
+        // check that no other KS has the same number("name"), they must all be unique.
+        for (var i = 0, length = markersArray.length; i < length; i++) {
+            if (markersArray[i].markerType.Name === MARKERTYPE.FiberBox) {
+                if (markersArray[i].id !== validateMarker.id && markersArray[i].name === el.val()) {
+                    el.addClass("invalid");
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     function addCable(id, uid, name, lineColor, width, coordinatesString, type) {
@@ -1680,15 +1759,13 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         // Visa dialogruta för linjen.
         var $dialog = $('<div id="edit"></div>')
             .html(
-                '<form onsubmit="return false;" action="#">' +
-                    '<label for="name">Beteckning</label><br/>' +
-                    '<input id="name" type="text" maxlength="100" /><br/><br/>' +
-                    '<label for="desc">Beskrivning</label><br/>' +
-                    '<textarea id="desc" rows="6" cols="58"></textarea><br/>' +
-                    'Linjetyp:&nbsp;<select id="lineType" name="lineType"><option value="0">Schaktsträcka</option></select>' +
-                    '<p>Längd: ' + Math.ceil(google.maps.geometry.spherical.computeLength(clickedLine.cable.getPath())) + ' meter.</p>' +
-                    '<input id="okButton" type="button" value="Ok" /><input id="deleteButton" type="button" value="Radera" />' +
-                '</form>'
+                '<label for="name">Beteckning</label><br/>' +
+                '<input id="name" type="text" maxlength="100" /><br/><br/>' +
+                '<label for="desc">Beskrivning</label><br/>' +
+                '<textarea id="desc" rows="6" cols="58"></textarea><br/>' +
+                'Linjetyp:&nbsp;<select id="lineType" name="lineType"><option value="0">Schaktsträcka</option></select>' +
+                '<p>Längd: ' + Math.ceil(google.maps.geometry.spherical.computeLength(clickedLine.cable.getPath())) + ' meter.</p>' +
+                '<input id="okButton" type="button" value="Ok" /><input id="deleteButton" type="button" value="Radera" />'
             )
             .dialog({
                 autoOpen: false,
@@ -1818,16 +1895,14 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         // Visa dialogruta för området.
         var $dialog = $('<div id="edit"></div>')
             .html(
-                '<form onsubmit="return false;" action="#">' +
-                    '<label for="name">Namn på område</label><br/>' +
-                    '<input id="name" type="text" maxlength="100" /><br/><br/>' +
-                    '<label for="desc">Beskrivning</label><br/>' +
-                    '<textarea id="desc" rows="6" cols="58"></textarea>' +
-                    '<fieldset class="marginTop10px"><legend>Statistik</legend>' +
-                    '<p>Area: ' + Math.ceil(google.maps.geometry.spherical.computeArea(clickedRegion.region.getPath())) + ' meter&#178;.</p>' +
-                    '<p>' + rendertMarkerStatisticsWithinRegion(getMarkerStatisticsWithinRegion(clickedRegion.region)) + '</p></fieldset>' +
-                    '<div class="marginTop10px"><input id="okButton" type="button" value="Ok" /><input id="deleteButton" type="button" value="Radera" /></div>' +
-                '</form>'
+                '<label for="name">Namn på område</label><br/>' +
+                '<input id="name" type="text" maxlength="100" /><br/><br/>' +
+                '<label for="desc">Beskrivning</label><br/>' +
+                '<textarea id="desc" rows="6" cols="58"></textarea>' +
+                '<fieldset class="marginTop10px"><legend>Statistik</legend>' +
+                '<p>Area: ' + Math.ceil(google.maps.geometry.spherical.computeArea(clickedRegion.region.getPath())) + ' meter&#178;.</p>' +
+                '<p>' + rendertMarkerStatisticsWithinRegion(getMarkerStatisticsWithinRegion(clickedRegion.region)) + '</p></fieldset>' +
+                '<div class="marginTop10px"><input id="okButton" type="button" value="Ok" /><input id="deleteButton" type="button" value="Radera" /></div>'
             )
             .dialog({
                 autoOpen: false,
@@ -1876,6 +1951,10 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         $dialog.dialog('open');
     }
 
+    /**
+     * Returns the next available id for a fiberbox.
+     * @returns {String} id 
+     */
     function getNextAvailableFiberBoxId() {
         var possibleFreeId = 1, foundFreeId = false;
 
@@ -1883,7 +1962,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             foundFreeId = true;
             for (var i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.FiberBox) {
-                    if (markersArray[i].name == possibleFreeId) {
+                    if (parseInt(markersArray[i].name, 10) === possibleFreeId) {
                         possibleFreeId++;
                         foundFreeId = false;
                         break;
@@ -1891,7 +1970,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 }
             }
         }
-        return possibleFreeId;
+        return possibleFreeId.toString();
     }
 
     function calculateTotalLineLength(type) {

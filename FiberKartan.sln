@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FD193A21-0AD8-4FD2-B198-DE8B4AD17F69}"
 	ProjectSection(SolutionItems) = preProject
-		TODO.txt = TODO.txt
+		.eslintrc = .eslintrc
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiberKartan", "FiberKartan\FiberKartan.csproj", "{727301C9-E7B7-4231-AE1C-8A5744180382}"

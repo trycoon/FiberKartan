@@ -101,7 +101,7 @@
                             <option value="address">Belägenhetsadress</option>
                             <option value="position">GPS-position</option>
                         </select><br/>              
-                        <input id="searchBox" maxlength="100" placeholder="" />
+                        <input id="searchBox" maxlength="100" placeholder="" title="namn på markör, 'ks' för kopplingsskåp" />
                         <input id="emptySearch" type="button" class="button" value="Töm" />
                     </div>
                     <h3><a href="#">Utskrift</a></h3>

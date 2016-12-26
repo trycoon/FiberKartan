@@ -4,8 +4,6 @@ Buggar:
 
 [Medel] Om man importerat en massa markörer som "okänd markör" och sedan klickar på dom på kartan så visas dom som "undefined" och man har inte möjlighet att ändra markörtyp på dessa, description-editorn smäller också. (kolla i editMarker() i mapAdmin.js)
 
-[Medel] Det verkar som att man i vissa webbläsare får problem när man skall posta in till REST-servicen för att spara kartan, den hittar inte REST-servicens url kanske för att den är relativ? Testa IE.
-
 [Låg] Om man har valt att dölja paletten under kartinställningar så reagerar programmet inte längre på querystring parametrar som "houseyes=false" eftersom den gör denna kontroll mot paletten(som inte finns), state borde sparas i en separat variabel istället.
 
 Optimeringar:
@@ -18,9 +16,6 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 
 Övrigt:
 
-- Lägg till möjlighet att användaren skall få ett meddelande med viktig information vid nästa inloggning. T.ex. nyheter i den nya versionen.
-- Fixa så att misslyckade importeringar åter skriver till denna tabell i databasen.
-
 - Skriv om så att markörer, linjer, och regioner sparas i map-tabellen istället för i egna tabeller.
 - All inline HTML bör renderas av Handlebars.js.
 - Lägg till möjlighet att ha dynamiska egenskaper på markörer. För varje karta skall man kunna via en sida själv sätta upp vilka kryssrutor och textfält som finns på respektive markör. Egenskaperna skall följa med vid export av kartan.
@@ -28,9 +23,10 @@ http://www.svennerberg.com/2009/01/handling-large-amounts-of-markers-in-google-m
 - Fixa så att man via checkbox kan visa och dölja även fornlämningar och info-markörer.
 - Lägg till markörerna Fiberbrunn och MobilMast?
 - Lägg till möjlighet att klippa av linje och skarva.
-- Automatsparning var 5:e minut ifall något har ändrats.
-- Om något har ändrats så skall man få en varning då man försöker lämna sidan utan att ha sparat.
-- Lägg till Undo-funktion på kartan.
+
+- Spara ändringar till localstorage så att ändringar man gör innan man sparat kartan inte går förlorade.
+- Lägg till Undo-funktion på kartan, går mot localstorage.
+- Om något har ändrats så skall man få en varning då man försöker lämna sidan utan att ha sparat (kolla om det finns ändringar i localstorage).
 
 - Exportera karta skall öppnas som ett eget fönster och inte som en modal ruta.
 
