@@ -4,7 +4,7 @@
         <asp:Label runat="server" ID="lblError" ForeColor="Red" Font-Bold="true" Text="" />
     </div>
     <script>
-        setTimeout(function () {
+        setTimeout(function() {
             if ($('#ResultBox_msgTable').length > 0) {
                 $('#ResultBox_msgTable').hide('slow');
             }

@@ -76,9 +76,9 @@
     </div>
 </asp:Content>
 <asp:Content ID="footer" ContentPlaceHolderID="footer" runat="server">
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(document).on('click', '.exportButton', function (e) {
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.exportButton', function(e) {
                 e.preventDefault();
                 var page = $(this).attr("href")
                 var pagetitle = $(this).attr("title")
@@ -87,32 +87,32 @@
                     .dialog({
                         autoOpen: false,
                         title: pagetitle,
-                        close: function () { $(this).remove() },
+                        close: function() { $(this).remove() },
                         width: 485,
                         height: 560,
                         modal: true,
                         resizable: false,
                         dialogClass: 'buttons-centered',
-                        open: function (event, ui) {
+                        open: function(event, ui) {
                             $('.ui-dialog-content').css('overflow', 'hidden');
                         }
                     });
                 $dialog.dialog('open');
             });
-            $(document).on('click', '.directMapUrl', function (e) {
+            $(document).on('click', '.directMapUrl', function(e) {
                 e.preventDefault();
                 var $dialog = $('<div></div>')
                     .html('För att länka till denna kartversion, använd följande adress:<br/><br/><strong><%=ServerAddress%>' + $(this).attr("href") + '</strong>')
                     .dialog({
                         autoOpen: false,
                         title: $(this).attr("title"),
-                        close: function () { $(this).remove() },
+                        close: function() { $(this).remove() },
                         width: 500,
                         modal: true,
                         resizable: false,
                         dialogClass: 'buttons-centered',
                         buttons: {
-                            Ok: function () {
+                            Ok: function() {
                                 $(this).dialog("close");
                             }
                         }

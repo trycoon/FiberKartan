@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
-(function (fk) {
+(function(fk) {
     var map;
     var drawingManager;
     var mapContent = fk.mapContent;
@@ -31,7 +31,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     var incidentInfoWindow = new google.maps.InfoWindow({});
 
     // Deklarera ny funktion i jQuery för att hämta ut querystring-parametrar. Används: $.QueryString["param"]
-    (function ($) {
+    (function($) {
         $.QueryString = (function(a) {
             if (a === "") return {};
             var b = {};
@@ -44,7 +44,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         })(window.location.search.substr(1).split('&'));
     })(jQuery);
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         if (typeof mapContent === 'undefined' || !mapContent) {
             showDialog('<div class="mapPopup">Kartan kunde inte hittas.</div>', 'Meddelande');
@@ -81,7 +81,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             map.setOptions({ draggableCursor: 'crosshair' });
             showDialog('<div class="mapPopup">För att rapportera en incident klicka med korshåret på den plats på kartan som skall rapporteras, ni kan zooma in med scrollhjulet på musen för att närmare specificera den exakta positionen. Fyll därefter i formuläret och klicka på "Skicka" för att sända en incidentrapport till ' + serviceProvider + '.</div>', 'Beskrivning');
 
-            google.maps.event.addListener(map, 'click', function (e) {
+            google.maps.event.addListener(map, 'click', function(e) {
                 clickedSpot(e);
             });
         }
@@ -143,7 +143,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             });
             mapBounds.extend(location);
 
-            google.maps.event.addListener(marker, 'click', function (event) {
+            google.maps.event.addListener(marker, 'click', function(event) {
                 clickedSpot(event, marker);
             });
 
@@ -184,7 +184,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         incidentInfoWindow.setPosition(position);
         incidentInfoWindow.open(map);
 
-        $('#sendbutton').on('click', function () {
+        $('#sendbutton').on('click', function() {
             var incidentReport = {
                 MapTypeId: mapContent.MapTypeId,
                 Ver: mapContent.MapVer,
@@ -194,26 +194,32 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             };
 
             $.ajax({
-                type: 'POST',
-                url: serverRoot + '/REST/FKService.svc/ReportIncident',
-                data: JSON.stringify(incidentReport),
-                contentType: 'application/json',
-                dataType: 'json',
-                success:
-            function (result) {
-                if (result.ErrorCode > 0) {
+                    type: 'POST',
+                    url: serverRoot + '/REST/FKService.svc/ReportIncident',
+                    data: JSON.stringify(incidentReport),
+                    contentType: 'application/json',
+                    dataType: 'json'
+                })
+                .done(function(result) {
+                    if (result.ErrorCode > 0) {
+                        hideLoader();
+                        alert(result.ErrorMessage);
+                        ga('send', 'exception', {
+                            'exDescription': result.ErrorMessage,
+                            'exFatal': false
+                        });
+                    } else {
+                        window.location.href = 'ShowMaps.aspx';
+                    }
+                })
+                .fail(function(XMLHttpRequest, textStatus, errorThrown) {
                     hideLoader();
-                    alert(result.ErrorMessage);
-                } else {
-                    window.location.href = 'ShowMaps.aspx';
-                }
-            },
-                error:
-            function (XMLHttpRequest, textStatus, errorThrown) {
-                hideLoader();
-                alert("Ett fel uppstod vid rapportering av incident.");
-            }
-            });
+                    alert("Ett fel uppstod vid rapportering av incident.");
+                    ga('send', 'exception', {
+                        'exDescription': errorThrown.message,
+                        'exFatal': false
+                    });
+                });
         });
     }
 })(fk);

@@ -71,9 +71,9 @@
         <asp:HyperLink ID="BackButton" runat="server" NavigateUrl="ShowMaps.aspx" CssClass="button"
             Text="Tillbaka" />
     </div>
-    <script type="text/javascript">
+    <script>
         if ($(".removeButton").length > 0) {
-            $(".removeButton").click(function (e) {
+            $(".removeButton").click(function(e) {
                 if (!confirm("Är du säker på att du vill ta bort rättigheterna för denna användare? Tryck Ok för att ta bort rättigheter.")) {
                     e.preventDefault();
                 }

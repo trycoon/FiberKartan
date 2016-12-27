@@ -13,8 +13,16 @@
         <meta name="description" content="Projekteringsverktyg för fiber till socken och byanät" />
         <meta name="keywords" content="fiber,karta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg,gis" />
         <title>FiberKartan - Projekteringsverktyg för fiber till socken och byanät</title>
-        <link rel="stylesheet" type="text/css" href="/inc/css/firstpage.css?ver=1.0" media="screen" />
-        <link rel="stylesheet" type="text/css" href="/inc/js/fancybox/jquery.fancybox.css?ver=1.0" media="screen" />
+        <link rel="stylesheet" href="/inc/css/firstpage.css?ver=1.0" media="screen" />
+        <link rel="stylesheet" href="/inc/js/fancybox/jquery.fancybox.css?ver=1.0" media="screen" />
+        <!-- Google Analytics -->
+        <script>
+            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+            ga('create', 'UA-33911019-1', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <script async src='https://www.google-analytics.com/analytics.js'></script>
+        <!-- End Google Analytics -->
     </head>
     <body class="dark">
         <form id="default" runat="server" onsubmit="return false;" enableviewstate="false">
@@ -38,25 +46,12 @@
                 </footer>
             </article>
         </form>
-        <script type="text/javascript" src="/inc/js/jquery.min.js?ver=1.1"></script>
-        <script type="text/javascript" src="/inc/js/fancybox/jquery.fancybox.pack.js?ver=1.0"></script>
-        <script type="text/javascript" >
-            $(document).ready(function () {
+        <script src="/inc/js/jquery.min.js?ver=1.1"></script>
+        <script src="/inc/js/fancybox/jquery.fancybox.pack.js?ver=1.0"></script>
+        <script>
+            $(document).ready(function() {
                 $("a.image").fancybox();
             });
         </script>
-        <script type="text/javascript">
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-33911019-1']);
-            _gaq.push(['_setDomainName', 'fiberkartan.se']);
-            _gaq.push(['_gat._anonymizeIp']);
-            _gaq.push(['_trackPageview']);
-
-            (function () {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-	    </script>
     </body>
 </html>

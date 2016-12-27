@@ -16,13 +16,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
-$(document).ready(function () {
+$(document).ready(function() {
     if (Modernizr.draganddrop) {
         $('.fileUpload').addClass('dropZone');
         $('.fileUpload .dropZoneText').show();
     }
 
-    $('#mergeVersion').change(function () {
+    $('#mergeVersion').change(function() {
         if ($(this).val() === "0") {
             $('#includeOldLines').attr("disabled", "disabled");
             $('#includeOldMarkers').attr("disabled", "disabled");
@@ -32,7 +32,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#ImportButton').click(function () {
+    $('#ImportButton').click(function() {
         showLoader('Importerar karta...');
     });    
 });

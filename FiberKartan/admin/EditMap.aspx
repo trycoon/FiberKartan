@@ -55,9 +55,9 @@
     </div>
 </asp:Content>
 <asp:Content ID="footer" ContentPlaceHolderID="footer" runat="server">
-    <script type="text/javascript" src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>
-    <script type="text/javascript">
-        $(function () {
+    <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>
+    <script>
+        $(function() {
             tinyMCE.init({
                 // General options
                 mode: "textareas",
@@ -77,11 +77,11 @@
                 theme_advanced_resizing: false,
 
                 // Example content CSS (should be your site CSS)
-                content_css: "/inc/css/base.css?ver=1.7"
+                content_css: "/inc/css/base.css?ver=1.8"
             });
 
             if ($("#DeleteButton").length > 0) {
-                $("#DeleteButton").click(function (e) {
+                $("#DeleteButton").click(function(e) {
                     if (confirm("Är du säker på att du vill radera kartan med alla dess versioner? Tryck Ok för att fortsätta med raderingen.")) {
                         showLoader('Raderar karta, vänligen vänta...');
                     } else {
@@ -91,7 +91,7 @@
             }
 
             if ($("#DeletePropertyBoundariesButton").length > 0) {
-                $("#DeletePropertyBoundariesButton").click(function (e) {
+                $("#DeletePropertyBoundariesButton").click(function(e) {
                     if (!confirm("Är du säker på att du vill ta bort fastighetsgränser från kartan?")) {
                         e.preventDefault();
                     }
