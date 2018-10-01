@@ -7,13 +7,13 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="sv"> <![endif]-->
 <!--[if gt IE 8]><!--><html class="no-js" lang="sv"><!--<![endif]-->
     <head runat="server">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
-        <meta charset="utf-8" >        
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>        
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
-	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
+        <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <%: System.Web.Optimization.Styles.Render("~/inc/css/adminCss") %>
         <link rel="Stylesheet" href="/inc/css/map_print.css?ver=1.1" media="print" />        
-        <script src="http://maps.google.com/maps/api/js?v=3&region=SE&libraries=geometry,drawing,places"></script>
         <script>var fk = fk || {};</script>
         <!-- Google Analytics -->
         <script>
@@ -147,5 +147,6 @@
         <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>
         <%: System.Web.Optimization.Scripts.Render("~/inc/js/adminJs") %>
         <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
+        <script defer src="https://maps.googleapis.com/maps/api/js?v=weekly&region=SE&libraries=geometry,drawing,places&key=AIzaSyD_YkeofIsttEGex9GJfRzoI9FGxVKWt7M"></script>
     </body>
 </html>

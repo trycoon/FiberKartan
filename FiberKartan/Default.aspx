@@ -6,8 +6,7 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="sv"> <![endif]-->
 <!--[if gt IE 8]><!--><html class="no-js" lang="sv"><!--<![endif]-->
     <head runat="server">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <meta charset="utf-8" />        
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>        
         <meta name="viewport" content="width=device-width" />
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" />
         <meta name="description" content="Projekteringsverktyg för fiber till socken och byanät" />

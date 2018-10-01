@@ -8,15 +8,15 @@
 <html class="no-js" lang="sv">
 <!--<![endif]-->
     <head runat="server">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
-        <meta charset="utf-8" >        
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>        
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
 	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
         <meta name="description" content="FiberKartan - Projekteringsverktyg för socken och byanät" >
         <meta name="keywords" content="fiberkarta,bredband,sockenmodell,byanät,nätverk,fibernät,projekteringsverktyg" >
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <%: System.Web.Optimization.Styles.Render("~/inc/css/userCss") %>
         <link rel="Stylesheet" href="/inc/css/map_print.css?ver=1.1" media="print" />
-        <script src="http://maps.google.com/maps/api/js?v=3&libraries=geometry,drawing"></script>
         <script>var fk = fk || {};</script>
         <!-- Google Analytics -->
         <script>
@@ -37,5 +37,6 @@
         <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>
         <%: System.Web.Optimization.Scripts.Render("~/inc/js/incidentReportJs") %>
         <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?v=weekly&libraries=geometry,drawing&key=AIzaSyD_YkeofIsttEGex9GJfRzoI9FGxVKWt7M&callback=initMap"></script>
     </body>
 </html>

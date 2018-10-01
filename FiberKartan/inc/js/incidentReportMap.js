@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
-(function(fk) {
+function initMap() {
     var map;
     var drawingManager;
     var mapContent = fk.mapContent;
@@ -222,4 +222,4 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 });
         });
     }
-})(fk);
+};
