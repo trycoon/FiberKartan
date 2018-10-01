@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 */
-(function (fk) {
+function initMap() {
     var map;
     var mapContent = fk.mapContent;
     var serverRoot = fk.serverRoot;
@@ -34,20 +34,20 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         gpsWatchId;
 
     // Deklarera ny funktion i jQuery för att hämta ut querystring-parametrar. Används: $.QueryString["param"]
-    (function ($) {
-        $.QueryString = (function (a) {
+    (function($) {
+        $.QueryString = (function(a) {
             if (a === "") return {};
             var b = {};
             for (var i = 0; i < a.length; ++i) {
                 var p = a[i].split('=');
-                if (p.length != 2) continue;
+                if (p.length !== 2) continue;
                 b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
             }
             return b;
-        })(window.location.search.substr(1).split('&'))
+        })(window.location.search.substr(1).split('&'));
     })(jQuery);
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         if (typeof mapContent === 'undefined' || !mapContent) {
             showDialog('<div class="mapPopup">Kartan kunde inte hittas.</div>', 'Meddelande');
@@ -65,7 +65,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
-        $(window).on('orientationchange', function (event) {
+        $(window).on('orientationchange', function(event) {
             if (window.orientation === 0) {
                 $('.palette').fadeOut();
             } else {
@@ -88,7 +88,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 $('#totalDigLength').html(calculateTotalDigLength().toLocaleString());    // toLocaleString() fixar tusen avgränsare.
             }
 
-            $("#mapInfoIcon").click(function () {
+            $("#mapInfoIcon").click(function() {
                 showDialog(
                 'Namn: ' + mapContent.MapName + '<br />'
                 + 'Version: ' + mapContent.MapVer + '<br />'
@@ -144,7 +144,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                     map.setZoom(16.0);
                     specialLine.cable.originalStrokeColor = specialLine.cable.get('strokeColor');
                     // Blink line.
-                    setInterval(function () {
+                    setInterval(function() {
                         if (specialLine.cable.get('strokeColor') === specialLine.cable.originalStrokeColor) {
                             specialLine.cable.setOptions({ strokeColor: '#FFFF00' });
                         } else {
@@ -160,7 +160,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         // Avslutar uppsättning efter querystring.
 
         // Anpassa karta efter önskad storlek, behövs för utskrifter.
-        $('#viewSettings').change(function (event) {
+        $('#viewSettings').change(function(event) {
             var body = $("body");
             switch (this.value) {
                 case "screen": body.width("100%"); body.height("100%"); break;
@@ -178,7 +178,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             }
             google.maps.event.trigger(map, 'resize');   // Anpassa canvas efter nya storleken.
         });
-        $('#viewSettingsHorizontal').change(function (event) {
+        $('#viewSettingsHorizontal').change(function(event) {
             var body = $("body");
             var tmp = body.height();
             body.height(body.width());
@@ -191,14 +191,14 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         if (navigator.geolocation) {
             $('#myCurrentPosition').show();
 
-            $('#myCurrentPositionCheckbox').click(function () {
+            $('#myCurrentPositionCheckbox').click(function() {
                 if ($(this).is(':checked')) {
-                    navigator.geolocation.getCurrentPosition(function (position) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
                         var image = new google.maps.MarkerImage("/inc/img/markers/man.png",
-			                new google.maps.Size(32.0, 32.0),
-			                new google.maps.Point(0, 0),
-			                new google.maps.Point(16.0, 16.0)
-			            );
+                            new google.maps.Size(32.0, 32.0),
+                            new google.maps.Point(0, 0),
+                            new google.maps.Point(16.0, 16.0)
+                        );
                         var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         map.setCenter(latLng);
                         youMarker = new google.maps.Marker({
@@ -210,7 +210,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                             zIndex: 9999,
                             title: 'lat(' + position.coords.latitude.toFixed(7) + ') long(' + position.coords.longitude.toFixed(6) + ').'
                         });
-                        gpsWatchId = navigator.geolocation.watchPosition(function (position) {
+                        gpsWatchId = navigator.geolocation.watchPosition(function(position) {
                             latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                             map.setCenter(latLng);
                             youMarker.setPosition(latLng);
@@ -237,7 +237,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
         if (mapContent.PropertyBoundariesFile) {
             $('#propertyBoundaries').show();
 
-            $('#show_propertyBoundaries').click(function () {
+            $('#show_propertyBoundaries').click(function() {
                 toggleShowPropertyBoundaries();
             });
         }
@@ -307,7 +307,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function createMarkerTypeLookupTable() {
-        if (mapContent.MarkerTypes != null) {
+        if (mapContent.MarkerTypes) {
             for (var i = 0, length = mapContent.MarkerTypes.length; i < length; i++) {
                 markerTypeLookup[mapContent.MarkerTypes[i].Id] = mapContent.MarkerTypes[i];
             }
@@ -327,28 +327,28 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             toggleShowRegions();
 
             // Lägger till lyssnare till kryssrutorna.
-            $("#show_house_to_install").change(function () {
+            $("#show_house_to_install").change(function() {
                 toggleShowHouseToInstall();
             });
-            $("#show_house_no_dice").change(function () {
+            $("#show_house_no_dice").change(function() {
                 toggleShowHouseNotToInstall();
             });
-            $("#show_network").change(function () {
+            $("#show_network").change(function() {
                 toggleShowNetwork();
             });
-            $("#show_fibernodes").change(function () {
+            $("#show_fibernodes").change(function() {
                 toggleShowFiberNodes();
             });
-            $("#show_fiberboxes").change(function () {
+            $("#show_fiberboxes").change(function() {
                 toggleShowFiberBoxes();
             });
-            $("#show_crossings").change(function () {
+            $("#show_crossings").change(function() {
                 toggleShowCrossings();
             });
-            $("#show_regions").change(function () {
+            $("#show_regions").change(function() {
                 toggleShowRegions();
             });
-            $("#snapshotButton").click(function () {
+            $("#snapshotButton").click(function() {
                 var mailLink = 'mailto:?body=' + escape('http://fiberkartan.se/' + mapContent.MapTypeId + '/' + mapContent.MapVer
                 + '?center=' + map.getCenter().lat() + 'x' + map.getCenter().lng() +
                 '&zoom=' + map.getZoom() +
@@ -362,16 +362,17 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
                 );
                 $(this).attr('href', mailLink);
             });
-            $("#resetMapButton").click(function () {
+            $("#resetMapButton").click(function() {
                 map.fitBounds(mapBounds);
             });
         }
     }
 
     function toggleShowHouseToInstall() {
+        var i, length;
         if ($("#show_house_to_install").is(":checked")) {
             if (markersArray) {
-                for (var i = 0, length = markersArray.length; i < length; i++) {
+                for (i = 0, length = markersArray.length; i < length; i++) {
                     if (markersArray[i].markerType.Name === MARKERTYPE.HouseYes || markersArray[i].markerType.Name === MARKERTYPE.HouseMaybe) {
                         markersArray[i].marker.setVisible(true);
                     }
@@ -379,7 +380,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             }
         } else {
             if (markersArray) {
-                for (var i = 0, length = markersArray.length; i < length; i++) {
+                for (i = 0, length = markersArray.length; i < length; i++) {
                     if (markersArray[i].markerType.Name === MARKERTYPE.HouseYes || markersArray[i].markerType.Name === MARKERTYPE.HouseMaybe) {
                         markersArray[i].marker.setVisible(false);
                     }
@@ -389,14 +390,15 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function toggleShowHouseNotToInstall() {
+        var i, length;
         if ($("#show_house_no_dice").is(":checked")) {
-            for (var i = 0, length = markersArray.length; i < length; i++) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.HouseNo || markersArray[i].markerType.Name === MARKERTYPE.HouseNotContacted) {
                     markersArray[i].marker.setVisible(true);
                 }
             }
         } else {
-            for (var i = 0, length = markersArray.length; i < length; i++) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.HouseNo || markersArray[i].markerType.Name === MARKERTYPE.HouseNotContacted) {
                     markersArray[i].marker.setVisible(false);
                 }
@@ -405,6 +407,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function toggleShowNetwork() {
+        var i, length;
         if ($("#show_network").is(":checked")) {
             $("#subOption_fibernodes").show();
             $("#subOption_fiberboxes").show();
@@ -413,7 +416,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             var showBoxes = $("#show_fiberboxes").is(":checked");
 
             // Visa noder och kopplingsskåp om dessa kryssrutor är ifyllda.
-            for (var i = 0, length = markersArray.length; i < length; i++) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.FiberNode) {
                     if (showNodes) {
                         markersArray[i].marker.setVisible(true);
@@ -431,7 +434,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             }
 
             // Visa linjer
-            for (var i = 0, length = lineArray.length; i < length; i++) {
+            for (i = 0, length = lineArray.length; i < length; i++) {
                 lineArray[i].cable.setMap(map);
             }
         } else {
@@ -439,26 +442,27 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             $("#subOption_fiberboxes").hide();
 
             // Dölj noder och kopplingsskåp.
-            for (var i = 0, length = markersArray.length; i < length; i++) {
-                if ((markersArray[i].markerType.Name === MARKERTYPE.FiberNode) || (markersArray[i].markerType.Name === MARKERTYPE.FiberBox)) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
+                if (markersArray[i].markerType.Name === MARKERTYPE.FiberNode || markersArray[i].markerType.Name === MARKERTYPE.FiberBox) {
                     markersArray[i].marker.setVisible(false);
                 }
             }
             // Dölj linjer
-            for (var i = 0, length = lineArray.length; i < length; i++) {
+            for (i = 0, length = lineArray.length; i < length; i++) {
                 lineArray[i].cable.setMap(null);
             }
         }
     }
 
     function toggleShowFiberNodes() {
+        var i, length;
         if ($("#show_network").is(":checked") && $("#show_fibernodes").is(":checked")) {
-            for (var i = 0, length = markersArray.length; i < length; i++) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.FiberNode)
                     markersArray[i].marker.setVisible(true);
             }
         } else {
-            for (var i = 0, length = markersArray.length; i < length; i++) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.FiberNode)
                     markersArray[i].marker.setVisible(false);
             }
@@ -466,14 +470,15 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function toggleShowFiberBoxes() {
+        var i, length;
         if ($("#show_network").is(":checked") && $("#show_fiberboxes").is(":checked")) {
-            for (var i = 0, length = markersArray.length; i < length; i++) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.FiberBox) {
                     markersArray[i].marker.setVisible(true);
                 }
             }
         } else {
-            for (var i = 0, length = markersArray.length; i < length; i++) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.FiberBox) {
                     markersArray[i].marker.setVisible(false);
                 }
@@ -482,14 +487,15 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function toggleShowCrossings() {
+        var i, length;
         if ($("#show_crossings").is(":checked")) {
-            for (var i = 0, length = markersArray.length; i < length; i++) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.RoadCrossing_Existing || markersArray[i].markerType.Name === MARKERTYPE.RoadCrossing_ToBeMade) {
                     markersArray[i].marker.setVisible(true);
                 }
             }
         } else {
-            for (var i = 0, length = markersArray.length; i < length; i++) {
+            for (i = 0, length = markersArray.length; i < length; i++) {
                 if (markersArray[i].markerType.Name === MARKERTYPE.RoadCrossing_Existing || markersArray[i].markerType.Name === MARKERTYPE.RoadCrossing_ToBeMade) {
                     markersArray[i].marker.setVisible(false);
                 }
@@ -498,12 +504,13 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function toggleShowRegions() {
+        var i, length;
         if ($("#show_regions").is(":checked")) {
-            for (var i = 0, length = regionsArray.length; i < length; i++) {
+            for (i = 0, length = regionsArray.length; i < length; i++) {
                 regionsArray[i].region.setMap(map);
             }
         } else {
-            for (var i = 0, length = regionsArray.length; i < length; i++) {
+            for (i = 0, length = regionsArray.length; i < length; i++) {
                 regionsArray[i].region.setMap(null);
             }
         }
@@ -531,18 +538,19 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function plotMapContent() {
-        if (mapContent.Markers != null) {
-            for (var i = 0, length = mapContent.Markers.length; i < length; i++) {
+        var i, length;
+        if (mapContent.Markers) {
+            for (i = 0, length = mapContent.Markers.length; i < length; i++) {
                 addMarker(mapContent.Markers[i].Id, mapContent.Markers[i].Name, mapContent.Markers[i].TypeId, new google.maps.LatLng(mapContent.Markers[i].Lat, mapContent.Markers[i].Long), mapContent.Markers[i].OptionalInfo);
             }
         }
-        if (mapContent.Regions != null) {
-            for (var i = 0, length = mapContent.Regions.length; i < length; i++) {
+        if (mapContent.Regions) {
+            for (i = 0, length = mapContent.Regions.length; i < length; i++) {
                 addRegion(mapContent.Regions[i].Id, mapContent.Regions[i].Name, mapContent.Regions[i].BorderColor, mapContent.Regions[i].FillColor, mapContent.Regions[i].Coordinates);
             }
         }
-        if (mapContent.Cables != null) {
-            for (var i = 0, length = mapContent.Cables.length; i < length; i++) {
+        if (mapContent.Cables) {
+            for (i = 0, length = mapContent.Cables.length; i < length; i++) {
                 addCable(mapContent.Cables[i].Id, mapContent.Cables[i].Name, mapContent.Cables[i].LineColor, mapContent.Cables[i].Width, mapContent.Cables[i].Coordinates);
             }
         }
@@ -550,7 +558,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
 
     function addMarker(id, name, typeId, location, optionalInfo) {
         var markerType = markerTypeLookup[typeId];
-        if (markerType != undefined) {  // Lägg bara till markörer som vi definierat.
+        if (markerType) {  // Lägg bara till markörer som vi definierat.
 
             // Gröna skall ligga ovanpå gula som skall ligga ovanpå röda...
             var zIndex = 0;
@@ -576,23 +584,24 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             });
             mapBounds.extend(location);
 
-            google.maps.event.addListener(marker, 'click', function (event) {
+            google.maps.event.addListener(marker, 'click', function(event) {
+                var info;
                 if (optionalInfo !== null && optionalInfo.ShowPublic) {
                     // Laddar upp beskrivning om vi skall visa den och om vi inte redan har gjort det.
                     if (!marker.desc) {
                         // Hämtar upp beskrivningen dynamiskt, det kostar för mycket bandbredd att ladda upp alla beskrivningar från början.
-                        $.get(serverRoot + '/REST/FKService.svc/MarkerDescription/' + marker.id, function (markerDescription) {
+                        $.get(serverRoot + '/REST/FKService.svc/MarkerDescription/' + marker.id, function(markerDescription) {
                             marker.desc = markerDescription.Desc;  // Sparar undan orginalbeskrivningen.
                             var info = new google.maps.InfoWindow({ content: name + marker.desc });
                             info.open(map, marker);
                         });
                     } else {
-                        var info = new google.maps.InfoWindow({ content: name + marker.desc });
+                        info = new google.maps.InfoWindow({ content: name + marker.desc });
                         info.open(map, marker);
                     }
                 }
                 else {
-                    var info = new google.maps.InfoWindow({ content: name });
+                    info = new google.maps.InfoWindow({ content: name });
                     info.open(map, marker);
                 }
             });
@@ -620,11 +629,11 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             id: id
         });
 
-        google.maps.event.addListener(polygon, 'click', function (event) {
+        google.maps.event.addListener(polygon, 'click', function(event) {
             // Laddar upp beskrivning om vi inte redan har gjort det.
             if (!polygon.content) {
                 // Hämtar upp beskrivningen dynamiskt, det kostar för mycket bandbredd att ladda upp alla beskrivningar från början.
-                $.get(serverRoot + '/REST/FKService.svc/RegionDescription/' + this.id, function (regionDescription) {
+                $.get(serverRoot + '/REST/FKService.svc/RegionDescription/' + this.id, function(regionDescription) {
                     polygon.content = '<strong>' + htmlEncode(name) + '</strong><br/><div style="font-size:small">' + regionDescription.Desc + '</div>';
                     regionInfoWindow.setContent(polygon.content);
                     regionInfoWindow.setPosition(event.latLng);
@@ -683,4 +692,4 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
             return '';
         }
     }
-})(fk);
+};

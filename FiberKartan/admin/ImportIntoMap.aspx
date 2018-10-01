@@ -169,5 +169,5 @@
     </div>
 </asp:Content>
 <asp:Content ID="footer" ContentPlaceHolderID="footer" runat="server">
-    <script src="/inc/js/importMap.js?ver=1.4"></script>
+    <script src="/inc/js/importMap.js?ver=1.5"></script>
 </asp:Content>

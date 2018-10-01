@@ -181,13 +181,13 @@ namespace FiberKartan.Admin
                    ".dialog({" +
                            "autoOpen: false," +
                            "title: 'Importering misslyckades'," +
-                           "close: function () { $(this).remove(); }," +
+                           "close: function() { $(this).remove(); }," +
                            "width: 400," +
                            "height: 220," +
                            "modal: true," +
                            "resizable: false," +
                            "buttons: {" +
-                               "Ok: function () {" +
+                               "Ok: function() {" +
                                    "$(this).dialog(\"close\");" +
                                "}" +
                            "}" +
@@ -268,12 +268,12 @@ namespace FiberKartan.Admin
                     ".dialog({" +
                             "autoOpen: false," +
                             "title: 'Importering'," +
-                            "close: function () { $(this).remove(); window.location.href='ShowMapVersions.aspx?mid=" + mapTypeId + "'; }," +
+                            "close: function() { $(this).remove(); window.location.href='ShowMapVersions.aspx?mid=" + mapTypeId + "'; }," +
                             "width: 400," +
                             "modal: true," +
                             "resizable: false," +
                             "buttons: {" +
-                                "Ok: function () {" +
+                                "Ok: function() {" +
                                     "$(this).dialog(\"close\"); window.location.href='ShowMapVersions.aspx?mid=" + mapTypeId + "';" +
                                 "}" +
                             "}" +
@@ -291,13 +291,13 @@ namespace FiberKartan.Admin
                     ".dialog({" +
                             "autoOpen: false," +
                             "title: 'Importering misslyckades'," +
-                            "close: function () { $(this).remove(); }," +
+                            "close: function() { $(this).remove(); }," +
                             "width: 400," +
                             "height: 220," +
                             "modal: true," +
                             "resizable: false," +
                             "buttons: {" +
-                                "Ok: function () {" +
+                                "Ok: function() {" +
                                     "$(this).dialog(\"close\");" +
                                 "}" +
                             "}" +
@@ -363,12 +363,12 @@ namespace FiberKartan.Admin
                     ".dialog({" +
                             "autoOpen: false," +
                             "title: 'Importering'," +
-                            "close: function () { $(this).remove(); window.location.href='ShowMapVersions.aspx?mid=" + mapTypeId + "'; }," +
+                            "close: function() { $(this).remove(); window.location.href='ShowMapVersions.aspx?mid=" + mapTypeId + "'; }," +
                             "width: 400," +
                             "modal: true," +
                             "resizable: false," +
                             "buttons: {" +
-                                "Ok: function () {" +
+                                "Ok: function() {" +
                                     "$(this).dialog(\"close\"); window.location.href='ShowMapVersions.aspx?mid=" + mapTypeId + "';" +
                                 "}" +
                             "}" +
@@ -388,13 +388,13 @@ namespace FiberKartan.Admin
                     ".dialog({" +
                             "autoOpen: false," +
                             "title: 'Importering misslyckades'," +
-                            "close: function () { $(this).remove(); }," +
+                            "close: function() { $(this).remove(); }," +
                             "width: 400," +
                             "height: 220," +
                             "modal: true," +
                             "resizable: false," +
                             "buttons: {" +
-                                "Ok: function () {" +
+                                "Ok: function() {" +
                                     "$(this).dialog(\"close\");" +
                                 "}" +
                             "}" +

@@ -146,7 +146,7 @@ namespace FiberKartan.Admin
                             DeliveryNotificationOptions = DeliveryNotificationOptions.Never
                         })
                         {
-                            mail.Bcc.Add(new MailAddress(emailAdress));
+                            mail.To.Add(new MailAddress(emailAdress));
 
                             // HTML-innehåll måste kodas så här
                             mail.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(body.ToString(), Encoding.UTF8, MediaTypeNames.Text.Html));
@@ -216,7 +216,7 @@ namespace FiberKartan.Admin
                         DeliveryNotificationOptions = DeliveryNotificationOptions.Never
                     })
                     {
-                        mail.Bcc.Add(new MailAddress(emailAdress));
+                        mail.To.Add(new MailAddress(emailAdress));
 
                         // HTML-innehåll måste kodas så här
                         mail.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(body.ToString(), Encoding.UTF8, MediaTypeNames.Text.Html));

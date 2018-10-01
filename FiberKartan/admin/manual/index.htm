@@ -5,8 +5,16 @@
         <meta name="viewport" content="width=device-width" />
         <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" />
 	    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-        <link rel="Stylesheet" type="text/css" href="manual.css?ver=1.0" media="screen" />
-        <link rel="stylesheet" type="text/css" href="/inc/js/fancybox/jquery.fancybox.css?ver=1.0" media="screen" />
+        <link rel="Stylesheet" href="manual.css?ver=1.0" media="screen" />
+        <link rel="stylesheet" href="/inc/js/fancybox/jquery.fancybox.css?ver=1.0" media="screen"/>
+        <!-- Google Analytics -->
+        <script>
+            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+            ga('create', 'UA-33911019-1', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <script async src='https://www.google-analytics.com/analytics.js'></script>
+        <!-- End Google Analytics -->
     </head>
     <body>
         <h1>Manual för FiberKartan</h1>
@@ -526,28 +534,15 @@
             En packad fil med alla markörbilder finns att hämta <a href="Fiber-markers.zip">här</a>. För utvecklare och designers som vill förbättra eller lägga till nya markörer så finns SVG-filerna att hämta <a href="Fiber-markers-svg.zip">här</a>. Själv använder jag mig av <a href="http://inkscape.org/download/">Incscape</a>, som är gratis att ladda ner, för att rita alla markörer. OBS! Markörerna måste vara i storleken 32x32 pixlar och ha en transparant bakgrund.
         </section>
         <div class="clear" ></div>
-        <script type="text/javascript" src="/inc/js/jquery.min.js?ver=1.1"></script>
-        <script type="text/javascript" src="/inc/js/fancybox/jquery.fancybox.pack.js?ver=1.0"></script>
-        <script type="text/javascript" >
-            $(document).ready(function () {
+        <script src="/inc/js/jquery.min.js?ver=1.1"></script>
+        <script src="/inc/js/fancybox/jquery.fancybox.pack.js?ver=1.0"></script>
+        <script>
+            $(document).ready(function() {
                 $("a.image").fancybox();
-                $("h2").click(function () {
+                $("h2").click(function() {
                     $(this).next().toggle("slow");
                 });
             });
         </script>
-        <script type="text/javascript">
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-33911019-1']);
-            _gaq.push(['_setDomainName', 'fiberkartan.se']);
-            _gaq.push(['_gat._anonymizeIp']);
-            _gaq.push(['_trackPageview']);
-
-            (function () {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-	    </script>
     </body>
 </html>

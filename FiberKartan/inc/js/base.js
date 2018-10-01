@@ -37,11 +37,11 @@ function showDialog(content, title) {
         title: title,
         minWidth: 450,
         buttons: {
-            "Ok": function () {
+            "Ok": function() {
                 $(this).dialog("close");
             }
         },
-        close: function () {
+        close: function() {
             // Rensa bort rutan ifall vi vill visa en ny.
             $(this).dialog("destroy");
             $(this).remove();

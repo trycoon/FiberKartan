@@ -7,14 +7,22 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="sv"> <![endif]-->
 <!--[if gt IE 8]><!--><html class="no-js" lang="sv"><!--<![endif]-->
     <head runat="server">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
-        <meta charset="utf-8" >        
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>        
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
-	    <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
+        <meta name="author" content="&copy;Liquidbytes.se, Henrik Östman" >
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <%: System.Web.Optimization.Styles.Render("~/inc/css/adminCss") %>
-        <link rel="Stylesheet" type="text/css" href="/inc/css/map_print.css?ver=1.1" media="print" />        
-        <script src="http://maps.google.com/maps/api/js?v=3&region=SE&libraries=geometry,drawing,places"></script>
+        <link rel="Stylesheet" href="/inc/css/map_print.css?ver=1.1" media="print" />        
         <script>var fk = fk || {};</script>
+        <!-- Google Analytics -->
+        <script>
+            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+            ga('create', 'UA-33911019-1', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <script async src='https://www.google-analytics.com/analytics.js'></script>
+        <!-- End Google Analytics -->
     </head>
     <body>
         <form id="mapForm" runat="server" enableviewstate="false" onsubmit="return false;">
@@ -101,7 +109,7 @@
                             <option value="address">Belägenhetsadress</option>
                             <option value="position">GPS-position</option>
                         </select><br/>              
-                        <input id="searchBox" maxlength="100" placeholder="" />
+                        <input id="searchBox" maxlength="100" placeholder="" title="namn på markör, 'ks' för kopplingsskåp" />
                         <input id="emptySearch" type="button" class="button" value="Töm" />
                     </div>
                     <h3><a href="#">Utskrift</a></h3>
@@ -137,20 +145,8 @@
             <!-- Slut Contextmenyer -->
         </form>
         <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>
-        <script>
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-33911019-1']);
-            _gaq.push(['_setDomainName', 'fiberkartan.se']);
-            _gaq.push(['_gat._anonymizeIp']);
-            _gaq.push(['_trackPageview']);
-
-            (function () {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-	    </script>
         <%: System.Web.Optimization.Scripts.Render("~/inc/js/adminJs") %>
         <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
+        <script defer src="https://maps.googleapis.com/maps/api/js?v=weekly&region=SE&libraries=geometry,drawing,places&key=AIzaSyD_YkeofIsttEGex9GJfRzoI9FGxVKWt7M"></script>
     </body>
 </html>

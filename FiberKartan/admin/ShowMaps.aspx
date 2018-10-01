@@ -75,22 +75,22 @@
     </div>
 </asp:Content>
 <asp:Content ID="footer" ContentPlaceHolderID="footer" runat="server">
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(document).on('click', '.directMapUrl', function (e) {
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.directMapUrl', function(e) {
                 e.preventDefault();
                 var $dialog = $('<div></div>')
                 .html('För att länka till denna karta, använd följande adress:<br/><br/><strong><%=ServerAddress%>' + $(this).attr("href") + '</strong><br/><br/>Adress som HTML länk:<br/><br/><strong>&lt;a href=\"<%=ServerAddress%>' + $(this).attr("href") + '\" target=\"_blank\"&gt;Karta&lt;/a&gt;</strong>')
                 .dialog({
                     autoOpen: false,
                     title: $(this).attr("title"),
-                    close: function () { $(this).remove() },
+                    close: function() { $(this).remove() },
                     width: 520,
                     modal: true,
                     resizable: false,
                     dialogClass: 'buttons-centered',
                     buttons: {
-                        Ok: function () {
+                        Ok: function() {
                             $(this).dialog("close");
                         }
                     }

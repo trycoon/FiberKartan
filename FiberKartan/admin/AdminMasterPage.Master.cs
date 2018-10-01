@@ -99,12 +99,12 @@ namespace FiberKartan.Admin
                            ".dialog({" +
                                    "autoOpen: false," +
                                    "title: 'Meddelande'," +
-                                   "close: function () { $(this).remove(); }," +
+                                   "close: function() { $(this).remove(); }," +
                                    "width: 500," +
                                    "height: 500," +
                                    "modal: true," +
                                    "buttons: {" +
-                                       "Ok: function () {" +
+                                       "Ok: function() {" +
                                            "$(this).dialog(\"close\");" +
                                        "}" +
                                    "}," +

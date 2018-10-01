@@ -126,6 +126,7 @@ input[disabled] + label {
      -moz-border-radius: 10px;
      -webkit-border-radius: 10px;
      border-radius: 10px;
+     padding: 0 3px;
      white-space: nowrap;
      cursor: pointer;
 }

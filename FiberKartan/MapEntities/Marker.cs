@@ -76,7 +76,7 @@ namespace FiberKartan.MapEntities
 
     public class OptionalInfo
     {
-        public int KS { get; set; }
+        public string KS { get; set; }
         public bool ShowPublic { get; set; }
     }
 }
