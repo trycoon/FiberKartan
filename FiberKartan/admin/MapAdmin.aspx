@@ -144,9 +144,9 @@
             <div id="contextMenuRegionPlaceholder"></div>
             <!-- Slut Contextmenyer -->
         </form>
+        <script defer src="https://maps.googleapis.com/maps/api/js?v=weekly&region=SE&libraries=geometry,drawing,places&key=AIzaSyD_YkeofIsttEGex9GJfRzoI9FGxVKWt7M"></script>
         <script src="/inc/js/tiny_mce/tiny_mce.js?ver=1.3"></script>
         <%: System.Web.Optimization.Scripts.Render("~/inc/js/adminJs") %>
         <%: System.Web.Optimization.Scripts.Render("~/inc/views") %>
-        <script defer src="https://maps.googleapis.com/maps/api/js?v=weekly&region=SE&libraries=geometry,drawing,places&key=AIzaSyD_YkeofIsttEGex9GJfRzoI9FGxVKWt7M"></script>
     </body>
 </html>

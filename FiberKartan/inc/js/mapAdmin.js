@@ -569,7 +569,7 @@ along with FiberKartan.  If not, see <http://www.gnu.org/licenses/>.
     }
 
     function addMapRuler() {
-        addToolToDrawManager('useRuler', 'Mät sträcka', 'http://maps.google.com/mapfiles/kml/pal5/icon5.png', function(button) {
+        addToolToDrawManager('useRuler', 'Mät sträcka', 'https://maps.google.com/mapfiles/kml/pal5/icon5.png', function(button) {
             button.click(function() {
                 button.css('background-color', '#ebebeb');   // Visa att mätverktyget är valt.
                 rulerStartMeasure();
